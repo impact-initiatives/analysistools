@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![check-standard](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/impact-initiatives/analysistools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/impact-initiatives/analysistools?branch=main)
 <!-- badges: end -->
 
 The goal of analysistools is to …
