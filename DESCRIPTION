@@ -1,0 +1,23 @@
+Package: analysistools
+Title: Tools to perform some analysis on survey data collected with ODK
+Version: 0.0.0.900
+Authors@R: 
+    person("Yann", "Say",,
+    "yann.say@impact-initiatives.org", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0002-7390-4209"))
+Description: The package provides a couple of wrappers around srvyr and tidyverse to perform some analysis primarly based on dataset collected throught ODK format.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    dplyr,
+    magrittr,
+    rlang,
+    srvyr,
+    stringr,
+    tidyr
+Suggests: 
+    covr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

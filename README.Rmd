@@ -1,0 +1,48 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# analysistools
+
+<!-- badges: start -->
+[![check-standard](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml)
+<!-- badges: end -->
+
+The goal of analysistools is to ...
+
+## Installation
+
+You can install the development version of analysistools from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("impact-initiatives/analysistools")
+```
+
+## Example
+
+This is a basic example which shows you how to calculate the mean:
+
+```{r example}
+library(analysistools)
+somedata <- data.frame(aa = 1:10,
+                      bb = rep(c("a","b"),5),
+                      weights = rep(c(.5,1.5),5))
+dap_mean <- data.frame(group = c(NA, "bb"),
+                      question_name = c("aa", "aa"),
+                      level = c(.95, .95))
+me_design <- srvyr::as_survey(somedata)
+calculate_mean(me_design, dap_mean[1,])
+calculate_mean(me_design, dap_mean[2,])
+```
