@@ -43,10 +43,10 @@ calculate_mean <- function(.dataset, dap) {
       na.rm = T
     )) %>%
     dplyr::mutate(
-      group_var = dap[["group_var"]],
+      group_var = dap[["group_var"]] %>% stringr::str_replace_all(",", " ~/~"),
       analysis_var = dap[["analysis_var"]],
       analysis_var_value = NA_character_,
-      analysis_type = "mean"
+      analysis_type = "mean",
     ) %>%
     dplyr::rename(stat = coef,
                   stat_low = `_low`,
@@ -57,11 +57,41 @@ calculate_mean <- function(.dataset, dap) {
                                           TRUE ~ stat))
 
   if (is.na(dap[["group_var"]])) {
-    results %>%
-      dplyr::mutate(group_var_value = NA_character_) %>%
-      return()
+    results <- results %>%
+      dplyr::mutate(group_var_value = NA_character_)
   } else {
-    (results %>%
-       tidyr::unite("group_var_value", dplyr::all_of(across_by), sep =  " ~/~ "))
+    results <- results %>%
+      tidyr::unite("group_var_value", dplyr::all_of(across_by), sep =  " ~/~ ")
   }
+
+  x <- results$group_var %>% stringr::str_split(" ~/~ ")
+  y <- results$group_var_value %>% stringr::str_split(" ~/~ ")
+  to_add <-
+    purrr::map2(x, y, function(x, y)
+      paste(x, y, sep = " ~/~ ")) %>% purrr::map(stringr::str_c, collapse = " ~/~ ") %>% do.call(c, .)
+
+  results %>%
+    dplyr::mutate(
+      analysis_key = paste0(
+        analysis_type,
+        " @/@ ",
+        analysis_var,
+        " ~/~ ",
+        analysis_var_value,
+        " @/@"
+      ),
+      analysis_key = paste(analysis_key, to_add)
+    ) %>%
+    dplyr::select(
+      analysis_type,
+      analysis_var,
+      analysis_var_value,
+      group_var,
+      group_var_value,
+      stat,
+      stat_low,
+      stat_upp,
+      analysis_key
+    )
+
 }
