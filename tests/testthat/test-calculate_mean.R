@@ -10,14 +10,15 @@ test_that("calculate_mean returns correct output, no weights", {
   calculated_ci <-
     (sd(somedata$value) / sqrt(nrow(somedata))) * qt(0.975, df = nrow(somedata) - 1)
   expected_output <- data.frame(
+    analysis_type = "mean",
+    analysis_var = "value",
+    analysis_var_value = NA_character_,
+    group_var = NA_character_,
+    group_var_value = NA_character_,
     stat = mean(somedata$value),
     stat_low = mean(somedata$value) - calculated_ci,
     stat_upp = mean(somedata$value) + calculated_ci,
-    group_var = NA_character_,
-    analysis_var = "value",
-    analysis_var_value = NA_character_,
-    analysis_type = "mean",
-    group_var_value = NA_character_
+    analysis_key = "mean @/@ value ~/~ NA @/@ NA ~/~ NA"
   )
 
   expect_equal(calculate_mean(srvyr::as_survey(somedata), dap),
@@ -38,22 +39,36 @@ test_that("calculate_mean returns correct output, no weights", {
       group_var = "groups"
     ) %>%
     dplyr::rename(group_var_value = groups) %>%
-    dplyr::select(group_var_value,
-                  stat,
-                  group_var,
-                  analysis_var,
-                  analysis_var_value,
-                  analysis_type)
+    dplyr::mutate(
+      analysis_key = paste0(
+        analysis_type,
+        " @/@ ",
+        analysis_var,
+        " ~/~ ",
+        analysis_var_value,
+        " @/@ ",
+        group_var,
+        " ~/~ ",
+        group_var_value
+      )
+    ) %>%
+    dplyr::select(
+      analysis_type,
+      analysis_var,
+      analysis_var_value,
+      group_var,
+      group_var_value,
+      stat,
+      analysis_key
+    )
 
   one_group_result <-
     calculate_mean(srvyr::as_survey(somedata), one_group_dap) %>%
-    dplyr::select(-stat_low,-stat_upp)
+    dplyr::select(-stat_low, -stat_upp)
 
   expect_equal(one_group_result,
                one_group_expected_output,
                ignore_attr = T)
-
-
 })
 
 test_that("calculate_mean handles NA", {
@@ -62,15 +77,28 @@ test_that("calculate_mean handles NA", {
                          value = rep(NA_integer_, 100))
 
   na_expected_output <- data.frame(
-    stat = NaN,
-    stat_low = NaN,
-    stat_upp = NaN,
-    group_var = NA_character_,
+    analysis_type = "mean",
     analysis_var = "value",
     analysis_var_value = NA_character_,
-    analysis_type = "mean",
-    group_var_value = NA_character_
-  )
+    group_var = NA_character_,
+    group_var_value = NA_character_,
+    stat = NaN,
+    stat_low = NaN,
+    stat_upp = NaN
+  ) %>%
+    dplyr::mutate(
+      analysis_key = paste0(
+        analysis_type,
+        " @/@ ",
+        analysis_var,
+        " ~/~ ",
+        analysis_var_value,
+        " @/@ ",
+        group_var,
+        " ~/~ ",
+        group_var_value
+      )
+    )
 
   dap <- c(group_var = NA_character_,
            analysis_var = "value",
@@ -91,15 +119,30 @@ test_that("calculate_mean handles NA", {
 
   na_one_group_expected_output <-
     data.frame(
+      analysis_type = rep("mean", 2),
+      analysis_var = rep("value", 2),
+      analysis_var_value = rep(NA_character_, 2),
+      group_var = rep("groups", 2),
       group_var_value = c("a", "b"),
       stat = rep(NaN, 2),
       stat_low = rep(NaN, 2),
-      stat_upp = rep(NaN, 2),
-      group_var = rep("groups", 2),
-      analysis_var = rep("value", 2),
-      analysis_var_value = rep(NA_character_, 2),
-      analysis_type = rep("mean", 2)
+      stat_upp = rep(NaN, 2)
+
+    ) %>%
+    dplyr::mutate(
+      analysis_key = paste0(
+        analysis_type,
+        " @/@ ",
+        analysis_var,
+        " ~/~ ",
+        analysis_var_value,
+        " @/@ ",
+        group_var,
+        " ~/~ ",
+        group_var_value
+      )
     )
+
 
   one_group_result <-
     calculate_mean(srvyr::as_survey(somedata), one_group_dap) %>%
@@ -117,14 +160,15 @@ test_that("calculate_mean handles when only 1 value", {
                          value = c(rep(NA_integer_, 99), 1))
 
   one_value_expected_output <- data.frame(
+    analysis_type = "mean",
+    analysis_var = "value",
+    analysis_var_value = NA_character_,
+    group_var = NA_character_,
+    group_var_value = NA_character_,
     stat = 1,
     stat_low = NaN,
     stat_upp = NaN,
-    group_var = NA_character_,
-    analysis_var = "value",
-    analysis_var_value = NA_character_,
-    analysis_type = "mean",
-    group_var_value = NA_character_
+    analysis_key = "mean @/@ value ~/~ NA @/@ NA ~/~ NA"
   )
   #
   dap <- c(group_var = NA_character_,
@@ -146,14 +190,28 @@ test_that("calculate_mean handles when only 1 value", {
 
   one_value_one_group_expected_output <-
     data.frame(
+      analysis_type = rep("mean", 2),
+      analysis_var = rep("value", 2),
+      analysis_var_value = rep(NA_character_, 2),
+      group_var = rep("groups", 2),
       group_var_value = c("a", "b"),
       stat = c(NaN, 1),
       stat_low = rep(NaN, 2),
-      stat_upp = rep(NaN, 2),
-      group_var = rep("groups", 2),
-      analysis_var = rep("value", 2),
-      analyis_var_choice = rep(NA_character_, 2),
-      analysis_type = rep("mean", 2)
+      stat_upp = rep(NaN, 2)
+
+    ) %>%
+    dplyr::mutate(
+      analysis_key = paste0(
+        analysis_type,
+        " @/@ ",
+        analysis_var,
+        " ~/~ ",
+        analysis_var_value,
+        " @/@ ",
+        group_var,
+        " ~/~ ",
+        group_var_value
+      )
     )
 
   one_value_one_group_results <-
@@ -185,16 +243,29 @@ test_that("calculate_mean handles lonely PSU", {
       group_var = "groups"
     ) %>%
     dplyr::rename(group_var_value = groups) %>%
-    dplyr::select(group_var_value,
-                  stat,
-                  group_var,
+    dplyr::select(analysis_type,
                   analysis_var,
                   analysis_var_value,
-                  analysis_type)
+                  group_var,
+                  group_var_value,
+                  stat)   %>%
+    dplyr::mutate(
+      analysis_key = paste0(
+        analysis_type,
+        " @/@ ",
+        analysis_var,
+        " ~/~ ",
+        analysis_var_value,
+        " @/@ ",
+        group_var,
+        " ~/~ ",
+        group_var_value
+      )
+    )
 
   lonely_psu_result <-
     calculate_mean(srvyr::as_survey(somedata), lonely_psu_dap) %>%
-    dplyr::select(-stat_low,-stat_upp)
+    dplyr::select(-stat_low, -stat_upp)
   expect_equal(lonely_psu_result,
                lonely_psu_expected_output,
                ignore_attr = T)
@@ -217,11 +288,30 @@ test_that("calculate_mean returns correct output, with weights", {
       analysis_var_value = NA_character_,
       analysis_type = "mean",
       group_var_value = NA_character_
+    ) %>%
+    dplyr::select(analysis_type,
+                  analysis_var,
+                  analysis_var_value,
+                  group_var,
+                  group_var_value,
+                  stat) %>%
+    dplyr::mutate(
+      analysis_key = paste0(
+        analysis_type,
+        " @/@ ",
+        analysis_var,
+        " ~/~ ",
+        analysis_var_value,
+        " @/@ ",
+        group_var,
+        " ~/~ ",
+        group_var_value
+      )
     )
 
   results <-
     calculate_mean(srvyr::as_survey(somedata, weights = weights), dap) %>%
-    dplyr::select(-stat_low,-stat_upp)
+    dplyr::select(-stat_low, -stat_upp)
   expect_equal(results,
                expected_output,
                ignore_attr = T)
@@ -232,9 +322,13 @@ test_that("calculate_mean returns correct output, with weights", {
 test_that("calculate_mean returns correct output with 3 grouping variable",
           {
             somedata <- data.frame(
-              group_a = sample(c("a", "b"), 50, replace = T),
-              group_b = sample(c("aa", "bb"), 50, replace = T),
-              group_c = sample(c("aaa", "bbb"), 50, replace = T),
+              group_a = sample(c("group_value_a", "group_value_b"), 50, replace = T),
+              group_b = sample(c(
+                "group_value_2_aa", "group_value_2_bb"
+              ), 50, replace = T),
+              group_c = sample(c(
+                "group_value_3_aaa", "group_value_3_bbb"
+              ), 50, replace = T),
               value = rnorm(100, mean = 20, sd = 10)
             )
 
@@ -242,17 +336,41 @@ test_that("calculate_mean returns correct output with 3 grouping variable",
               dplyr::group_by(group_a, group_b, group_c) %>%
               dplyr::summarise(stat = mean(value)) %>%
               dplyr::mutate(
-                group_var = "group_a, group_b, group_c",
+                group_var = "group_a ~/~ group_b ~/~ group_c",
                 analysis_var = "value",
                 analysis_var_value = NA_character_,
-                analysis_type = "mean"
+                analysis_type = "mean",
+                analysis_key = "mean @/@ value ~/~ NA @/@"
               ) %>%
               tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " ~/~ ")
+
+            x <-
+              expected_output$group_var %>% stringr::str_split(" ~/~ ")
+            y <-
+              expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+
+            to_add <-
+              purrr::map2(x, y, function(x, y)
+                paste(x, y, sep = " ~/~ ")) %>% purrr::map(stringr::str_c, collapse = " ~/~ ") %>% do.call(c, .)
+
+            expected_output <- expected_output %>%
+              dplyr::mutate(analysis_key = paste(analysis_key, to_add)) %>%
+              dplyr::select(
+                analysis_type,
+                analysis_var,
+                analysis_var_value,
+                group_var,
+                group_var_value,
+                stat,
+                analysis_key
+              )
+
 
             dap <- c(group_var = "group_a, group_b, group_c",
                      analysis_var = "value",
                      level = 0.95)
-            results <- calculate_mean(srvyr::as_survey(somedata), dap) %>%
-              dplyr::select(-stat_upp,-stat_low)
+            results <-
+              calculate_mean(srvyr::as_survey(somedata), dap) %>%
+              dplyr::select(-stat_upp, -stat_low)
             expect_equal(results, expected_output)
           })
