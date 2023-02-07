@@ -3,3 +3,4 @@
 export("%>%")
 export(calculate_mean)
 importFrom(magrittr,"%>%")
+importFrom(stats,coef)

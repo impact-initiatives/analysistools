@@ -11,9 +11,9 @@ calculate_mean(.dataset, dap)
 
 \item{dap}{: a vector containing the following information
 \itemize{
-\item group : dependent variable(s), variable to group by. If no dependent variable, it should be NA
+\item group_var : dependent variable(s), variable to group by. If no dependent variable, it should be NA
 or empty string. If more than one variable, it should be one string with each variable separated by ,
-\item question_name : the independent variable, variable to summarise
+\item analysis_var : the independent variable, variable to summarise
 \item level : the confidence level to use to compute the confidence interval.
 }}
 }
@@ -27,8 +27,8 @@ Calculate a mean from a survey
 somedata <- data.frame(aa = 1:10,
                        bb = rep(c("a","b"),5),
                        weights = rep(c(.5,1.5),5))
-dap_mean <- data.frame(group = c(NA, "bb"),
-                       question_name = c("aa", "aa"),
+dap_mean <- data.frame(group_var = c(NA, "bb"),
+                       analysis_var = c("aa", "aa"),
                        level = c(.95, .95))
 me_design <- srvyr::as_survey(somedata)
 calculate_mean(me_design, dap_mean[1,])
@@ -38,5 +38,4 @@ me_design_w <- srvyr::as_survey(somedata, weights = weights)
 calculate_mean(me_design_w, dap_mean[1,])
 calculate_mean(me_design_w, dap_mean[2,])
 
-#oneday
 }
