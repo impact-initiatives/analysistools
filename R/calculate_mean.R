@@ -11,19 +11,23 @@
 #' @export
 #'
 #' @examples
-#' somedata <- data.frame(aa = 1:10,
-#'                        bb = rep(c("a","b"),5),
-#'                        weights = rep(c(.5,1.5),5))
-#' dap_mean <- data.frame(group_var = c(NA, "bb"),
-#'                        analysis_var = c("aa", "aa"),
-#'                        level = c(.95, .95))
+#' somedata <- data.frame(
+#'   aa = 1:10,
+#'   bb = rep(c("a", "b"), 5),
+#'   weights = rep(c(.5, 1.5), 5)
+#' )
+#' dap_mean <- data.frame(
+#'   group_var = c(NA, "bb"),
+#'   analysis_var = c("aa", "aa"),
+#'   level = c(.95, .95)
+#' )
 #' me_design <- srvyr::as_survey(somedata)
-#' calculate_mean(me_design, dap_mean[1,])
-#' calculate_mean(me_design, dap_mean[2,])
+#' calculate_mean(me_design, dap_mean[1, ])
+#' calculate_mean(me_design, dap_mean[2, ])
 #'
 #' me_design_w <- srvyr::as_survey(somedata, weights = weights)
-#' calculate_mean(me_design_w, dap_mean[1,])
-#' calculate_mean(me_design_w, dap_mean[2,])
+#' calculate_mean(me_design_w, dap_mean[1, ])
+#' calculate_mean(me_design_w, dap_mean[2, ])
 #'
 calculate_mean <- function(.dataset, dap) {
   if (is.na(dap[["group_var"]])) {
@@ -31,7 +35,8 @@ calculate_mean <- function(.dataset, dap) {
   } else {
     across_by <- dap[["group_var"]] %>%
       stringr::str_split(",", simplify = T) %>%
-      stringr::str_trim() %>% as.vector()
+      stringr::str_trim() %>%
+      as.vector()
   }
   results <- .dataset %>%
     dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
@@ -48,27 +53,34 @@ calculate_mean <- function(.dataset, dap) {
       analysis_var_value = NA_character_,
       analysis_type = "mean",
     ) %>%
-    dplyr::rename(stat = coef,
-                  stat_low = `_low`,
-                  stat_upp = `_upp`) %>%
-    dplyr::mutate(stat = dplyr::case_when(is.nan(stat_low) &
-                                            is.nan(stat_upp) &
-                                            stat == 0 ~ NaN,
-                                          TRUE ~ stat))
+    dplyr::rename(
+      stat = coef,
+      stat_low = `_low`,
+      stat_upp = `_upp`
+    ) %>%
+    dplyr::mutate(stat = dplyr::case_when(
+      is.nan(stat_low) &
+        is.nan(stat_upp) &
+        stat == 0 ~ NaN,
+      TRUE ~ stat
+    ))
 
   if (is.na(dap[["group_var"]])) {
     results <- results %>%
       dplyr::mutate(group_var_value = NA_character_)
   } else {
     results <- results %>%
-      tidyr::unite("group_var_value", dplyr::all_of(across_by), sep =  " ~/~ ")
+      tidyr::unite("group_var_value", dplyr::all_of(across_by), sep = " ~/~ ")
   }
 
   x <- results$group_var %>% stringr::str_split(" ~/~ ")
   y <- results$group_var_value %>% stringr::str_split(" ~/~ ")
   to_add <-
-    purrr::map2(x, y, function(x, y)
-      paste(x, y, sep = " ~/~ ")) %>% purrr::map(stringr::str_c, collapse = " ~/~ ") %>% do.call(c, .)
+    purrr::map2(x, y, function(x, y) {
+      paste(x, y, sep = " ~/~ ")
+    }) %>%
+    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    do.call(c, .)
 
   results %>%
     dplyr::mutate(
