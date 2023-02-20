@@ -93,5 +93,4 @@ calculate_mean <- function(.dataset, dap) {
       stat_upp,
       analysis_key
     )
-
 }
