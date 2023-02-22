@@ -44,6 +44,6 @@ dap_mean <- data.frame(group = c(NA, "bb"),
                       question_name = c("aa", "aa"),
                       level = c(.95, .95))
 me_design <- srvyr::as_survey(somedata)
-calculate_mean(me_design, dap_mean[1,])
-calculate_mean(me_design, dap_mean[2,])
+create_analysis_mean(me_design, dap_mean[1,])
+create_analysis_mean(me_design, dap_mean[2,])
 ```
