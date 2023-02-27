@@ -39,11 +39,12 @@ This is a basic example which shows you how to calculate the mean:
 library(analysistools)
 somedata <- data.frame(aa = 1:10,
                       bb = rep(c("a","b"),5),
-                      weights = rep(c(.5,1.5),5))
-dap_mean <- data.frame(group = c(NA, "bb"),
-                      question_name = c("aa", "aa"),
+                      weights = rep(c(.5,1.5),5),
+                      stratas = rep(c("strata_a", "strata_b"),5))
+dap_mean <- data.frame(group_var = c(NA, "bb"),
+                      analysis_var = c("aa", "aa"),
                       level = c(.95, .95))
-me_design <- srvyr::as_survey(somedata)
-calculate_mean(me_design, dap_mean[1,])
-calculate_mean(me_design, dap_mean[2,])
+me_design <- srvyr::as_survey_design(somedata, strata = stratas, weights = weights)
+create_analysis_mean(me_design, dap_mean[1,])
+create_analysis_mean(me_design, dap_mean[2,])
 ```

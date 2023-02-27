@@ -22,14 +22,14 @@
 #'   level = c(.95, .95)
 #' )
 #' me_design <- srvyr::as_survey(somedata)
-#' calculate_mean(me_design, dap_mean[1, ])
-#' calculate_mean(me_design, dap_mean[2, ])
+#' create_analysis_mean(me_design, dap_mean[1, ])
+#' create_analysis_mean(me_design, dap_mean[2, ])
 #'
 #' me_design_w <- srvyr::as_survey(somedata, weights = weights)
-#' calculate_mean(me_design_w, dap_mean[1, ])
-#' calculate_mean(me_design_w, dap_mean[2, ])
+#' create_analysis_mean(me_design_w, dap_mean[1, ])
+#' create_analysis_mean(me_design_w, dap_mean[2, ])
 #'
-calculate_mean <- function(.dataset, dap) {
+create_analysis_mean <- function(.dataset, dap) {
   if (is.na(dap[["group_var"]])) {
     across_by <- c()
   } else {
@@ -46,12 +46,20 @@ calculate_mean <- function(.dataset, dap) {
       vartype = "ci",
       level = as.numeric(dap[["level"]]),
       na.rm = T
+    ),
+    n = dplyr::n(),
+    n_w = srvyr::survey_total(
+      vartype = "ci",
+      level = as.numeric(dap[["level"]]),
+      na.rm = T
     )) %>%
     dplyr::mutate(
       group_var = dap[["group_var"]] %>% stringr::str_replace_all(",", " ~/~"),
       analysis_var = dap[["analysis_var"]],
       analysis_var_value = NA_character_,
       analysis_type = "mean",
+      n_total = n, #for mean we want the denominator
+      n_w_total = n_w #for mean we want the denominator
     ) %>%
     dplyr::rename(
       stat = coef,
@@ -103,6 +111,10 @@ calculate_mean <- function(.dataset, dap) {
       stat,
       stat_low,
       stat_upp,
+      n,
+      n_total,
+      n_w,
+      n_w_total,
       analysis_key
     )
 }
