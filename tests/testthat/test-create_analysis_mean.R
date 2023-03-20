@@ -390,8 +390,7 @@ test_that("create_analysis_mean returns correct output, with weights", {
     ignore_attr = T
   )
 })
-# write test for outputs with 2 grouping var
-test_that("create_analysis_mean returns correct output with 3 grouping variable", {
+test_that("create_analysis_mean returns correct output with 3 grouping variables", {
   somedata <- data.frame(
     group_a = sample(c("group_value_a", "group_value_b"), 50, replace = T),
     group_b = sample(c(
@@ -462,9 +461,7 @@ test_that("create_analysis_mean returns correct output with 3 grouping variable"
   expect_equal(results, expected_output)
 })
 
-
-# add counts and weights by group
-test_that("create_analysis_mean returns correct output with 3 grouping variable", {
+test_that("create_analysis_mean returns correct output with 2 grouping variables and weighted", {
   set.seed(1222)
   somedata <- data.frame(
     group_a = sample(c("group_value_a", "group_value_b"), 50, replace = T),
