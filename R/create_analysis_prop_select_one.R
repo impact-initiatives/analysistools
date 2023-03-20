@@ -1,3 +1,24 @@
+#' Calculate proportion from a survey
+#'
+#' @param .dataset design survey
+#' @param dap a vector containing the following information
+#' - group_var : dependent variable(s), variable to group by. If no dependent variable, it should be NA
+#' or empty string. If more than one variable, it should be one string with each variable separated by ,
+#' - analysis_var : the independent variable, variable to summarise
+#' - level : the confidence level to use to compute the confidence interval.
+#'
+#' @return a data frame with the proportion for each group and th analysis index.
+#' @export
+#'
+#' @examples
+#'somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100, replace = T),
+#'                       value = sample(c("a", "b", "c"), size = 100, replace = T,prob = c(.6,.4,.1)))
+#'dap <- data.frame(group_var = c(NA, "groups"),
+#'                  analysis_var = c("value", "value"),
+#'                  level = c(0.95, 0.95))
+#'create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups), dap[1,])
+#'create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups), dap[2,])
+
 create_analysis_prop_select_one <- function(.dataset, dap) {
     if(is.na(dap[["group_var"]])) {
       across_by <- c(dap[["analysis_var"]])
