@@ -2,5 +2,6 @@
 
 export("%>%")
 export(create_analysis_mean)
+export(create_analysis_prop_select_one)
 importFrom(magrittr,"%>%")
 importFrom(stats,coef)

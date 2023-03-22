@@ -30,6 +30,7 @@
 #' create_analysis_mean(me_design_w, dap_mean[2, ])
 #'
 create_analysis_mean <- function(.dataset, dap) {
+  #check the grouping variable
   if (is.na(dap[["group_var"]])) {
     across_by <- c()
   } else {
@@ -38,6 +39,8 @@ create_analysis_mean <- function(.dataset, dap) {
       stringr::str_trim() %>%
       as.vector()
   }
+
+  #calculate
   results <- .dataset %>%
     dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
     dplyr::filter(!is.na(!!rlang::sym(dap[["analysis_var"]])), .preserve = T) %>%
@@ -73,48 +76,11 @@ create_analysis_mean <- function(.dataset, dap) {
       TRUE ~ stat
     ))
 
-  if (is.na(dap[["group_var"]])) {
-    results <- results %>%
-      dplyr::mutate(group_var_value = NA_character_)
-  } else {
-    results <- results %>%
-      tidyr::unite("group_var_value", dplyr::all_of(across_by), sep = " ~/~ ")
-  }
-
-  x <- results$group_var %>% stringr::str_split(" ~/~ ")
-  y <- results$group_var_value %>% stringr::str_split(" ~/~ ")
-  to_add <-
-    purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
-    }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
-    do.call(c, .)
-
+  #adding group_var_value
+  results <- adding_group_var_value(results = results, dap = dap, grouping_vector = across_by)
+  #adding analysis key
+  results <- adding_analysis_key(results = results)
+  #re-arranging the columns
   results %>%
-    dplyr::mutate(
-      analysis_key = paste0(
-        analysis_type,
-        " @/@ ",
-        analysis_var,
-        " ~/~ ",
-        analysis_var_value,
-        " @/@"
-      ),
-      analysis_key = paste(analysis_key, to_add)
-    ) %>%
-    dplyr::select(
-      analysis_type,
-      analysis_var,
-      analysis_var_value,
-      group_var,
-      group_var_value,
-      stat,
-      stat_low,
-      stat_upp,
-      n,
-      n_total,
-      n_w,
-      n_w_total,
-      analysis_key
-    )
+    arranging_results_columns()
 }
