@@ -35,7 +35,9 @@ create_analysis_prop_select_one <- function(.dataset, dap) {
   results <- .dataset %>%
     dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
     dplyr::filter(!is.na(!!rlang::sym(dap[["analysis_var"]])), .preserve = T) %>%
-    srvyr::summarise(srvyr::survey_prop(vartype = "ci", level = as.numeric(dap[["level"]])),
+    srvyr::summarise(srvyr::survey_prop(vartype = "ci",
+                                        level = as.numeric(dap[["level"]]),
+                                        proportion = FALSE),
                      n = dplyr::n(),
                      n_w = srvyr::survey_total(
                        vartype = "ci",
