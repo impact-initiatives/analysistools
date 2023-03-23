@@ -48,3 +48,17 @@ me_design <- srvyr::as_survey_design(somedata, strata = stratas, weights = weigh
 create_analysis_mean(me_design, dap_mean[1,])
 create_analysis_mean(me_design, dap_mean[2,])
 ```
+This is a basic example which shows you how to calculate the proportion for select one:
+
+```{r}
+somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100,
+                       replace = TRUE),
+                       value = sample(c("a", "b", "c"), size = 100, replace = TRUE,
+                       prob = c(.6,.4,.1)))
+dap <- data.frame(group_var = c(NA, "groups"),
+                  analysis_var = c("value", "value"),
+                  level = c(0.95, 0.95))
+create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups), dap[1,])
+create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups), dap[2,])
+```
+

@@ -11,8 +11,10 @@
 #' @export
 #'
 #' @examples
-#'somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100, replace = T),
-#'                       value = sample(c("a", "b", "c"), size = 100, replace = T,prob = c(.6,.4,.1)))
+#'somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100,
+#'                       replace = TRUE),
+#'                       value = sample(c("a", "b", "c"), size = 100, replace = TRUE,
+#'                       prob = c(.6,.4,.1)))
 #'dap <- data.frame(group_var = c(NA, "groups"),
 #'                  analysis_var = c("value", "value"),
 #'                  level = c(0.95, 0.95))
