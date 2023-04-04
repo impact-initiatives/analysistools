@@ -4,18 +4,24 @@
 \alias{create_analysis_prop_select_one}
 \title{Calculate proportion from a survey}
 \usage{
-create_analysis_prop_select_one(.dataset, dap)
+create_analysis_prop_select_one(
+  .dataset,
+  group_var = NA,
+  analysis_var,
+  level = 0.95
+)
 }
 \arguments{
 \item{.dataset}{design survey}
 
-\item{dap}{a vector containing the following information
-\itemize{
-\item group_var : dependent variable(s), variable to group by. If no dependent variable, it should be NA
-or empty string. If more than one variable, it should be one string with each variable separated by ,
-\item analysis_var : the independent variable, variable to summarise
-\item level : the confidence level to use to compute the confidence interval.
-}}
+\item{group_var}{dependent variable(s), variable to group by. If no dependent
+variable, it should be NA or empty string. If more than one variable, it
+should be one string with each variable separated by.
+NA is default for no grouping.}
+
+\item{analysis_var}{the independent variable, variable to summarise}
+
+\item{level}{the confidence level. 0.95 is default}
 }
 \value{
 a data frame with the proportion for each group and th analysis index.
@@ -28,9 +34,12 @@ somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100,
                       replace = TRUE),
                       value = sample(c("a", "b", "c"), size = 100, replace = TRUE,
                       prob = c(.6,.4,.1)))
-dap <- data.frame(group_var = c(NA, "groups"),
-                 analysis_var = c("value", "value"),
-                 level = c(0.95, 0.95))
-create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups), dap[1,])
-create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups), dap[2,])
+create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
+                               group_var = NA,
+                               analysis_var = "value",
+                               level = .95)
+create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
+                               group_var = "groups",
+                               analysis_var = "value",
+                               level = .95)
 }

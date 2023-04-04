@@ -3,7 +3,7 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
                         value = sample(c("a", "b", "c"), size = 100, replace = T,prob = c(.6,.4,.1)))
 
   # no group
-  dap <- c(group_var = NA,analysis_var = "value",level = 0.95)
+  # dap <- c(group_var = NA,analysis_var = "value",level = 0.95)
 
   expected_output <- somedata %>%
     dplyr::group_by(value) %>%
@@ -24,7 +24,7 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
                   group_var, group_var_value, stat,
                   # stat_low, stat_upp,
                   n, n_total, n_w, n_w_total, analysis_key)
-  actual_output <- create_analysis_prop_select_one(srvyr::as_survey(somedata), dap) %>%
+  actual_output <- create_analysis_prop_select_one(srvyr::as_survey(somedata), group_var = NA,analysis_var = "value",level = 0.95) %>%
     dplyr::select(-stat_low, -stat_upp)
   expect_equal(actual_output,
                expected_output,
@@ -32,12 +32,6 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
   )
 
   # with 1 group
-  one_group_dap <- c(
-    group_var = "groups",
-    analysis_var = "value",
-    level = 0.95
-  )
-
   one_group_expected_output <- somedata %>%
     dplyr::group_by(groups, value) %>%
     dplyr::tally() %>%
@@ -70,7 +64,10 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
                   n, n_total, n_w, n_w_total, analysis_key)
 
   one_group_result <-
-    create_analysis_prop_select_one(srvyr::as_survey(somedata), one_group_dap) %>%
+    create_analysis_prop_select_one(srvyr::as_survey(somedata),
+                                    group_var = "groups",
+                                    analysis_var = "value",
+                                    level = 0.95) %>%
     dplyr::select(-stat_low, -stat_upp)
 
   expect_equal(one_group_result,
@@ -114,13 +111,10 @@ test_that("create_analysis_prop_select_one handles NA", {
       )
     )
 
-  dap <- c(
-    group_var = NA_character_,
-    analysis_var = "value",
-    level = 0.95
-  )
-
-  na_results <- create_analysis_prop_select_one(srvyr::as_survey(somedata), dap) %>%
+  na_results <- create_analysis_prop_select_one(srvyr::as_survey(somedata),
+                                                group_var = NA_character_,
+                                                analysis_var = "value",
+                                                level = 0.95) %>%
     suppressWarnings() %>%
     suppressWarnings()
 
@@ -130,13 +124,6 @@ test_that("create_analysis_prop_select_one handles NA", {
   )
 
   # only NA with groupings
-  one_group_dap <- c(
-    group_var = "groups",
-    analysis_var = "value",
-    level = 0.95
-  )
-
-
   na_one_group_expected_output <-
     data.frame(
       analysis_type = rep("prop_select_one", 2),
@@ -168,7 +155,10 @@ test_that("create_analysis_prop_select_one handles NA", {
 
 
   one_group_result <-
-    create_analysis_prop_select_one(srvyr::as_survey(somedata), one_group_dap) %>%
+    create_analysis_prop_select_one(srvyr::as_survey(somedata),
+                                    group_var = "groups",
+                                    analysis_var = "value",
+                                    level = 0.95) %>%
     suppressWarnings()
   expect_equal(one_group_result,
                na_one_group_expected_output,
@@ -182,11 +172,6 @@ test_that("create_analysis_prop_select_one returns correct output, with weights"
 
   somedata[["weights"]] <- ifelse(somedata$groups == "group_a", 1.33, .67)
 
-  dap <- c(
-    group_var = NA,
-    analysis_var = "value",
-    level = 0.95
-  )
   expected_output <- somedata %>%
     dplyr::group_by(value) %>%
     dplyr::summarise(n = dplyr::n(),
@@ -227,7 +212,10 @@ test_that("create_analysis_prop_select_one returns correct output, with weights"
     )
 
   results <-
-    create_analysis_prop_select_one(srvyr::as_survey(somedata, weights = weights), dap) %>%
+    create_analysis_prop_select_one(srvyr::as_survey(somedata, weights = weights),
+                                    group_var = NA,
+                                    analysis_var = "value",
+                                    level = 0.95) %>%
     dplyr::select(-stat_low, -stat_upp)
   expect_equal(results,
                expected_output,
@@ -269,13 +257,11 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
         group_var_value
       )
     )
-  dap <- c(
-    group_var = NA_character_,
-    analysis_var = "value",
-    level = 0.95
-  )
 
-  one_value_results <- create_analysis_prop_select_one(srvyr::as_survey(somedata), dap) %>%
+  one_value_results <- create_analysis_prop_select_one(srvyr::as_survey(somedata),
+                                                       group_var = NA_character_,
+                                                       analysis_var = "value",
+                                                       level = 0.95) %>%
     suppressWarnings() %>%
     suppressWarnings()
 
@@ -285,13 +271,6 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
   )
 
   # one value with groupings
-  one_value_one_group_dap <- c(
-    group_var = "groups",
-    analysis_var = "value",
-    level = 0.95
-  )
-
-
   one_value_one_group_expected_output <-
     data.frame(
       analysis_type = rep("prop_select_one", 3),
@@ -322,7 +301,10 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
     )
 
   one_value_one_group_results <-
-    create_analysis_prop_select_one(srvyr::as_survey(somedata), one_value_one_group_dap) %>%
+    create_analysis_prop_select_one(srvyr::as_survey(somedata),
+                                    group_var = "groups",
+                                    analysis_var = "value",
+                                    level = 0.95) %>%
     suppressWarnings()
   expect_equal(one_value_one_group_results,
                one_value_one_group_expected_output,
@@ -334,12 +316,6 @@ test_that("create_analysis_prop_select_one handles lonely PSU", {
   somedata <- data.frame(
     groups = c(rep("group_a", 50), "group_b"),
     value = c(sample(c("a", "b", "c"), size = 50, replace = T,prob = c(.5,.3,.2)), sample(c("a","b","c"), 1))
-  )
-
-  lonely_psu_dap <- c(
-    group_var = "groups",
-    analysis_var = "value",
-    level = 0.95
   )
 
   lonely_psu_expected_output  <- somedata %>%
@@ -372,16 +348,18 @@ test_that("create_analysis_prop_select_one handles lonely PSU", {
                   group_var, group_var_value, stat,
                   n, n_total, n_w, n_w_total, analysis_key)
 
-
-
   lonely_psu_result <-
-    create_analysis_prop_select_one(srvyr::as_survey(somedata), lonely_psu_dap) %>%
+    create_analysis_prop_select_one(srvyr::as_survey(somedata),
+                                    group_var = "groups",
+                                    analysis_var = "value",
+                                    level = 0.95) %>%
     dplyr::select(-stat_low, -stat_upp)
   expect_equal(lonely_psu_result,
                lonely_psu_expected_output,
                ignore_attr = T
   )
 })
+
 test_that("create_analysis_prop_select_one returns correct output with 2 grouping variable", {
   somedata <- data.frame(
     group_a = sample(c("male_hoh", "female_hoh"), 300, replace = T),
@@ -437,14 +415,11 @@ test_that("create_analysis_prop_select_one returns correct output with 2 groupin
       analysis_key
     )
 
-  dap <- c(
-    group_var = "group_a, group_b, group_c",
-    analysis_var = "value",
-    level = 0.95
-  )
-
   results <-
-    create_analysis_prop_select_one(srvyr::as_survey(somedata), dap) %>%
+    create_analysis_prop_select_one(srvyr::as_survey(somedata),
+                                    group_var = "group_a, group_b, group_c",
+                                    analysis_var = "value",
+                                    level = 0.95) %>%
     dplyr::select(-stat_upp, -stat_low)
   expect_equal(results, expected_output)
 })
@@ -520,13 +495,12 @@ test_that("create_analysis_prop_select_one returns correct output with 2 groupin
       n_w_total,
       analysis_key
     )
-  dap <- c(
-    group_var = "group_a, group_b",
-    analysis_var = "value",
-    level = 0.95
-  )
+
   results <-
-    create_analysis_prop_select_one(srvyr::as_survey(somedata, weights = weights), dap) %>%
+    create_analysis_prop_select_one(srvyr::as_survey(somedata, weights = weights),
+                                    group_var = "group_a, group_b",
+                                    analysis_var = "value",
+                                    level = 0.95) %>%
     dplyr::select(-stat_upp, -stat_low)
   expect_equal(results, expected_output)
 })

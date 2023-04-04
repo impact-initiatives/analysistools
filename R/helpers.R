@@ -42,8 +42,8 @@ char_to_vector <- function(string) {
 #' adding_group_var_value(results = results, dap = dap, grouping_vector = grouping_c)
 #' adding_group_var_value(results = results, dap = dap, grouping_vector = across_by)
 #' }
-adding_group_var_value <- function(results, dap = dap, grouping_vector) {
-  if (is.na(dap[["group_var"]])) {
+adding_group_var_value <- function(results, group_var = group_var, grouping_vector) {
+  if (is.na(group_var)) {
     results <- results %>%
       dplyr::mutate(group_var_value = NA_character_)
   } else {

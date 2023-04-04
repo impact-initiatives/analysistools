@@ -4,15 +4,15 @@
 \alias{adding_group_var_value}
 \title{Adds the group_var_value to the results table from a create_analysis_x}
 \usage{
-adding_group_var_value(results, dap = dap, grouping_vector)
+adding_group_var_value(results, group_var = group_var, grouping_vector)
 }
 \arguments{
 \item{results}{a results table from the calculate section from create_analysis_x}
 
-\item{dap}{dap used from in the create_analysis_x}
-
 \item{grouping_vector}{vector with the variables used in the check the
 grouping variable section of a create_analysis_x function}
+
+\item{dap}{dap used from in the create_analysis_x}
 }
 \value{
 a dataframe with the results and the group_var_value column added

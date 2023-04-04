@@ -6,11 +6,6 @@ test_that("create_analysis_mean returns correct output, no weights", {
     )
 
   # no group
-  dap <- c(
-    group_var = NA,
-    analysis_var = "value",
-    level = 0.95
-  )
   calculated_ci <-
     (sd(somedata$value) / sqrt(nrow(somedata))) * qt(0.975, df = nrow(somedata) - 1)
   expected_output <- data.frame(
@@ -29,17 +24,15 @@ test_that("create_analysis_mean returns correct output, no weights", {
     analysis_key = "mean @/@ value ~/~ NA @/@ NA ~/~ NA"
   )
 
-  expect_equal(create_analysis_mean(srvyr::as_survey(somedata), dap),
+  expect_equal(create_analysis_mean(srvyr::as_survey(somedata),
+                                    group_var = NA,
+                                    analysis_var = "value",
+                                    level = 0.95),
     expected_output,
     ignore_attr = T
   )
 
   # with 1 group
-  one_group_dap <- c(
-    group_var = "groups",
-    analysis_var = "value",
-    level = 0.95
-  )
   one_group_expected_output <- somedata %>%
     dplyr::group_by(groups) %>%
     dplyr::summarise(
@@ -84,7 +77,10 @@ test_that("create_analysis_mean returns correct output, no weights", {
     )
 
   one_group_result <-
-    create_analysis_mean(srvyr::as_survey(somedata), one_group_dap) %>%
+    create_analysis_mean(srvyr::as_survey(somedata),
+                         group_var = "groups",
+                         analysis_var = "value",
+                         level = 0.95) %>%
     dplyr::select(-stat_low, -stat_upp)
 
   expect_equal(one_group_result,
@@ -128,13 +124,10 @@ test_that("create_analysis_mean handles NA", {
       )
     )
 
-  dap <- c(
-    group_var = NA_character_,
-    analysis_var = "value",
-    level = 0.95
-  )
-
-  na_results <- create_analysis_mean(srvyr::as_survey(somedata), dap) %>%
+  na_results <- create_analysis_mean(srvyr::as_survey(somedata),
+                                     group_var = NA_character_,
+                                     analysis_var = "value",
+                                     level = 0.95) %>%
     suppressWarnings() %>%
     suppressWarnings()
 
@@ -144,13 +137,6 @@ test_that("create_analysis_mean handles NA", {
   )
 
   # only NA with groupings
-  one_group_dap <- c(
-    group_var = "groups",
-    analysis_var = "value",
-    level = 0.95
-  )
-
-
   na_one_group_expected_output <-
     data.frame(
       analysis_type = rep("mean", 2),
@@ -182,7 +168,10 @@ test_that("create_analysis_mean handles NA", {
 
 
   one_group_result <-
-    create_analysis_mean(srvyr::as_survey(somedata), one_group_dap) %>%
+    create_analysis_mean(srvyr::as_survey(somedata),
+                         group_var = "groups",
+                         analysis_var = "value",
+                         level = 0.95) %>%
     suppressWarnings()
   expect_equal(one_group_result,
     na_one_group_expected_output,
@@ -213,14 +202,11 @@ test_that("create_analysis_mean handles when only 1 value", {
     n_w_total = 1,
     analysis_key = "mean @/@ value ~/~ NA @/@ NA ~/~ NA"
   )
-  #
-  dap <- c(
-    group_var = NA_character_,
-    analysis_var = "value",
-    level = 0.95
-  )
 
-  one_value_results <- create_analysis_mean(srvyr::as_survey(somedata), dap) %>%
+  one_value_results <- create_analysis_mean(srvyr::as_survey(somedata),
+                                            group_var = NA_character_,
+                                            analysis_var = "value",
+                                            level = 0.95) %>%
     suppressWarnings() %>%
     suppressWarnings()
 
@@ -230,13 +216,6 @@ test_that("create_analysis_mean handles when only 1 value", {
   )
 
   # one value with groupings
-  one_value_one_group_dap <- c(
-    group_var = "groups",
-    analysis_var = "value",
-    level = 0.95
-  )
-
-
   one_value_one_group_expected_output <-
     data.frame(
       analysis_type = rep("mean", 2),
@@ -267,7 +246,10 @@ test_that("create_analysis_mean handles when only 1 value", {
     )
 
   one_value_one_group_results <-
-    create_analysis_mean(srvyr::as_survey(somedata), one_value_one_group_dap) %>%
+    create_analysis_mean(srvyr::as_survey(somedata),
+                         group_var = "groups",
+                         analysis_var = "value",
+                         level = 0.95) %>%
     suppressWarnings()
   expect_equal(one_value_one_group_results,
     one_value_one_group_expected_output,
@@ -281,13 +263,6 @@ test_that("create_analysis_mean handles lonely PSU", {
     groups = c(rep("a", 50), "b"),
     value = c(rnorm(50, mean = 50, sd = 10), sample(1:50, 1))
   )
-
-  lonely_psu_dap <- c(
-    group_var = "groups",
-    analysis_var = "value",
-    level = 0.95
-  )
-
 
   lonely_psu_expected_output <- somedata %>%
     dplyr::group_by(groups) %>%
@@ -326,7 +301,10 @@ test_that("create_analysis_mean handles lonely PSU", {
     )
 
   lonely_psu_result <-
-    create_analysis_mean(srvyr::as_survey(somedata), lonely_psu_dap) %>%
+    create_analysis_mean(srvyr::as_survey(somedata),
+                         group_var = "groups",
+                         analysis_var = "value",
+                         level = 0.95) %>%
     dplyr::select(-stat_low, -stat_upp)
   expect_equal(lonely_psu_result,
     lonely_psu_expected_output,
@@ -341,11 +319,6 @@ test_that("create_analysis_mean returns correct output, with weights", {
   )
   somedata[["weights"]] <- ifelse(somedata$groups == "a", 1.33, .67)
 
-  dap <- c(
-    group_var = NA,
-    analysis_var = "value",
-    level = 0.95
-  )
   expected_output <- somedata %>%
     dplyr::mutate(value_w = value * weights) %>%
     dplyr::summarise(stat = mean(value_w)) %>%
@@ -383,7 +356,10 @@ test_that("create_analysis_mean returns correct output, with weights", {
     )
 
   results <-
-    create_analysis_mean(srvyr::as_survey(somedata, weights = weights), dap) %>%
+    create_analysis_mean(srvyr::as_survey(somedata, weights = weights),
+                         group_var = NA,
+                         analysis_var = "value",
+                         level = 0.95) %>%
     dplyr::select(-stat_low, -stat_upp)
   expect_equal(results,
     expected_output,
@@ -449,14 +425,11 @@ test_that("create_analysis_mean returns correct output with 3 grouping variables
       analysis_key
     )
 
-
-  dap <- c(
-    group_var = "group_a, group_b, group_c",
-    analysis_var = "value",
-    level = 0.95
-  )
   results <-
-    create_analysis_mean(srvyr::as_survey(somedata), dap) %>%
+    create_analysis_mean(srvyr::as_survey(somedata),
+                         group_var = "group_a, group_b, group_c",
+                         analysis_var = "value",
+                         level = 0.95) %>%
     dplyr::select(-stat_upp, -stat_low)
   expect_equal(results, expected_output)
 })
@@ -535,13 +508,12 @@ test_that("create_analysis_mean returns correct output with 2 grouping variables
       n_w_total,
       analysis_key
     )
-  dap <- c(
-    group_var = "group_a, group_b",
-    analysis_var = "value",
-    level = 0.95
-  )
+
   results <-
-    create_analysis_mean(srvyr::as_survey(somedata, weights = weights), dap) %>%
+    create_analysis_mean(srvyr::as_survey(somedata, weights = weights),
+                         group_var = "group_a, group_b",
+                         analysis_var = "value",
+                         level = 0.95) %>%
     dplyr::select(-stat_upp, -stat_low)
   expect_equal(results, expected_output)
 })

@@ -4,18 +4,19 @@
 \alias{create_analysis_mean}
 \title{Calculate a mean from a survey}
 \usage{
-create_analysis_mean(.dataset, dap)
+create_analysis_mean(.dataset, group_var = NA, analysis_var, level = 0.95)
 }
 \arguments{
 \item{.dataset}{: design survey}
 
-\item{dap}{: a vector containing the following information
-\itemize{
-\item group_var : dependent variable(s), variable to group by. If no dependent variable, it should be NA
-or empty string. If more than one variable, it should be one string with each variable separated by ,
-\item analysis_var : the independent variable, variable to summarise
-\item level : the confidence level to use to compute the confidence interval.
-}}
+\item{group_var}{dependent variable(s), variable to group by. If no dependent
+variable, it should be NA or empty string. If more than one variable, it
+should be one string with each variable separated by.
+NA is default for no grouping.}
+
+\item{analysis_var}{the independent variable, variable to summarise}
+
+\item{level}{the confidence level. 0.95 is default}
 }
 \value{
 a data frame with the mean for each group
@@ -29,17 +30,12 @@ somedata <- data.frame(
   bb = rep(c("a", "b"), 5),
   weights = rep(c(.5, 1.5), 5)
 )
-dap_mean <- data.frame(
-  group_var = c(NA, "bb"),
-  analysis_var = c("aa", "aa"),
-  level = c(.95, .95)
-)
 me_design <- srvyr::as_survey(somedata)
-create_analysis_mean(me_design, dap_mean[1, ])
-create_analysis_mean(me_design, dap_mean[2, ])
+create_analysis_mean(me_design, analysis_var = "aa")
+create_analysis_mean(me_design, group_var = "bb", analysis_var = "aa")
 
 me_design_w <- srvyr::as_survey(somedata, weights = weights)
-create_analysis_mean(me_design_w, dap_mean[1, ])
-create_analysis_mean(me_design_w, dap_mean[2, ])
+create_analysis_mean(me_design_w, analysis_var = "aa")
+create_analysis_mean(me_design_w, group_var = "bb", analysis_var = "aa")
 
 }
