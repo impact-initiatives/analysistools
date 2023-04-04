@@ -30,7 +30,7 @@ char_to_vector <- function(string) {
 #' This is a helper to avoid repeating the select in the 5 create_analysis_x functions.
 #'
 #' @param results a results table from the calculate section from create_analysis_x
-#' @param dap dap used from in the create_analysis_x
+#' @param group_var group_var from the create_analysis_x
 #' @param grouping_vector vector with the variables used in the check the
 #' grouping variable section of a create_analysis_x function
 #'
@@ -39,8 +39,8 @@ char_to_vector <- function(string) {
 #'
 #' @examples
 #' \dontrun{
-#' adding_group_var_value(results = results, dap = dap, grouping_vector = grouping_c)
-#' adding_group_var_value(results = results, dap = dap, grouping_vector = across_by)
+#' adding_group_var_value(results = results, group_var = group_var, grouping_vector = grouping_c)
+#' adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)
 #' }
 adding_group_var_value <- function(results, group_var = group_var, grouping_vector) {
   if (is.na(group_var)) {
