@@ -3,7 +3,7 @@ test_that("create_analysis_median returns correct output, no weights", {
   somedata <-
     data.frame(
       groups = sample(c("a", "b"), size = 100, replace = T),
-      value = rnorm(100, mean = 50, sd = 10) ###?
+      value = rnorm(100, mean = 50, sd = 10)
     )
 
   # no group
