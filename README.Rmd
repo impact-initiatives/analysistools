@@ -32,11 +32,12 @@ devtools::install_github("impact-initiatives/analysistools")
 ```
 
 ## Example
+```{r load}
+library(analysistools)
+```
 
 This is a basic example which shows you how to calculate the mean:
-
-```{r example}
-library(analysistools)
+```{r mean}
 somedata <- data.frame(aa = 1:10,
                       bb = rep(c("a","b"),5),
                       weights = rep(c(.5,1.5),5),
@@ -49,9 +50,24 @@ create_analysis_mean(me_design_w, analysis_var = "aa")
 create_analysis_mean(me_design_w, group_var = "bb", analysis_var = "aa")
 
 ```
+This is a basic example which shows you how to calculate the median:
+
+```{r median}
+somedata <- data.frame(aa = 1:10,
+                      bb = rep(c("a","b"),5),
+                      weights = rep(c(.5,1.5),5),
+                      stratas = rep(c("strata_a", "strata_b"),5))
+me_design <- srvyr::as_survey(somedata)
+create_analysis_median(me_design, analysis_var = "aa")
+create_analysis_median(me_design, group_var = "bb", analysis_var = "aa")
+me_design_w <- srvyr::as_survey(somedata, weights = weights)
+create_analysis_median(me_design_w, analysis_var = "aa")
+create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
+```
+
 This is a basic example which shows you how to calculate the proportion for select one:
 
-```{r}
+```{r proportion}
 somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100,
                        replace = TRUE),
                        value = sample(c("a", "b", "c"), size = 100, replace = TRUE,
@@ -66,4 +82,5 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
                                 analysis_var = "value",
                                 level = .95)
 ```
+
 

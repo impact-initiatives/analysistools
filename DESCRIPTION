@@ -23,5 +23,7 @@ Imports:
     tidyr
 Suggests: 
     covr,
-    testthat (>= 3.0.0)
+    survey,
+    testthat (>= 3.0.0),
+    tibble
 Config/testthat/edition: 3
