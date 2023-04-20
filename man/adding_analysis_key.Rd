@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{adding_analysis_key}
 \alias{adding_analysis_key}
-\title{Adds the anaylsis key to the results table from a create_analysis_x}
+\title{Adds the analysis key to the results table from a create_analysis_x}
 \usage{
 adding_analysis_key(results)
 }
