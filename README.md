@@ -24,10 +24,13 @@ devtools::install_github("impact-initiatives/analysistools")
 
 ## Example
 
+``` r
+library(analysistools)
+```
+
 This is a basic example which shows you how to calculate the mean:
 
 ``` r
-library(analysistools)
 somedata <- data.frame(aa = 1:10,
                       bb = rep(c("a","b"),5),
                       weights = rep(c(.5,1.5),5),
@@ -66,6 +69,47 @@ create_analysis_mean(me_design_w, group_var = "bb", analysis_var = "aa")
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
+This is a basic example which shows you how to calculate the median:
+
+``` r
+somedata <- data.frame(aa = 1:10,
+                      bb = rep(c("a","b"),5),
+                      weights = rep(c(.5,1.5),5),
+                      stratas = rep(c("strata_a", "strata_b"),5))
+me_design <- srvyr::as_survey(somedata)
+create_analysis_median(me_design, analysis_var = "aa")
+#> # A tibble: 1 × 13
+#>   analysis_type analysis_var analysis_var_value group_var group_var_value  stat
+#>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
+#> 1 median        aa           <NA>               <NA>      <NA>                5
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
+create_analysis_median(me_design, group_var = "bb", analysis_var = "aa")
+#> # A tibble: 2 × 13
+#>   analysis_type analysis_var analysis_var_value group_var group_var_value  stat
+#>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
+#> 1 median        aa           <NA>               bb        a                   5
+#> 2 median        aa           <NA>               bb        b                   6
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
+me_design_w <- srvyr::as_survey(somedata, weights = weights)
+create_analysis_median(me_design_w, analysis_var = "aa")
+#> # A tibble: 1 × 13
+#>   analysis_type analysis_var analysis_var_value group_var group_var_value  stat
+#>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
+#> 1 median        aa           <NA>               <NA>      <NA>                6
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
+create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
+#> # A tibble: 2 × 13
+#>   analysis_type analysis_var analysis_var_value group_var group_var_value  stat
+#>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
+#> 1 median        aa           <NA>               bb        a                   5
+#> 2 median        aa           <NA>               bb        b                   6
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
+```
+
 This is a basic example which shows you how to calculate the proportion
 for select one:
 
@@ -85,6 +129,7 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
 #> 1 prop_select_o… value        a                  <NA>      <NA>             0.53
 #> 2 prop_select_o… value        b                  <NA>      <NA>             0.41
 #> 3 prop_select_o… value        c                  <NA>      <NA>             0.06
+
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
@@ -220,6 +265,7 @@ create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = gro
 #>   <chr>         <chr>         <chr>              <chr>     <chr>           <dbl>
 #> 1 ratio         children_enr… NA ~/~ NA          groups    a               0.670
 #> 2 ratio         children_enr… NA ~/~ NA          groups    b               0.578
+
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
