@@ -53,7 +53,7 @@ adding_group_var_value <- function(results, group_var = group_var, grouping_vect
   return(results)
 }
 
-#' Adds the anaylsis key to the results table from a create_analysis_x
+#' Adds the analysis key to the results table from a create_analysis_x
 #'
 #' This is a helper to avoid repeating the select in the 5 create_analysis_x functions.
 #'
@@ -89,6 +89,46 @@ adding_analysis_key <- function(results) {
         " @/@"
       ),
       analysis_key = paste(analysis_key, to_add)
+    )
+}
+
+#' Adds the analysis key to the results table from a create_analysis_ratio
+#'
+#' This is a helper to avoid repeating the select in create_analysis_ratio functions. It differs
+#' as there are 2 analysis variables, the numerator and denominator for the ratios.
+#'
+#' @param results a results table from the adding group_var_value section from create_analysis_x
+#'
+#' @return results with key
+#' @export
+#'
+#'
+#' @examples
+#' \dontrun{
+#' adding_analysis_key_ratio(results = results)
+#' }
+adding_analysis_key_ratio <- function(results) {
+  x <- results$group_var %>% stringr::str_split(" ~/~ ")
+  y <- results$group_var_value %>% stringr::str_split(" ~/~ ")
+  to_add_group <-
+    purrr::map2(x, y, function(x, y) {
+      paste(x, y, sep = " ~/~ ")
+    }) %>%
+    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    do.call(c, .)
+
+  x <- results$analysis_var %>% stringr::str_split(" ~/~ ")
+  y <- results$analysis_var_value %>% stringr::str_split(" ~/~ ")
+  to_add_analysis <-
+    purrr::map2(x, y, function(x, y) {
+      paste(x, y, sep = " ~/~ ")
+    }) %>%
+    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    do.call(c, .)
+
+  results %>%
+    dplyr::mutate(
+      analysis_key = paste(analysis_type, "@/@", to_add_analysis, "@/@", to_add_group)
     )
 }
 
