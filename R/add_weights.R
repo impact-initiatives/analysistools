@@ -39,6 +39,12 @@ add_weights<- function(.dataset,
   if(!strata_column_dataset %in% names(.dataset))
     stop("Cannot find the defined strata column in the provided dataset.")
 
+  # IF all strata from dataset not in sample frame
+  if(!all(.dataset[[strata_column_dataset]] %in% sample_data[[strata_column_sample]]))
+    stop("Not all strata from dataset are in sample frame")
+
+  if(!all(sample_data[[strata_column_sample]] %in% .dataset[[strata_column_dataset]]))
+    warning("Not all strata from sample frame are in dataset")
   # If population_column do not exist in sample_data
   if(!population_column %in% names(sample_data))
     stop("Cannot find the defined population_column column in the provided sample frame.")
@@ -59,12 +65,15 @@ add_weights<- function(.dataset,
     dplyr::summarise(population = sum(as.numeric(!!rlang::sym(population_column)))) %>%
     dplyr::left_join(count, by = strata_column_dataset) %>%
     dplyr::mutate(
-      weight = round((as.numeric(population)/sum(as.numeric(population)))/(as.numeric(count)/sum(as.numeric(count))), 2))%>%
-    dplyr::select(all_of(strata_column_dataset),weight)
+      !!rlang::sym(weight_column) := round((as.numeric(population)/sum(as.numeric(population)))/(as.numeric(count)/sum(as.numeric(count))), 2))%>%
+    dplyr::select(dplyr::all_of(strata_column_dataset),dplyr::all_of(weight_column))
 
   # join to dataset
   .dataset <- .dataset %>%
     dplyr::left_join(weights,by = strata_column_dataset)
+
+  if(any(is.na(.dataset[[weight_column]])))
+    stop("There are NA values in the weight column")
 
   return(.dataset)
 }

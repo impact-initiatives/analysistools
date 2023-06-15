@@ -14,6 +14,7 @@ testthat::test_that("Error checks", {
                                      strata_column_dataset = "neighbourhood",
                                      strata_column_sample = "Neighbourhood",
                                      population_column = "Total"))
+
   test_data <- analysistools::analysistools_clean_data %>%
     dplyr::mutate(weight = 1)
   testthat::expect_error(add_weights(.dataset = test_data,
@@ -26,6 +27,22 @@ testthat::test_that("Error checks", {
                                      strata_column_dataset = "neighbourhood",
                                      strata_column_sample = "Neighbourhood",
                                      population_column = "Total.no.of.HH"))
+  test_data <- analysistools::analysistools_clean_data
+  test_data$neighbourhood[2] <- "not_applicable"
+  testthat::expect_error(add_weights(.dataset = test_data,
+                                     sample_data = analysistools::analysistools_sample_frame,
+                                     strata_column_dataset = "neighbourhood",
+                                     strata_column_sample = "Neighbourhood",
+                                     population_column = "Total.no.of.HH"))
+
+  test_data <- analysistools::analysistools_clean_data %>%
+    dplyr::filter(neighbourhood != "oyt")
+  testthat::expect_error(add_weights(.dataset = test_data,
+                                     sample_data = analysistools::analysistools_sample_frame,
+                                     strata_column_dataset = "neighbourhood",
+                                     strata_column_sample = "Neighbourhood",
+                                     population_column = "Total.no.of.HH") %>%
+                           testthat::expect_warning())
 })
 
 testthat::test_that("add_weights works", {
