@@ -5,7 +5,7 @@
 #' @param strata_column_dataset name of strata column in the clean dataframe
 #' @param strata_column_sample name of strata column in the sample dataframe
 #' @param population_column name of population column in the sample dataframe
-#' @param weight_column name of the added weight column. By default "weight"
+#' @param weight_column name of the added weight column. By default "weights"
 #'
 #' @return The clean dataset with 1 new column: weight
 #' @export
@@ -28,7 +28,7 @@ add_weights<- function(.dataset,
                         strata_column_dataset = NULL,
                         strata_column_sample = NULL,
                         population_column = NULL,
-                        weight_column = "weight"){
+                        weight_column = "weights"){
 
   # make dataset a dataframe
   .dataset <- as.data.frame(.dataset)
@@ -44,14 +44,15 @@ add_weights<- function(.dataset,
     stop("Not all strata from dataset are in sample frame")
 
   if(!all(sample_data[[strata_column_sample]] %in% .dataset[[strata_column_dataset]]))
-    warning("Not all strata from sample frame are in dataset")
+    stop("Not all strata from sample frame are in dataset")
+
   # If population_column do not exist in sample_data
   if(!population_column %in% names(sample_data))
     stop("Cannot find the defined population_column column in the provided sample frame.")
 
   # if weight column already exist in dataset
   if(weight_column %in% names(.dataset))
-    stop("Weight column already exists in the dataset. Please input another weight column")
+    stop("Weight column already exists in the dataset. Please input another weights column")
 
   # Count number of entries by strata
   count <- .dataset %>%
@@ -65,7 +66,7 @@ add_weights<- function(.dataset,
     dplyr::summarise(population = sum(as.numeric(!!rlang::sym(population_column)))) %>%
     dplyr::left_join(count, by = strata_column_dataset) %>%
     dplyr::mutate(
-      !!rlang::sym(weight_column) := round((as.numeric(population)/sum(as.numeric(population)))/(as.numeric(count)/sum(as.numeric(count))), 2))%>%
+      !!rlang::sym(weight_column) := (as.numeric(population)/sum(as.numeric(population)))/(as.numeric(count)/sum(as.numeric(count)))) %>%
     dplyr::select(dplyr::all_of(strata_column_dataset),dplyr::all_of(weight_column))
 
   # join to dataset
@@ -73,7 +74,7 @@ add_weights<- function(.dataset,
     dplyr::left_join(weights,by = strata_column_dataset)
 
   if(any(is.na(.dataset[[weight_column]])))
-    stop("There are NA values in the weight column")
+    stop("There are NA values in the weights column")
 
   return(.dataset)
 }

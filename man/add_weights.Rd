@@ -10,7 +10,7 @@ add_weights(
   strata_column_dataset = NULL,
   strata_column_sample = NULL,
   population_column = NULL,
-  weight_column = "weight"
+  weight_column = "weights"
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ add_weights(
 
 \item{population_column}{name of population column in the sample dataframe}
 
-\item{weight_column}{name of the added weight column. By default "weight"}
+\item{weight_column}{name of the added weight column. By default "weights"}
 }
 \value{
 The clean dataset with 1 new column: weight
