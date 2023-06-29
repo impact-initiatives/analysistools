@@ -10,7 +10,7 @@
 #' @examples
 #' char_to_vector("groupa, groupb, groupc")
 char_to_vector <- function(string) {
-  if(length(string) > 1) {
+  if (length(string) > 1) {
     stop("The group_var to be turned into a vector is already a vector.")
   }
 
@@ -19,11 +19,11 @@ char_to_vector <- function(string) {
     stringr::str_trim() %>%
     as.vector()
 
-  if(any(vector_to_return == "")) {
+  if (any(vector_to_return == "")) {
     stop("The group_var seems to have empty value, please check the inputs values")
   }
   return(vector_to_return)
-  }
+}
 
 #' Adds the group_var_value to the results table from a create_analysis_x
 #'
@@ -67,7 +67,6 @@ adding_group_var_value <- function(results, group_var = group_var, grouping_vect
 #' \dontrun{
 #' adding_analysis_key(results = results)
 #' }
-
 adding_analysis_key <- function(results) {
   x <- results$group_var %>% stringr::str_split(" ~/~ ")
   y <- results$group_var_value %>% stringr::str_split(" ~/~ ")

@@ -12,54 +12,66 @@
 #' @export
 #'
 #' @examples
-#'somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100,
-#'                       replace = TRUE),
-#'                       value = sample(c("a", "b", "c"), size = 100, replace = TRUE,
-#'                       prob = c(.6,.4,.1)))
-#'create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
-#'                                group_var = NA,
-#'                                analysis_var = "value",
-#'                                level = .95)
-#'create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
-#'                                group_var = "groups",
-#'                                analysis_var = "value",
-#'                                level = .95)
-
+#' somedata <- data.frame(
+#'   groups = sample(c("group_a", "group_b"),
+#'     size = 100,
+#'     replace = TRUE
+#'   ),
+#'   value = sample(c("a", "b", "c"),
+#'     size = 100, replace = TRUE,
+#'     prob = c(.6, .4, .1)
+#'   )
+#' )
+#' create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
+#'   group_var = NA,
+#'   analysis_var = "value",
+#'   level = .95
+#' )
+#' create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
+#'   group_var = "groups",
+#'   analysis_var = "value",
+#'   level = .95
+#' )
 create_analysis_prop_select_one <- function(.dataset, group_var = NA, analysis_var, level = .95) {
-  #check the grouping variable
-  if(is.na(group_var)) {
+  # check the grouping variable
+  if (is.na(group_var)) {
     across_by <- c(analysis_var)
   } else {
     grouping_c <- group_var %>%
       char_to_vector()
-    across_by <- c(grouping_c,analysis_var)
+    across_by <- c(grouping_c, analysis_var)
   }
 
-  #calculate
+  # calculate
   results <- .dataset %>%
     dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
     dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
-    srvyr::summarise(srvyr::survey_prop(vartype = "ci",
-                                        level = as.numeric(level),
-                                        proportion = FALSE),
-                     n = dplyr::n(),
-                     n_w = srvyr::survey_total(
-                       vartype = "ci",
-                       level = as.numeric(level),
-                       na.rm = T
-                     )
+    srvyr::summarise(
+      srvyr::survey_prop(
+        vartype = "ci",
+        level = as.numeric(level),
+        proportion = FALSE
+      ),
+      n = dplyr::n(),
+      n_w = srvyr::survey_total(
+        vartype = "ci",
+        level = as.numeric(level),
+        na.rm = T
+      )
     ) %>%
     dplyr::mutate(
       group_var = group_var %>% stringr::str_replace_all(",", " ~/~"),
       analysis_var = analysis_var,
       analysis_type = "prop_select_one",
-      n_total = sum(n), #??
-      n_w_total = sum(n_w) #??
+      n_total = sum(n), # ??
+      n_w_total = sum(n_w) # ??
     ) %>%
-    dplyr::rename(stat = coef,
-                  stat_low = `_low`,
-                  stat_upp = `_upp`,
-                  analysis_var_value = !!rlang::sym(analysis_var)) %>%
+    dplyr::rename(
+      stat = coef,
+      stat_low = `_low`,
+      stat_upp = `_upp`,
+      analysis_var_value = !!rlang::sym(analysis_var)
+    ) %>%
     dplyr::mutate(stat = dplyr::case_when(
       is.nan(stat_low) &
         is.nan(stat_upp) &
@@ -67,14 +79,16 @@ create_analysis_prop_select_one <- function(.dataset, group_var = NA, analysis_v
       TRUE ~ stat
     ))
 
-  #adding group_var_value
+  # adding group_var_value
   results <-
-    adding_group_var_value(results = results,
-                           group_var = group_var,
-                           grouping_vector = grouping_c)
-  #adding analysis key
+    adding_group_var_value(
+      results = results,
+      group_var = group_var,
+      grouping_vector = grouping_c
+    )
+  # adding analysis key
   results <- adding_analysis_key(results = results)
-  #re-arranging the columns
+  # re-arranging the columns
   results %>%
     arranging_results_columns()
 }

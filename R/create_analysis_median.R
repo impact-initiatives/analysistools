@@ -32,7 +32,7 @@
 #' create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
 #'
 create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level = .95) {
-  #check the grouping variable
+  # check the grouping variable
   if (is.na(group_var)) {
     across_by <- c()
   } else {
@@ -42,7 +42,7 @@ create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level
       as.vector()
   }
 
-  #calculate
+  # calculate
 
   ## error handling
   ## survey_median has an error with only NA it passes somewhere if(NA)
@@ -68,7 +68,8 @@ create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level
               vartype = "ci",
               level = as.numeric(level),
               na.rm = T
-            ))
+            )
+          )
       },
       expr
     )
@@ -90,7 +91,8 @@ create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level
           vartype = "ci",
           level = as.numeric(level),
           na.rm = T
-        ))
+        )
+      )
   )
 
   results <- results %>%
@@ -99,8 +101,8 @@ create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level
       analysis_var = analysis_var,
       analysis_var_value = NA_character_,
       analysis_type = "median",
-      n_total = n, #for median we want the denominator
-      n_w_total = n_w #for median we want the denominator
+      n_total = n, # for median we want the denominator
+      n_w_total = n_w # for median we want the denominator
     ) %>%
     dplyr::mutate(stat = dplyr::case_when(
       is.nan(stat_low) &
@@ -109,11 +111,11 @@ create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level
       TRUE ~ stat
     ))
 
-  #adding group_var_value
+  # adding group_var_value
   results <- adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)
-  #adding analysis key
+  # adding analysis key
   results <- adding_analysis_key(results = results)
-  #re-arranging the columns
+  # re-arranging the columns
   results %>%
     arranging_results_columns()
 }

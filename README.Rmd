@@ -38,25 +38,28 @@ library(analysistools)
 
 This is a basic example which shows you how to calculate the mean:
 ```{r mean}
-somedata <- data.frame(aa = 1:10,
-                      bb = rep(c("a","b"),5),
-                      weights = rep(c(.5,1.5),5),
-                      stratas = rep(c("strata_a", "strata_b"),5))
+somedata <- data.frame(
+  aa = 1:10,
+  bb = rep(c("a", "b"), 5),
+  weights = rep(c(.5, 1.5), 5),
+  stratas = rep(c("strata_a", "strata_b"), 5)
+)
 me_design <- srvyr::as_survey(somedata)
 create_analysis_mean(me_design, analysis_var = "aa")
 create_analysis_mean(me_design, group_var = "bb", analysis_var = "aa")
 me_design_w <- srvyr::as_survey(somedata, weights = weights)
 create_analysis_mean(me_design_w, analysis_var = "aa")
 create_analysis_mean(me_design_w, group_var = "bb", analysis_var = "aa")
-
 ```
 This is a basic example which shows you how to calculate the median:
 
 ```{r median}
-somedata <- data.frame(aa = 1:10,
-                      bb = rep(c("a","b"),5),
-                      weights = rep(c(.5,1.5),5),
-                      stratas = rep(c("strata_a", "strata_b"),5))
+somedata <- data.frame(
+  aa = 1:10,
+  bb = rep(c("a", "b"), 5),
+  weights = rep(c(.5, 1.5), 5),
+  stratas = rep(c("strata_a", "strata_b"), 5)
+)
 me_design <- srvyr::as_survey(somedata)
 create_analysis_median(me_design, analysis_var = "aa")
 create_analysis_median(me_design, group_var = "bb", analysis_var = "aa")
@@ -68,19 +71,27 @@ create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
 This is a basic example which shows you how to calculate the proportion for select one:
 
 ```{r proportion}
-somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100,
-                       replace = TRUE),
-                       value = sample(c("a", "b", "c"), size = 100, replace = TRUE,
-                       prob = c(.6,.4,.1)))
+somedata <- data.frame(
+  groups = sample(c("group_a", "group_b"),
+    size = 100,
+    replace = TRUE
+  ),
+  value = sample(c("a", "b", "c"),
+    size = 100, replace = TRUE,
+    prob = c(.6, .4, .1)
+  )
+)
 
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
-                                group_var = NA,
-                                analysis_var = "value",
-                                level = .95)
+  group_var = NA,
+  analysis_var = "value",
+  level = .95
+)
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
-                                group_var = "groups",
-                                analysis_var = "value",
-                                level = .95)
+  group_var = "groups",
+  analysis_var = "value",
+  level = .95
+)
 ```
 
 This is a basic example which shows you how to calculate the ratio between 2 numeric variables:
@@ -102,8 +113,9 @@ are enrolled.
 The number of household counted, n, is equal to 2, as there are 2 households only having child.
 ```{r}
 create_analysis_ratio(me_design,
-                     analysis_var_numerator = "num_attending",
-                     analysis_var_denominator ="num_children")
+  analysis_var_numerator = "num_attending",
+  analysis_var_denominator = "num_children"
+)
 ```
 
 If numerator_NA_to_0 is set to FALSE, ratio will be 1/3, as hh3 with 2 children and NA for
@@ -111,9 +123,10 @@ attending will be removed with the na.rm = T inside the survey_ratio calculation
 The number of household used in the calculation is 1.
 ```{r}
 create_analysis_ratio(me_design,
-                     analysis_var_numerator = "num_attending",
-                     analysis_var_denominator ="num_children",
-                     numerator_NA_to_0 = FALSE)
+  analysis_var_numerator = "num_attending",
+  analysis_var_denominator = "num_children",
+  numerator_NA_to_0 = FALSE
+)
 ```
 If filter_denominator_0 is set to FALSE, ratio will be 0.2 as there are 1 child out of 5
 attending school. In the hh3, the NA is present because there is a skip logic,
@@ -123,33 +136,36 @@ counted in the n.
 
 ```{r}
 create_analysis_ratio(me_design,
-                     analysis_var_numerator = "num_attending",
-                     analysis_var_denominator ="num_children",
-                     numerator_NA_to_0 = FALSE)
+  analysis_var_numerator = "num_attending",
+  analysis_var_denominator = "num_children",
+  numerator_NA_to_0 = FALSE
+)
 ```
 For weigths and group:
 
 ```{r}
 set.seed(8988)
 somedata <- data.frame(
- groups = rep(c("a", "b"), 50),
- children_518 = sample(0:5, 100, replace = TRUE),
- children_enrolled = sample(0:5, 100, replace = TRUE)
+  groups = rep(c("a", "b"), 50),
+  children_518 = sample(0:5, 100, replace = TRUE),
+  children_enrolled = sample(0:5, 100, replace = TRUE)
 ) %>%
- dplyr::mutate(children_enrolled = ifelse(children_enrolled > children_518,
-                                          children_518,
-                                          children_enrolled
- ))
+  dplyr::mutate(children_enrolled = ifelse(children_enrolled > children_518,
+    children_518,
+    children_enrolled
+  ))
 somedata[["weights"]] <- ifelse(somedata$groups == "a", 1.33, .67)
 create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = groups),
-                     group_var = NA,
-                     analysis_var_numerator = "children_enrolled",
-                     analysis_var_denominator = "children_518",
-                     level = 0.95)
+  group_var = NA,
+  analysis_var_numerator = "children_enrolled",
+  analysis_var_denominator = "children_518",
+  level = 0.95
+)
 create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = groups),
-                     group_var = "groups",
-                     analysis_var_numerator = "children_enrolled",
-                     analysis_var_denominator = "children_518",
-                     level = 0.95)
+  group_var = "groups",
+  analysis_var_numerator = "children_enrolled",
+  analysis_var_denominator = "children_518",
+  level = 0.95
+)
 ```
 

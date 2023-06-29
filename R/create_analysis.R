@@ -30,80 +30,91 @@
 #' @export
 #'
 #' @examples
-#' create_analysis(.design = srvyr::as_survey(analysistools_MSNA_template_data),
-#'                 dap = analysistools_dap)
+#' create_analysis(
+#'   .design = srvyr::as_survey(analysistools_MSNA_template_data),
+#'   dap = analysistools_dap
+#' )
 #'
-#' create_analysis(.design = srvyr::as_survey(analysistools_MSNA_template_data),
-#'                 dap = analysistools_dap_with_ratio)
+#' create_analysis(
+#'   .design = srvyr::as_survey(analysistools_MSNA_template_data),
+#'   dap = analysistools_dap_with_ratio
+#' )
 #'
-#' shorter_df <- analysistools_MSNA_template_data[,c("admin1",
-#'                                                   "expenditure_debt",
-#'                                                   "wash_drinkingwatersource")]
+#' shorter_df <- analysistools_MSNA_template_data[, c(
+#'   "admin1",
+#'   "expenditure_debt",
+#'   "wash_drinkingwatersource"
+#' )]
 #'
-#' create_analysis(.design = srvyr::as_survey(shorter_df),
-#'                 group_var = "admin1")
+#' create_analysis(
+#'   .design = srvyr::as_survey(shorter_df),
+#'   group_var = "admin1"
+#' )
 create_analysis <- function(.design,
                             dap = NULL,
-                            group_var = NULL
-                            ) {
-
-  if(!"tbl_svy" %in% attributes(.design)$class) {
+                            group_var = NULL) {
+  if (!"tbl_svy" %in% attributes(.design)$class) {
     stop("It seems object design is not a design, did you use srvyr::as_survey ?")
   }
 
-  if(!is.null(dap) & !is.null(group_var)) {
+  if (!is.null(dap) & !is.null(group_var)) {
     warning("You have provided a data analysis plan and group variable, group variable will be ignored")
   }
 
-  if(!is.null(dap)) {
+  if (!is.null(dap)) {
     dap <- check_dap(dap, .design)
   }
 
-  if(is.null(dap)) {
+  if (is.null(dap)) {
     dap <- create_dap(.design = .design, group_var = group_var)
   }
 
 
   results_list <- dap %>%
-         split(1:nrow(.)) %>%
-    purrr::map(function(dap){
-      if(dap[["analysis_type"]] == "mean") {
+    split(1:nrow(.)) %>%
+    purrr::map(function(dap) {
+      if (dap[["analysis_type"]] == "mean") {
         return(create_analysis_mean(.design,
-                                    group_var = dap[["group_var"]],
-                                    analysis_var = dap[["analysis_var"]],
-                                    level = dap[["level"]]))
+          group_var = dap[["group_var"]],
+          analysis_var = dap[["analysis_var"]],
+          level = dap[["level"]]
+        ))
       }
-      if(dap[["analysis_type"]] == "median") {
+      if (dap[["analysis_type"]] == "median") {
         return(create_analysis_median(.design,
-                                      group_var = dap[["group_var"]],
-                                      analysis_var = dap[["analysis_var"]],
-                                      level = dap[["level"]]))
+          group_var = dap[["group_var"]],
+          analysis_var = dap[["analysis_var"]],
+          level = dap[["level"]]
+        ))
       }
-      if(dap[["analysis_type"]] == "prop_select_one") {
+      if (dap[["analysis_type"]] == "prop_select_one") {
         return(create_analysis_prop_select_one(.design,
-                                               group_var = dap[["group_var"]],
-                                               analysis_var = dap[["analysis_var"]],
-                                               level = dap[["level"]]))
+          group_var = dap[["group_var"]],
+          analysis_var = dap[["analysis_var"]],
+          level = dap[["level"]]
+        ))
       }
-      if(dap[["analysis_type"]] == "ratio") {
+      if (dap[["analysis_type"]] == "ratio") {
         return(create_analysis_ratio(.design,
-                                     group_var = dap[["group_var"]],
-                                     analysis_var_numerator = dap[["analysis_var_numerator"]],
-                                     analysis_var_denominator = dap[["analysis_var_denominator"]],
-                                     numerator_NA_to_0 = dap[["numerator_NA_to_0"]],
-                                     filter_denominator_0 = dap[["filter_denominator_0"]],
-                                     level = dap[["level"]]))
+          group_var = dap[["group_var"]],
+          analysis_var_numerator = dap[["analysis_var_numerator"]],
+          analysis_var_denominator = dap[["analysis_var_denominator"]],
+          numerator_NA_to_0 = dap[["numerator_NA_to_0"]],
+          filter_denominator_0 = dap[["filter_denominator_0"]],
+          level = dap[["level"]]
+        ))
       }
     }, .progress = T)
 
 
-  results_table <- results_list  %>%
-    do.call(rbind,.)
+  results_table <- results_list %>%
+    do.call(rbind, .)
 
-  return(list(results_table = results_table,
-              dataset = .design$variables,
-              dap = dap))
-
+  return(list(
+    results_table = results_table,
+    dataset = .design$variables,
+    dap = dap
+  ))
 }
 
 #' Create a data analysis plan from design and a grouping variable
@@ -122,34 +133,42 @@ create_analysis <- function(.design,
 #' @export
 #'
 #' @examples
-#' shorter_df <- analysistools_MSNA_template_data[,c("admin1",
-#'                                                "expenditure_debt",
-#'                                                "wash_drinkingwatersource")]
+#' shorter_df <- analysistools_MSNA_template_data[, c(
+#'   "admin1",
+#'   "expenditure_debt",
+#'   "wash_drinkingwatersource"
+#' )]
 #'
-#' create_dap(.design = srvyr::as_survey(shorter_df),
-#'            group_var = "admin1")
-
+#' create_dap(
+#'   .design = srvyr::as_survey(shorter_df),
+#'   group_var = "admin1"
+#' )
 create_dap <- function(.design,
                        group_var = NULL) {
-  dap_dictionary <- data.frame(type = c("character", "double", "double", "logical", "integer", "integer"),
-                               analysis_type = c("prop_select_one", "mean", "median", "prop_select_one", "mean", "median"))
-  #select multiple is prop_select_one for the time being. the create_analysis_prop_select_multiple does not exist yet.
+  dap_dictionary <- data.frame(
+    type = c("character", "double", "double", "logical", "integer", "integer"),
+    analysis_type = c("prop_select_one", "mean", "median", "prop_select_one", "mean", "median")
+  )
+  # select multiple is prop_select_one for the time being. the create_analysis_prop_select_multiple does not exist yet.
 
   dap <- .design$variables %>%
     sapply(typeof) %>%
     as.data.frame() %>%
     tibble::rownames_to_column("analysis_var") %>%
-    dplyr::rename(.,type = `.`) %>%
+    dplyr::rename(., type = `.`) %>%
     dplyr::left_join(dap_dictionary) %>%
     dplyr::filter(!is.na(analysis_type))
 
-  if(is.null(group_var)) {
+  if (is.null(group_var)) {
     dap$group_var <- NA_character_
   } else {
-    dap <- lapply(c(NA, group_var), function(x) {dap$group_var <- x; return(dap)}) %>%
-      do.call(rbind,.)
+    dap <- lapply(c(NA, group_var), function(x) {
+      dap$group_var <- x
+      return(dap)
+    }) %>%
+      do.call(rbind, .)
     dap <- dap %>%
-      dplyr::filter(is.na(group_var) | stringr::str_detect(group_var,analysis_var, negate = T))
+      dplyr::filter(is.na(group_var) | stringr::str_detect(group_var, analysis_var, negate = T))
   }
   dap %>%
     dplyr::select(analysis_type, analysis_var, group_var) %>%
@@ -165,69 +184,77 @@ create_dap <- function(.design,
 #' @export
 #'
 #' @examples
-#' check_dap(.design = srvyr::as_survey(analysistools_MSNA_template_data),
-#'           dap = analysistools_dap)
+#' check_dap(
+#'   .design = srvyr::as_survey(analysistools_MSNA_template_data),
+#'   dap = analysistools_dap
+#' )
 check_dap <- function(dap, .design) {
-
   # check relevant columns
-  if(!all(c("analysis_type", "group_var", "analysis_var") %in% names(dap))) {
+  if (!all(c("analysis_type", "group_var", "analysis_var") %in% names(dap))) {
     stop("Make sure you have at least analysis_type, group_var, analysis_var in your dap")
   }
   # add some default if not exists
-  if(!"level" %in% names(dap)) {
+  if (!"level" %in% names(dap)) {
     dap[["level"]] <- 0.95
     warning("No column level identified, set to 0.95 as default value.")
   }
 
   # specific checks on columns for ratio
-  if("ratio" %in% dap[["analysis_type"]]) {
-    if(!all(c("analysis_var_numerator", "analysis_var_denominator") %in% names(dap))) {
+  if ("ratio" %in% dap[["analysis_type"]]) {
+    if (!all(c("analysis_var_numerator", "analysis_var_denominator") %in% names(dap))) {
       stop("You have ratio, you need analysis_var_numerator, analysis_var_denominator columns in your dap")
     }
 
     # specific default for ratio
-  if(!"numerator_NA_to_0" %in% names(dap)) {
-    dap <- dap %>%
-      dplyr::mutate(numerator_NA_to_0 = dplyr::case_when(analysis_type == "ratio" ~ TRUE))
-    warning("No column level numerator_NA_to_0, set to TRUE as default value.")
-  }
+    if (!"numerator_NA_to_0" %in% names(dap)) {
+      dap <- dap %>%
+        dplyr::mutate(numerator_NA_to_0 = dplyr::case_when(analysis_type == "ratio" ~ TRUE))
+      warning("No column level numerator_NA_to_0, set to TRUE as default value.")
+    }
 
-  if(!"filter_denominator_0" %in% names(dap)) {
-    dap <- dap %>%
-      dplyr::mutate(filter_denominator_0 = dplyr::case_when(analysis_type == "ratio" ~ TRUE))
-    warning("No column level filter_denominator_0, set to TRUE as default value.")
+    if (!"filter_denominator_0" %in% names(dap)) {
+      dap <- dap %>%
+        dplyr::mutate(filter_denominator_0 = dplyr::case_when(analysis_type == "ratio" ~ TRUE))
+      warning("No column level filter_denominator_0, set to TRUE as default value.")
     }
   }
 
   # check for analysis type implemented
   analysis_type_dictionary <- c("prop_select_one", "mean", "median", "ratio")
-  verify_if_AinB(dap[["analysis_type"]],
-                 analysis_type_dictionary,
-                 "The following analysis type are not yet implemented or check for typo: ")
+  verify_if_AinB(
+    dap[["analysis_type"]],
+    analysis_type_dictionary,
+    "The following analysis type are not yet implemented or check for typo: "
+  )
 
   # check for variables.
-  verify_if_AinB(dap[["group_var"]],
-                 names(.design$variables),
-                 "The following group variables are not present in the dataset: ")
+  verify_if_AinB(
+    dap[["group_var"]],
+    names(.design$variables),
+    "The following group variables are not present in the dataset: "
+  )
 
   # check for variables.
-  verify_if_AinB(dap[["analysis_var"]],
-                 names(.design$variables),
-                 "The following analysis variables are not present in the dataset: ")
+  verify_if_AinB(
+    dap[["analysis_var"]],
+    names(.design$variables),
+    "The following analysis variables are not present in the dataset: "
+  )
 
-  if("ratio" %in% dap[["analysis_type"]]) {
+  if ("ratio" %in% dap[["analysis_type"]]) {
     # check for variables.
-    verify_if_AinB(dap[["analysis_var_numerator"]],
-                   names(.design$variables),
-                   "The following analysis numerator variables are not present in the dataset: ")
+    verify_if_AinB(
+      dap[["analysis_var_numerator"]],
+      names(.design$variables),
+      "The following analysis numerator variables are not present in the dataset: "
+    )
 
     # check for variables.
-    verify_if_AinB(dap[["analysis_var_denominator"]],
-                   names(.design$variables),
-                   "The following analysis denominator variables are not present in the dataset: ")
+    verify_if_AinB(
+      dap[["analysis_var_denominator"]],
+      names(.design$variables),
+      "The following analysis denominator variables are not present in the dataset: "
+    )
   }
   return(dap)
 }
-
-
-

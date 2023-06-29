@@ -621,7 +621,7 @@ test_that("numerator_NA_to_0, it will return the correct number", {
     analysis_var_value = "NA ~/~ NA",
     group_var = NA_character_,
     group_var_value = NA_character_,
-    stat = 1/5,
+    stat = 1 / 5,
     n = 2,
     n_total = 2,
     n_w = 2,
@@ -764,12 +764,10 @@ test_that("denomiator is ok when filter_denominator_0 is set FALSE", {
     num_attend = sample(c(0:4, NA), 100, TRUE, c(0.19, 0.19, .19, .19, .19, .05))
   )
   long_results_FALSE <- create_analysis_ratio(srvyr::as_survey(school_ex_long),
-                                              analysis_var_numerator = "num_attend",
-                                              analysis_var_denominator = "num_child",
-                                              filter_denominator_0 = FALSE
+    analysis_var_numerator = "num_attend",
+    analysis_var_denominator = "num_child",
+    filter_denominator_0 = FALSE
   )
 
   expect_equal(long_results_FALSE$n, sum(!is.na(school_ex_long$num_child)))
-
 })
-
