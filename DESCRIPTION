@@ -29,3 +29,5 @@ Suggests:
     tibble
 Config/testthat/edition: 3
 LazyData: true
+Depends: 
+    R (>= 2.10)
