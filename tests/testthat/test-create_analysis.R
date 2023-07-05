@@ -194,3 +194,16 @@ test_that("create_loa creates correctly with different grouping variables", {
     expected_loa3
   )
 })
+
+#create_loa filters variables that starts with X_ and _
+test_that("create_loa filters variables with X_ and _", {
+  test_data <- tibble::tibble("X_uuid" = c(1:3), "_uuid" = c(1:3), "hello" = c(1:3))
+
+  expected_output <- data.frame(analysis_type = c("mean", "median"),
+                                analysis_var = rep("hello", 2),
+                                group_var = rep(NA_character_, 2),
+                                level = rep(.95,2))
+
+  expect_equal(create_loa(srvyr::as_survey(test_data)), expected_output)
+
+})

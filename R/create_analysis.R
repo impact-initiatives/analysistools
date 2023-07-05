@@ -159,6 +159,7 @@ create_loa <- function(.design,
     analysis_type = c("prop_select_one", "mean", "median", "prop_select_one", "mean", "median")
   )
   # select multiple is prop_select_one for the time being. the create_analysis_prop_select_multiple does not exist yet.
+  cols_to_remove <- c("start", "end", "today")
 
   loa <- .design$variables %>%
     sapply(typeof) %>%
@@ -166,7 +167,9 @@ create_loa <- function(.design,
     tibble::rownames_to_column("analysis_var") %>%
     dplyr::rename(., type = `.`) %>%
     dplyr::left_join(loa_dictionary) %>%
-    dplyr::filter(!is.na(analysis_type))
+    dplyr::filter(!is.na(analysis_type)) %>%
+    dplyr::filter(stringr::str_detect(analysis_var, "^(X_|_)", negate = T)) %>%
+    dplyr::filter(!analysis_var %in% cols_to_remove)
 
   if (is.null(group_var)) {
     loa$group_var <- NA_character_
