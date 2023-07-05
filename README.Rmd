@@ -36,6 +36,93 @@ devtools::install_github("impact-initiatives/analysistools")
 library(analysistools)
 ```
 
+### How to add weights
+
+```{r}
+shorter_df <- analysistools_MSNA_template_data[, c(
+  "admin1",
+  "admin2",
+  "expenditure_debt",
+  "income_v1_salaried_work",
+  "wash_drinkingwatersource"
+)]
+
+example_sample <- data.frame(
+  strata = c("admin1a", "admin1b", "admin1c"),
+  population = c(30000, 50000, 80000)
+)
+
+weighted_shorter_df <- shorter_df %>%
+  add_weights(example_sample,
+    strata_column_dataset = "admin1",
+    strata_column_sample = "strata",
+    population_column = "population"
+  )
+
+weighted_shorter_df %>% head()
+```
+
+
+### How to perform a descriptive analysis (mean, median, proportions)
+
+The *create_analysis* function needs a survey design from *srvyr*.
+```{r}
+example_design <- srvyr::as_survey(weighted_shorter_df, strata = admin1, weights = weights)
+```
+
+If only the design is provided, it will perform mean, median and proportions.
+```{r}
+ex1_results <- create_analysis(.design = example_design)
+```
+It should return an object with 3 elements: 
+- the results table (in a long format and analysis key),
+- the dataset used,
+- the list of analysis performed.
+
+```{r}
+names(ex1_results)
+```
+
+```{r}
+ex1_results[["results_table"]] %>% head()
+```
+```{r}
+ex1_results[["loa"]] %>% head()
+```
+
+#### Grouping variables
+The group_var can be used to defined the different grouping, independent variables. For example:
+- one variable
+
+```{r}
+ex2_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1")
+ex2_results[["loa"]]
+```
+
+- two variables separately
+
+```{r}
+ex3_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"))
+ex3_results[["loa"]]
+```
+
+- two variables combined
+
+```{r}
+ex4_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2")
+ex4_results[["loa"]]
+```
+
+### How to perform a descriptive analysis with a *list of analysis*
+
+```{r}
+ex5_results <- create_analysis(.design = srvyr::as_survey(shorter_df), loa = analysistools_loa)
+ex5_results[["loa"]]
+```
+
+### How to perform specfic analysis
+
+#### Mean
 This is a basic example which shows you how to calculate the mean:
 ```{r mean}
 somedata <- data.frame(
@@ -51,6 +138,9 @@ me_design_w <- srvyr::as_survey(somedata, weights = weights)
 create_analysis_mean(me_design_w, analysis_var = "aa")
 create_analysis_mean(me_design_w, group_var = "bb", analysis_var = "aa")
 ```
+
+#### Median
+
 This is a basic example which shows you how to calculate the median:
 
 ```{r median}
@@ -67,6 +157,8 @@ me_design_w <- srvyr::as_survey(somedata, weights = weights)
 create_analysis_median(me_design_w, analysis_var = "aa")
 create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
 ```
+
+#### Proportion
 
 This is a basic example which shows you how to calculate the proportion for select one:
 
@@ -93,6 +185,8 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
   level = .95
 )
 ```
+
+#### Ratios
 
 This is a basic example which shows you how to calculate the ratio between 2 numeric variables:
 

@@ -56,35 +56,38 @@ school_ex <- data.frame(
 
 me_design <- srvyr::as_survey(school_ex)
 
-#Default value will give a ratio of 0.2 as there are 1 child out of 5 attending school. In the
-#hh3, the NA is present because there is a skip logic, there cannot be a child attending as none
-#are enrolled.
-#The number of household counted, n, is equal to 2, as there are 2 households only having child.
+# Default value will give a ratio of 0.2 as there are 1 child out of 5 attending school. In the
+# hh3, the NA is present because there is a skip logic, there cannot be a child attending as none
+# are enrolled.
+# The number of household counted, n, is equal to 2, as there are 2 households only having child.
 
 create_analysis_ratio(me_design,
-                      analysis_var_numerator = "num_attending",
-                      analysis_var_denominator ="num_children")
+  analysis_var_numerator = "num_attending",
+  analysis_var_denominator = "num_children"
+)
 
-#If numerator_NA_to_0 is set to FALSE, ratio will be 1/3, as hh3 with 2 children and NA for
-#attending will be removed with the na.rm = T inside the survey_ratio calculation.
-#The number of household used in the calculation is 1.
+# If numerator_NA_to_0 is set to FALSE, ratio will be 1/3, as hh3 with 2 children and NA for
+# attending will be removed with the na.rm = T inside the survey_ratio calculation.
+# The number of household used in the calculation is 1.
 
 create_analysis_ratio(me_design,
-                      analysis_var_numerator = "num_attending",
-                      analysis_var_denominator ="num_children",
-                      numerator_NA_to_0 = FALSE)
+  analysis_var_numerator = "num_attending",
+  analysis_var_denominator = "num_children",
+  numerator_NA_to_0 = FALSE
+)
 
-#If filter_denominator_0 is set to FALSE, ratio will be 0.2 as there are 1 child out of 5
-#attending school. In the hh3, the NA is present because there is a skip logic,
-#there cannot be a child attending as none are enrolled.
-#The number of household counted, n, is equal to 3 instead 2. The household with 0 child is
-#counted in the n.
+# If filter_denominator_0 is set to FALSE, ratio will be 0.2 as there are 1 child out of 5
+# attending school. In the hh3, the NA is present because there is a skip logic,
+# there cannot be a child attending as none are enrolled.
+# The number of household counted, n, is equal to 3 instead 2. The household with 0 child is
+# counted in the n.
 create_analysis_ratio(me_design,
-                      analysis_var_numerator = "num_attending",
-                      analysis_var_denominator ="num_children",
-                      numerator_NA_to_0 = FALSE)
+  analysis_var_numerator = "num_attending",
+  analysis_var_denominator = "num_children",
+  numerator_NA_to_0 = FALSE
+)
 
-#For weights and group:
+# For weights and group:
 set.seed(8988)
 somedata <- data.frame(
   groups = rep(c("a", "b"), 50),
@@ -92,20 +95,22 @@ somedata <- data.frame(
   children_enrolled = sample(0:5, 100, replace = TRUE)
 ) \%>\%
   dplyr::mutate(children_enrolled = ifelse(children_enrolled > children_518,
-                                           children_518,
-                                           children_enrolled
+    children_518,
+    children_enrolled
   ))
 somedata[["weights"]] <- ifelse(somedata$groups == "a", 1.33, .67)
 
 create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = groups),
-                      group_var = NA,
-                      analysis_var_numerator = "children_enrolled",
-                      analysis_var_denominator = "children_518",
-                      level = 0.95)
+  group_var = NA,
+  analysis_var_numerator = "children_enrolled",
+  analysis_var_denominator = "children_518",
+  level = 0.95
+)
 create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = groups),
-                      group_var = "groups",
-                      analysis_var_numerator = "children_enrolled",
-                      analysis_var_denominator = "children_518",
-                      level = 0.95)
+  group_var = "groups",
+  analysis_var_numerator = "children_enrolled",
+  analysis_var_denominator = "children_518",
+  level = 0.95
+)
 
 }

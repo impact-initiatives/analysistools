@@ -21,8 +21,10 @@ Checks if all values of a vector is in another vector
 }
 \examples{
 \dontrun{
-verify_if_AinB(c("admin1", "admin2"),
-               c("admin1", "pop_group", "uuid", "admin2"),
-               "Cannot identify: ")
+verify_if_AinB(
+  c("admin1", "admin2"),
+  c("admin1", "pop_group", "uuid", "admin2"),
+  "Cannot identify: "
+)
 }
 }

@@ -33,16 +33,23 @@ The clean dataset with 1 new column: weight
 Add a weight variable using the sample frame
 }
 \examples{
-clean_data <- data.frame(uuid = c(1,2,3,4,5,6,7,8),
-                         strata = c("strata1","strata2","strata1",
-                                    "strata2","strata1","strata2",
-                                    "strata1","strata1"))
-sample <- data.frame(strata = c("strata1","strata2"),
-                     population = c(30000,50000))
+clean_data <- data.frame(
+  uuid = c(1, 2, 3, 4, 5, 6, 7, 8),
+  strata = c(
+    "strata1", "strata2", "strata1",
+    "strata2", "strata1", "strata2",
+    "strata1", "strata1"
+  )
+)
+sample <- data.frame(
+  strata = c("strata1", "strata2"),
+  population = c(30000, 50000)
+)
 
 clean_data_weighted <- clean_data \%>\%
-    add_weights(sample,
-                strata_column_dataset = "strata",
-                strata_column_sample = "strata",
-                population_column = "population")
+  add_weights(sample,
+    strata_column_dataset = "strata",
+    strata_column_sample = "strata",
+    population_column = "population"
+  )
 }

@@ -14,14 +14,14 @@
 #' @format NULL
 "analysistools_MSNA_template_data"
 
-#' @title Example of Data Analysis Plan
-#' @name analysistools_dap
-#' @rdname analysistools_dap
+#' @title Example of list of analysis
+#' @name analysistools_loa
+#' @rdname analysistools_loa
 #' @format NULL
-"analysistools_dap"
+"analysistools_loa"
 
-#' @title Example of Data Analysis Plan with ratio
-#' @name analysistools_dap_with_ratio
-#' @rdname analysistools_dap_with_ratio
+#' @title Example of list of analysis with ratio
+#' @name analysistools_loa_with_ratio
+#' @rdname analysistools_loa_with_ratio
 #' @format NULL
-"analysistools_dap_with_ratio"
+"analysistools_loa_with_ratio"
