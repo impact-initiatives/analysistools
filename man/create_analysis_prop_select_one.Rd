@@ -30,16 +30,24 @@ a data frame with the proportion for each group and th analysis index.
 Calculate proportion from a survey
 }
 \examples{
-somedata <- data.frame(groups = sample(c("group_a", "group_b"), size = 100,
-                      replace = TRUE),
-                      value = sample(c("a", "b", "c"), size = 100, replace = TRUE,
-                      prob = c(.6,.4,.1)))
+somedata <- data.frame(
+  groups = sample(c("group_a", "group_b"),
+    size = 100,
+    replace = TRUE
+  ),
+  value = sample(c("a", "b", "c"),
+    size = 100, replace = TRUE,
+    prob = c(.6, .4, .1)
+  )
+)
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
-                               group_var = NA,
-                               analysis_var = "value",
-                               level = .95)
+  group_var = NA,
+  analysis_var = "value",
+  level = .95
+)
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
-                               group_var = "groups",
-                               analysis_var = "value",
-                               level = .95)
+  group_var = "groups",
+  analysis_var = "value",
+  level = .95
+)
 }

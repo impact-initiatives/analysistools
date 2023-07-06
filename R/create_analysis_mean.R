@@ -26,7 +26,7 @@
 #' create_analysis_mean(me_design_w, group_var = "bb", analysis_var = "aa")
 #'
 create_analysis_mean <- function(.dataset, group_var = NA, analysis_var, level = .95) {
-  #check the grouping variable
+  # check the grouping variable
   if (is.na(group_var)) {
     across_by <- c()
   } else {
@@ -36,29 +36,31 @@ create_analysis_mean <- function(.dataset, group_var = NA, analysis_var, level =
       as.vector()
   }
 
-  #calculate
+  # calculate
   results <- .dataset %>%
     dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
     dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
-    srvyr::summarise(srvyr::survey_mean(
-      !!rlang::sym(analysis_var),
-      vartype = "ci",
-      level = as.numeric(level),
-      na.rm = T
-    ),
-    n = dplyr::n(),
-    n_w = srvyr::survey_total(
-      vartype = "ci",
-      level = as.numeric(level),
-      na.rm = T
-    )) %>%
+    srvyr::summarise(
+      srvyr::survey_mean(
+        !!rlang::sym(analysis_var),
+        vartype = "ci",
+        level = as.numeric(level),
+        na.rm = T
+      ),
+      n = dplyr::n(),
+      n_w = srvyr::survey_total(
+        vartype = "ci",
+        level = as.numeric(level),
+        na.rm = T
+      )
+    ) %>%
     dplyr::mutate(
       group_var = group_var %>% stringr::str_replace_all(",", " ~/~"),
       analysis_var = analysis_var,
       analysis_var_value = NA_character_,
       analysis_type = "mean",
-      n_total = n, #for mean we want the denominator
-      n_w_total = n_w #for mean we want the denominator
+      n_total = n, # for mean we want the denominator
+      n_w_total = n_w # for mean we want the denominator
     ) %>%
     dplyr::rename(
       stat = coef,
@@ -72,11 +74,11 @@ create_analysis_mean <- function(.dataset, group_var = NA, analysis_var, level =
       TRUE ~ stat
     ))
 
-  #adding group_var_value
+  # adding group_var_value
   results <- adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)
-  #adding analysis key
+  # adding analysis key
   results <- adding_analysis_key(results = results)
-  #re-arranging the columns
+  # re-arranging the columns
   results %>%
     arranging_results_columns()
 }
