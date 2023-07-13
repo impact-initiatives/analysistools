@@ -386,7 +386,7 @@ test_that("create_analysis_prop_select_one handles lonely PSU", {
   )
 })
 
-test_that("create_analysis_prop_select_one returns correct output with 2 grouping variable", {
+test_that("create_analysis_prop_select_one returns correct output with 3 grouping variable", {
   somedata <- data.frame(
     group_a = sample(c("male_hoh", "female_hoh"), 300, replace = T),
     group_b = sample(c(
