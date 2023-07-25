@@ -2,17 +2,17 @@ Package: analysistools
 Title: Tools to perform some analysis on survey data collected with ODK
 Version: 0.0.0.900
 Authors@R: c(
-    person("Yann", "Say",,
-    "yann.say@impact-initiatives.org", role = c("aut", "cre"),
-    comment = c(ORCID = "0000-0002-7390-4209")),
-     person("Mehedi", "Khan", email= "mh.khan@reach-initiative.org", role = "aut",
+    person("Yann", "Say", , "yann.say@impact-initiatives.org", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-7390-4209")),
+    person("Mehedi", "Khan", , "mh.khan@reach-initiative.org", role = "aut",
            comment = c(ORCID = "0000-0002-4276-4485"))
-    )
-Description: The package provides a couple of wrappers around srvyr and tidyverse to perform some analysis primarly based on dataset collected throught ODK format.
+  )
+Description: The package provides a couple of wrappers around srvyr and
+    tidyverse to perform some analysis primarly based on dataset collected
+    throught ODK format.
 License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+Depends: 
+    R (>= 2.10)
 Imports: 
     dplyr,
     glue,
@@ -23,11 +23,15 @@ Imports:
     stringr,
     tidyr
 Suggests: 
+    cleaningtools,
     covr,
     survey,
     testthat (>= 3.0.0),
     tibble
+Remotes:
+    impact-initiatives/cleaningtools
 Config/testthat/edition: 3
+Encoding: UTF-8
 LazyData: true
-Depends: 
-    R (>= 2.10)
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

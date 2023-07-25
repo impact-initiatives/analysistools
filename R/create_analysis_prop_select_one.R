@@ -63,8 +63,8 @@ create_analysis_prop_select_one <- function(.dataset, group_var = NA, analysis_v
       group_var = group_var %>% stringr::str_replace_all(",", " ~/~"),
       analysis_var = analysis_var,
       analysis_type = "prop_select_one",
-      n_total = sum(n), # ??
-      n_w_total = sum(n_w) # ??
+      n_total = sum(n),
+      n_w_total = sum(n_w)
     ) %>%
     dplyr::rename(
       stat = coef,
