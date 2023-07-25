@@ -667,3 +667,150 @@ test_that("create_analysis_prop_select_multiple returns correct output with 2 gr
     dplyr::select(-stat_upp, -stat_low)
   expect_equal(results, expected_output)
 })
+
+test_that("create_analysis_prop_select_multiple handles NA in the dummy variables", {
+  somedata <- data.frame(
+    groups = sample(c("group_a", "group_b"), size = 100, replace = T),
+    smvar = rep(NA_character_, 100),
+    smvar.option1 = sample(c(TRUE, FALSE, NA), size = 100, replace = T, prob = c(.65, .25, .1)),
+    smvar.option2 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.6, .4)),
+    smvar.option3 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.1, .9)),
+    smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
+    uuid = 1:100 %>% as.character()
+  ) %>%
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+
+  somedata <- somedata$data_with_fix_concat
+
+  # no group
+  expected_output <- somedata %>%
+    dplyr::filter(!is.na(smvar)) %>%
+    dplyr::summarise(dplyr::across(.cols = dplyr::starts_with("smvar."),
+                                   .fns = list(stat = ~mean(.x, na.rm=T),
+                                               n = ~sum(.x, na.rm =T ),
+                                               n_total = ~sum(!is.na(.x))),
+                                   .names = "{.col}@ / @{.fn}")) %>%
+    tidyr::pivot_longer(
+      cols = dplyr::starts_with("smvar."),
+      names_to = c("analysis_info", "analysis_type"), values_to = "x", names_sep = "@ / @"
+    ) %>%
+    tidyr::pivot_wider(id_cols = analysis_info, names_from = analysis_type, values_from = x) %>%
+    tidyr::separate_wider_delim(analysis_info, delim = ".", names = c("analysis_var", "analysis_var_value")) %>%
+    dplyr::mutate(
+      analysis_type = "prop_select_multiple",
+      group_var = NA_character_,
+      group_var_value = NA_character_,
+      n_w = n,
+      n_w_total = n_total,
+      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ NA ~/~ NA")
+    ) %>%
+    dplyr::select(
+      analysis_type, analysis_var, analysis_var_value,
+      group_var, group_var_value, stat,
+      n, n_total, n_w, n_w_total, analysis_key
+    )
+  actual_output <- create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
+                                                        group_var = NA,
+                                                        analysis_var = "smvar",
+                                                        level = 0.95
+  ) %>%
+    dplyr::select(-stat_low, -stat_upp)
+  expect_equal(actual_output,
+               expected_output,
+               ignore_attr = T
+  )
+
+  # with 1 group
+  one_group_expected_output <- somedata %>%
+    dplyr::group_by(groups) %>%
+    dplyr::filter(!is.na(smvar)) %>%
+    dplyr::summarise(dplyr::across(.cols = dplyr::starts_with("smvar."),
+                                   .fns = list(stat = ~mean(.x, na.rm=T),
+                                               n = ~sum(.x, na.rm =T ),
+                                               n_total = ~sum(!is.na(.x))),
+                                   .names = "{.col}@ / @{.fn}")) %>%
+    tidyr::pivot_longer(
+      cols = -groups,
+      names_to = c("analysis_info", "analysis_type"), values_to = "x", names_sep = "@ / @"
+    ) %>%
+    tidyr::pivot_wider(id_cols = c(groups, analysis_info), names_from = analysis_type, values_from = x) %>%
+    tidyr::separate_wider_delim(analysis_info, delim = ".", names = c("analysis_var", "analysis_var_value")) %>%
+    dplyr::mutate(
+      analysis_type = "prop_select_multiple",
+      group_var = "groups",
+      group_var_value = groups,
+      n_w = n,
+      n_w_total = n_total,
+      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ groups ~/~ ", group_var_value)
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(
+      analysis_type, analysis_var, analysis_var_value,
+      group_var, group_var_value, stat,
+      n, n_total, n_w, n_w_total, analysis_key
+    )
+
+  one_group_result <-
+    create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
+                                         group_var = "groups",
+                                         analysis_var = "smvar",
+                                         level = 0.95
+    ) %>%
+    dplyr::select(-stat_low, -stat_upp)
+
+  expect_equal(one_group_result,
+               one_group_expected_output,
+               ignore_attr = T
+  )
+})
+
+test_that("create_analysis_prop_select_multiple works with 0/1's instead of TRUE/FALSE", {
+  somedata <- data.frame(
+    groups = sample(c("group_a", "group_b"), size = 100, replace = T),
+    smvar = rep(NA_character_, 100),
+    smvar.option1 = sample(c(1, 0), size = 100, replace = T, prob = c(.7, .3)),
+    smvar.option2 = sample(c(1, 0), size = 100, replace = T, prob = c(.6, .4)),
+    smvar.option3 = sample(c(1, 0), size = 100, replace = T, prob = c(.1, .9)),
+    smvar.option4 = sample(c(1, 0), size = 100, replace = T, prob = c(.8, .2)),
+    uuid = 1:100 %>% as.character()
+  ) %>%
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+
+  somedata <- somedata$data_with_fix_concat
+
+  # no group
+  expected_output <- somedata %>%
+    dplyr::filter(!is.na(smvar)) %>%
+    dplyr::summarise(dplyr::across(.cols = dplyr::starts_with("smvar."), .fns = list(stat = mean, n = sum))) %>%
+    tidyr::pivot_longer(
+      cols = dplyr::everything(),
+      names_to = c("analysis_info", "analysis_type"), values_to = "x", names_sep = "_"
+    ) %>%
+    tidyr::pivot_wider(id_cols = analysis_info, names_from = analysis_type, values_from = x) %>%
+    tidyr::separate_wider_delim(analysis_info, delim = ".", names = c("analysis_var", "analysis_var_value")) %>%
+    dplyr::mutate(
+      analysis_type = "prop_select_multiple",
+      group_var = NA_character_,
+      group_var_value = NA_character_,
+      n_total = sum(!is.na(somedata$smvar)),
+      n_w = n,
+      n_w_total = sum(!is.na(somedata$smvar)),
+      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ NA ~/~ NA")
+    ) %>%
+    dplyr::select(
+      analysis_type, analysis_var, analysis_var_value,
+      group_var, group_var_value, stat,
+      n, n_total, n_w, n_w_total, analysis_key
+    )
+  actual_output <- create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
+                                                        group_var = NA,
+                                                        analysis_var = "smvar",
+                                                        level = 0.95
+  ) %>%
+    dplyr::select(-stat_low, -stat_upp)
+  expect_equal(actual_output,
+               expected_output,
+               ignore_attr = T
+  )
+})
+

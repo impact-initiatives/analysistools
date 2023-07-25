@@ -44,7 +44,6 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
       char_to_vector()
   }
 
-
   # calculate
   sm_var <- analysis_var
   sm_var_choice_start <- paste0(analysis_var, sm_separator)
@@ -54,17 +53,6 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
     dplyr::mutate(dplyr::across(dplyr::starts_with(sm_var_choice_start), as.numeric)) %>%
     dplyr::group_by(across(any_of(across_by))) %>%
     dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T)
-
-  ## get totals (un-weighted and weighted)
-  n_infos <- .design %>%
-    srvyr::summarise(
-      n_total = dplyr::n(),
-      n_w_total = srvyr::survey_total(
-        vartype = "ci",
-        level = as.numeric(level),
-        na.rm = T
-      )
-    )
 
   ## get the stats
   results <- .design %>%
@@ -77,7 +65,11 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
                                                                           vartype = "ci",
                                                                           na.rm = TRUE,
                                                                           level = level),
-                                               n = ~sum(.x, na.rm = TRUE)),
+                                               n = ~sum(.x, na.rm = TRUE),
+                                               n_w_total = ~srvyr::survey_total(!is.na(.x),
+                                                                                vartype = "ci",
+                                                                                na.rm = TRUE),
+                                               n_total = ~sum(!is.na(.x), na.rm = TRUE)),
                                    .names = "{.fn}...{.col}"))
 
   ## 1st manipulation to get all the information in a long format
@@ -92,8 +84,7 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
                   analysis_var_value = stringr::str_replace(analysis_var_value, "_low$|_upp$", ""),
                   group_var = group_var %>% stringr::str_replace_all(",", " ~/~"),
                   analysis_type = "prop_select_multiple") %>%
-    dplyr::filter(type %in% c("stat", "stat_low", "stat_upp", "n_w", "n"))
-
+    dplyr::filter(type %in% c("stat", "stat_low", "stat_upp", "n_w", "n", "n_w_total", "n_total"))
   ## 2nd manipulation to the wide format
   results <- results %>%
     tidyr::pivot_wider(id_cols = c(across_by, group_var, analysis_var, analysis_var_value, analysis_type),
@@ -105,13 +96,6 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
         stat == 0 ~ NaN,
       TRUE ~ stat
     ))
-
-  if(is.na(group_var)) {
-    results <- results %>% cbind(n_infos)
-  } else {
-    results <- results %>%
-      dplyr::left_join(n_infos)
-  }
 
   # adding group_var_value
   results <- adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)
