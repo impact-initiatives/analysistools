@@ -3,7 +3,8 @@
 #' @param .design design survey
 #' @param group_var dependent variable(s), variable to group by. If no dependent
 #' variable, it should be NA or empty string. If more than one variable, it
-#' should be one string with each variable separated by.
+#' should be one string with each variable separated by comma, e.g. "groupa, groupb"
+#' to group for groupa and groupb.
 #' NA is default for no grouping.
 #' @param analysis_var the independent variable, variable to summarise. It has to be the parent
 #' select multiple
@@ -51,7 +52,7 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
   ## prepare the dataset
   .design <- .design %>%
     dplyr::mutate(dplyr::across(dplyr::starts_with(sm_var_choice_start), as.numeric)) %>%
-    dplyr::group_by(across(any_of(across_by))) %>%
+    dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
     dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T)
 
   ## get the stats
@@ -75,7 +76,7 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
   ## 1st manipulation to get all the information in a long format
   results <- results %>%
     dplyr::mutate(analysis_var = sm_var) %>%
-    tidyr::pivot_longer(-c(analysis_var, across_by), names_to = "analysis_var_value", values_to = "stat") %>%
+    tidyr::pivot_longer(-c(analysis_var, dplyr::all_of(across_by)), names_to = "analysis_var_value", values_to = "stat") %>%
     tidyr::separate_wider_delim(analysis_var_value, delim = "...", names = c("type", "analysis_var_value")) %>%
     dplyr::mutate(analysis_var_value = gsub(sm_var_choice_start, "", analysis_var_value),
                   type = dplyr::case_when(stringr::str_detect(analysis_var_value, "_low$") ~ paste0(type, "_low"),
@@ -87,7 +88,7 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
     dplyr::filter(type %in% c("stat", "stat_low", "stat_upp", "n_w", "n", "n_w_total", "n_total"))
   ## 2nd manipulation to the wide format
   results <- results %>%
-    tidyr::pivot_wider(id_cols = c(across_by, group_var, analysis_var, analysis_var_value, analysis_type),
+    tidyr::pivot_wider(id_cols = c(dplyr::all_of(across_by), group_var, analysis_var, analysis_var_value, analysis_type),
                        names_from = type,
                        values_from = stat) %>%
     dplyr::mutate(stat = dplyr::case_when(

@@ -1,18 +1,18 @@
 # analysis runs without weights
 test_that("Gives corrects results", {
   # without a loa
-  no_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_no_loa_v1.RDS"))
+  no_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_no_loa_v2.RDS"))
 
   no_loa_test_design <- srvyr::as_survey(no_loa_expected_output$dataset)
-  actual_output <- create_analysis(no_loa_test_design, group_var = "admin1")
+  actual_output <- create_analysis(no_loa_test_design, group_var = "admin1", sm_sep = "/")
 
   expect_equal(actual_output, no_loa_expected_output, ignore_attr = T)
 
   # with a loa #add ratios
-  with_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_with_loa_v1.RDS"))
+  with_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_with_loa_v2.RDS"))
 
   with_loa_test_design <- srvyr::as_survey(with_loa_expected_output$dataset)
-  with_loa_actual_output <- create_analysis(with_loa_test_design, loa = with_loa_expected_output$loa)
+  with_loa_actual_output <- create_analysis(with_loa_test_design, loa = with_loa_expected_output$loa, sm_sep = "/")
 
   expect_equal(with_loa_actual_output, with_loa_expected_output, ignore_attr = T)
 
@@ -20,7 +20,7 @@ test_that("Gives corrects results", {
   no_ratio_loa <- with_loa_expected_output$loa %>%
     dplyr::filter(analysis_type != "ratio")
 
-  no_ratio_loa_actual_output <- create_analysis(with_loa_test_design, no_ratio_loa)
+  no_ratio_loa_actual_output <- create_analysis(with_loa_test_design, no_ratio_loa, sm_sep = "/")
 
   no_ratio_loa_expected_results_table <- with_loa_expected_output$results_table %>%
     dplyr::filter(analysis_type != "ratio")
@@ -135,13 +135,14 @@ test_that("Errors are caught correctly", {
 })
 
 test_that("If loa and group variable are provided, group_var will be ignored", {
-  expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_with_loa_v1.RDS"))
+  expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_with_loa_v2.RDS"))
 
   expect_warning(
     create_analysis(
       .design = srvyr::as_survey(expected_output$dataset),
       loa = expected_output$loa,
-      group_var = "admin1"
+      group_var = "admin1",
+      sm_sep = "/"
     ),
     "You have provided a list of analysis and group variable, group variable will be ignored"
   )
@@ -152,13 +153,21 @@ test_that("create_loa creates correctly with different grouping variables", {
   test_data <- data.frame(
     number_variable = sample(1:4, size = 5, replace = TRUE),
     char_variable1 = sample(letters, size = 5),
+    char_variable_sm.option1 = TRUE,
+    char_variable_sm.option2 = sample(c(TRUE,FALSE), 5, TRUE),
+    char_variable_sm.option3 = sample(c(TRUE,FALSE), 5, TRUE),
     char_variable2 = sample(LETTERS, size = 5)
   )
+  test_data <- test_data %>%
+    dplyr::mutate(uuid = letters[1:5], char_variable_sm = NA_character_) %>%
+    cleaningtools::recreate_parent_column()
+  test_data <- test_data$data_with_fix_concat %>%
+    dplyr::select(number_variable, char_variable1, char_variable_sm, dplyr::starts_with("char_variable_sm."), char_variable2)
   expected_loa <- data.frame(
-    analysis_type = c("mean", "median", "prop_select_one", "prop_select_one"),
-    analysis_var = c("number_variable", "number_variable", "char_variable1", "char_variable2"),
-    group_var = rep(NA_character_, 4),
-    level = rep(.95, 4)
+    analysis_type = c("mean", "median", "prop_select_one", "prop_select_multiple", "prop_select_one"),
+    analysis_var = c("number_variable", "number_variable", "char_variable1", "char_variable_sm", "char_variable2"),
+    group_var = rep(NA_character_, 5),
+    level = rep(.95, 5)
   )
 
   expect_equal(
@@ -167,10 +176,10 @@ test_that("create_loa creates correctly with different grouping variables", {
   )
 
   extenstion_loa2 <- data.frame(
-    analysis_type = c("mean", "median", "prop_select_one"),
-    analysis_var = c("number_variable", "number_variable", "char_variable2"),
-    group_var = rep("char_variable1", 3),
-    level = rep(.95, 3)
+    analysis_type = c("mean", "median", "prop_select_multiple", "prop_select_one"),
+    analysis_var = c("number_variable", "number_variable", "char_variable_sm", "char_variable2"),
+    group_var = rep("char_variable1", 4),
+    level = rep(.95, 4)
   )
 
   expected_loa2 <- rbind(expected_loa, extenstion_loa2)
@@ -180,10 +189,10 @@ test_that("create_loa creates correctly with different grouping variables", {
   )
 
   extenstion_loa3 <- data.frame(
-    analysis_type = c("mean", "median"),
-    analysis_var = c("number_variable", "number_variable"),
-    group_var = rep("char_variable1, char_variable2", 2),
-    level = rep(.95, 2)
+    analysis_type = c("mean", "median", "prop_select_multiple"),
+    analysis_var = c("number_variable", "number_variable", "char_variable_sm"),
+    group_var = rep("char_variable1, char_variable2", 3),
+    level = rep(.95, 3)
   )
 
   expected_loa3 <- rbind(expected_loa2, extenstion_loa3)
@@ -196,13 +205,18 @@ test_that("create_loa creates correctly with different grouping variables", {
 })
 
 #create_loa filters variables that starts with X_ and _
-test_that("create_loa filters variables with X_ and _", {
-  test_data <- tibble::tibble("X_uuid" = c(1:3), "_uuid" = c(1:3), "hello" = c(1:3))
+test_that("create_loa filters variables with X_ and _ and uuid", {
+  test_data <- tibble::tibble("X_uuid" = c(1:3), "_uuid" = c(1:3), "hello" = c(1:3), "uuid" = c(1:3))
 
   expected_output <- data.frame(analysis_type = c("mean", "median"),
                                 analysis_var = rep("hello", 2),
                                 group_var = rep(NA_character_, 2),
                                 level = rep(.95,2))
+  # expected_output <- data.frame(analysis_type = c("median"),
+  #                               analysis_var = rep("hello", 1),
+  #                               group_var = rep(NA_character_, 1),
+  #                               level = rep(.95,1))
+
 
   expect_equal(create_loa(srvyr::as_survey(test_data)), expected_output)
 

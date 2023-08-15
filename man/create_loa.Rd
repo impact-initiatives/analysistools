@@ -4,7 +4,7 @@
 \alias{create_loa}
 \title{Create a list of analysis from design and a grouping variable}
 \usage{
-create_loa(.design, group_var = NULL)
+create_loa(.design, group_var = NULL, sm_sep = ".")
 }
 \arguments{
 \item{.design}{Survey design object created with srvyr::as_survey or as_survey_design}
@@ -16,6 +16,8 @@ and "admin1, population" are different:
 \item c("admin1", "population") : will perform the analysis grouping once by admin1, and once by population
 \item "admin1, population" : will perform the analysis grouping once by admin1 and admin 2
 }}
+
+\item{sm_sep}{select multiple separator, defaut ".".}
 }
 \value{
 a list of analysis.

@@ -14,6 +14,7 @@ License: MIT + file LICENSE
 Depends: 
     R (>= 2.10)
 Imports: 
+    cleaningtools,
     dplyr,
     glue,
     magrittr,
@@ -23,7 +24,6 @@ Imports:
     stringr,
     tidyr
 Suggests: 
-    cleaningtools,
     covr,
     survey,
     testthat (>= 3.0.0),
