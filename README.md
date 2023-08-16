@@ -149,6 +149,7 @@ ex2_results[["loa"]]
 ``` r
 ex3_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"))
 #> Joining with `by = join_by(type)`
+#> ■■■■■■■■■■■■■■ 42% | ETA: 1s
 #> ■■■■■■■■■■■■■■■ 47% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■ 68% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■■ 74% | ETA: 1s
@@ -336,9 +337,9 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
 #> # A tibble: 3 × 13
 #>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_o… value        a                  <NA>      <NA>             0.55
-#> 2 prop_select_o… value        b                  <NA>      <NA>             0.37
-#> 3 prop_select_o… value        c                  <NA>      <NA>             0.08
+#> 1 prop_select_o… value        a                  <NA>      <NA>             0.6 
+#> 2 prop_select_o… value        b                  <NA>      <NA>             0.31
+#> 3 prop_select_o… value        c                  <NA>      <NA>             0.09
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
@@ -346,14 +347,15 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
   analysis_var = "value",
   level = .95
 )
-#> # A tibble: 5 × 13
-#>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
-#>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_o… value        a                  groups    group_a         0.6  
-#> 2 prop_select_o… value        b                  groups    group_a         0.4  
-#> 3 prop_select_o… value        a                  groups    group_b         0.509
-#> 4 prop_select_o… value        b                  groups    group_b         0.345
-#> 5 prop_select_o… value        c                  groups    group_b         0.145
+#> # A tibble: 6 × 13
+#>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
+#>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
+#> 1 prop_select_… value        a                  groups    group_a         0.571 
+#> 2 prop_select_… value        b                  groups    group_a         0.327 
+#> 3 prop_select_… value        c                  groups    group_a         0.102 
+#> 4 prop_select_… value        a                  groups    group_b         0.627 
+#> 5 prop_select_… value        b                  groups    group_b         0.294 
+#> 6 prop_select_… value        c                  groups    group_b         0.0784
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
@@ -393,39 +395,32 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
                                      group_var = NA,
                                      analysis_var = "smvar",
                                      level = 0.95)
-#>          analysis_type analysis_var analysis_var_value group_var
-#> 1 prop_select_multiple        smvar            option1      <NA>
-#> 2 prop_select_multiple        smvar            option2      <NA>
-#> 3 prop_select_multiple        smvar            option3      <NA>
-#> 4 prop_select_multiple        smvar            option4      <NA>
-#>   group_var_value       stat   stat_low  stat_upp  n n_total n_w n_w_total
-#> 1            <NA> 0.70408163 0.61210727 0.7960560 69      98  69        98
-#> 2            <NA> 0.64285714 0.54630820 0.7394061 63      98  63        98
-#> 3            <NA> 0.09183673 0.03364524 0.1500282  9      98   9        98
-#> 4            <NA> 0.83673469 0.76225976 0.9112096 82      98  82        98
-#>                                               analysis_key
-#> 1 prop_select_multiple @/@ smvar ~/~ option1 @/@ NA ~/~ NA
-#> 2 prop_select_multiple @/@ smvar ~/~ option2 @/@ NA ~/~ NA
-#> 3 prop_select_multiple @/@ smvar ~/~ option3 @/@ NA ~/~ NA
-#> 4 prop_select_multiple @/@ smvar ~/~ option4 @/@ NA ~/~ NA
+#> # A tibble: 4 × 13
+#>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
+#>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
+#> 1 prop_select_m… smvar        option1            <NA>      <NA>             0.68
+#> 2 prop_select_m… smvar        option2            <NA>      <NA>             0.65
+#> 3 prop_select_m… smvar        option3            <NA>      <NA>             0.1 
+#> 4 prop_select_m… smvar        option4            <NA>      <NA>             0.84
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
+#> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 
 create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
                                      group_var = "groups",
                                      analysis_var = "smvar",
                                      level = 0.95)
-#> Joining with `by = join_by(groups)`
 #> # A tibble: 8 × 13
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
-#> 1 prop_select_… smvar        option1            groups    group_a         0.571 
-#> 2 prop_select_… smvar        option2            groups    group_a         0.714 
-#> 3 prop_select_… smvar        option3            groups    group_a         0.0612
-#> 4 prop_select_… smvar        option4            groups    group_a         0.857 
-#> 5 prop_select_… smvar        option1            groups    group_b         0.837 
-#> 6 prop_select_… smvar        option2            groups    group_b         0.571 
-#> 7 prop_select_… smvar        option3            groups    group_b         0.122 
-#> 8 prop_select_… smvar        option4            groups    group_b         0.816 
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <int>,
+#> 1 prop_select_… smvar        option1            groups    group_a         0.661 
+#> 2 prop_select_… smvar        option2            groups    group_a         0.695 
+#> 3 prop_select_… smvar        option3            groups    group_a         0.119 
+#> 4 prop_select_… smvar        option4            groups    group_a         0.881 
+#> 5 prop_select_… smvar        option1            groups    group_b         0.707 
+#> 6 prop_select_… smvar        option2            groups    group_b         0.585 
+#> 7 prop_select_… smvar        option3            groups    group_b         0.0732
+#> 8 prop_select_… smvar        option4            groups    group_b         0.780 
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 

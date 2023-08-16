@@ -17,7 +17,8 @@ create_analysis_prop_select_multiple(
 
 \item{group_var}{dependent variable(s), variable to group by. If no dependent
 variable, it should be NA or empty string. If more than one variable, it
-should be one string with each variable separated by.
+should be one string with each variable separated by comma, e.g. "groupa, groupb"
+to group for groupa and groupb.
 NA is default for no grouping.}
 
 \item{analysis_var}{the independent variable, variable to summarise. It has to be the parent

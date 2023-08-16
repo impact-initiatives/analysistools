@@ -12,7 +12,8 @@
 #' @param .dataset : design survey
 #' @param group_var dependent variable(s), variable to group by. If no dependent
 #' variable, it should be NA or empty string. If more than one variable, it
-#' should be one string with each variable separated by.
+#' should be one string with each variable separated by comma, e.g. "groupa, groupb"
+#' to group for groupa and groupb.
 #' NA is default for no grouping.
 #' @param level the confidence level. 0.95 is default
 #' @param analysis_var_numerator character string with the numerator column name.
