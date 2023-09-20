@@ -12,38 +12,38 @@ testthat::test_that("Error checks", {
     population = c("30000", "50000")
   )
   testthat::expect_error(add_weights(
-    .dataset = test_clean_data,
+    dataset = test_clean_data,
     sample_data = test_sample,
     strata_column_dataset = "STRATA",
     strata_column_sample = "strata",
     population_column = "population"
-  ))
+  ), "Cannot find the defined strata column in the provided dataset.")
   testthat::expect_error(add_weights(
-    .dataset = test_clean_data,
+    dataset = test_clean_data,
     sample_data = test_sample,
     strata_column_dataset = "strata",
     strata_column_sample = "STRATA",
     population_column = "population"
-  ))
+  ), "Cannot find the defined strata column in the provided sample frame.")
   testthat::expect_error(add_weights(
-    .dataset = test_clean_data,
+    dataset = test_clean_data,
     sample_data = test_sample,
     strata_column_dataset = "strata",
     strata_column_sample = "strata",
     population_column = "Total"
-  ))
+  ), "Cannot find the defined population_column column in the provided sample frame.")
 
   test_data <- test_clean_data %>%
     dplyr::mutate(weights = 1)
   testthat::expect_error(add_weights(
-    .dataset = test_data,
+    dataset = test_data,
     sample_data = test_sample,
     strata_column_dataset = "strata",
     strata_column_sample = "strata",
     population_column = "population"
-  ))
+  ), "Weight column already exists in the dataset. Please input another weights column")
   testthat::expect_no_error(add_weights(
-    .dataset = test_clean_data,
+    dataset = test_clean_data,
     sample_data = test_sample,
     strata_column_dataset = "strata",
     strata_column_sample = "strata",
@@ -52,22 +52,22 @@ testthat::test_that("Error checks", {
   test_data <- test_clean_data
   test_data$strata[2] <- "not_applicable"
   testthat::expect_error(add_weights(
-    .dataset = test_data,
+    dataset = test_data,
     sample_data = test_sample,
     strata_column_dataset = "strata",
     strata_column_sample = "strata",
     population_column = "population"
-  ))
+  ), "Not all strata from dataset are in sample frame")
 
   test_data <- test_clean_data %>%
     dplyr::filter(strata != "strata1")
   testthat::expect_error(add_weights(
-    .dataset = test_data,
+    dataset = test_data,
     sample_data = test_sample,
     strata_column_dataset = "strata",
     strata_column_sample = "strata",
     population_column = "population"
-  ))
+  ), "Not all strata from sample frame are in dataset")
 })
 
 testthat::test_that("add_weights works", {

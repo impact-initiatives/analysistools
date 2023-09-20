@@ -4,7 +4,7 @@ test_that("Gives corrects results", {
   no_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_no_loa_v2.RDS"))
 
   no_loa_test_design <- srvyr::as_survey(no_loa_expected_output$dataset)
-  actual_output <- create_analysis(no_loa_test_design, group_var = "admin1", sm_sep = "/")
+  actual_output <- create_analysis(no_loa_test_design, group_var = "admin1", sm_seperator = "/")
 
   expect_equal(actual_output, no_loa_expected_output, ignore_attr = T)
 
@@ -12,7 +12,7 @@ test_that("Gives corrects results", {
   with_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_with_loa_v2.RDS"))
 
   with_loa_test_design <- srvyr::as_survey(with_loa_expected_output$dataset)
-  with_loa_actual_output <- create_analysis(with_loa_test_design, loa = with_loa_expected_output$loa, sm_sep = "/")
+  with_loa_actual_output <- create_analysis(with_loa_test_design, loa = with_loa_expected_output$loa, sm_seperator = "/")
 
   expect_equal(with_loa_actual_output, with_loa_expected_output, ignore_attr = T)
 
@@ -20,7 +20,7 @@ test_that("Gives corrects results", {
   no_ratio_loa <- with_loa_expected_output$loa %>%
     dplyr::filter(analysis_type != "ratio")
 
-  no_ratio_loa_actual_output <- create_analysis(with_loa_test_design, no_ratio_loa, sm_sep = "/")
+  no_ratio_loa_actual_output <- create_analysis(with_loa_test_design, no_ratio_loa, sm_seperator = "/")
 
   no_ratio_loa_expected_results_table <- with_loa_expected_output$results_table %>%
     dplyr::filter(analysis_type != "ratio")
@@ -142,7 +142,7 @@ test_that("If loa and group variable are provided, group_var will be ignored", {
       .design = srvyr::as_survey(expected_output$dataset),
       loa = expected_output$loa,
       group_var = "admin1",
-      sm_sep = "/"
+      sm_seperator = "/"
     ),
     "You have provided a list of analysis and group variable, group variable will be ignored"
   )
@@ -154,8 +154,8 @@ test_that("create_loa creates correctly with different grouping variables", {
     number_variable = sample(1:4, size = 5, replace = TRUE),
     char_variable1 = sample(letters, size = 5),
     char_variable_sm.option1 = TRUE,
-    char_variable_sm.option2 = sample(c(TRUE,FALSE), 5, TRUE),
-    char_variable_sm.option3 = sample(c(TRUE,FALSE), 5, TRUE),
+    char_variable_sm.option2 = sample(c(TRUE, FALSE), 5, TRUE),
+    char_variable_sm.option3 = sample(c(TRUE, FALSE), 5, TRUE),
     char_variable2 = sample(LETTERS, size = 5)
   )
   test_data <- test_data %>%
@@ -204,20 +204,28 @@ test_that("create_loa creates correctly with different grouping variables", {
   )
 })
 
-#create_loa filters variables that starts with X_ and _
+# create_loa filters variables that starts with X_ and _
 test_that("create_loa filters variables with X_ and _ and uuid", {
   test_data <- tibble::tibble("X_uuid" = c(1:3), "_uuid" = c(1:3), "hello" = c(1:3), "uuid" = c(1:3))
 
-  expected_output <- data.frame(analysis_type = c("mean", "median"),
-                                analysis_var = rep("hello", 2),
-                                group_var = rep(NA_character_, 2),
-                                level = rep(.95,2))
-  # expected_output <- data.frame(analysis_type = c("median"),
-  #                               analysis_var = rep("hello", 1),
-  #                               group_var = rep(NA_character_, 1),
-  #                               level = rep(.95,1))
-
+  expected_output <- data.frame(
+    analysis_type = c("mean", "median"),
+    analysis_var = rep("hello", 2),
+    group_var = rep(NA_character_, 2),
+    level = rep(.95, 2)
+  )
 
   expect_equal(create_loa(srvyr::as_survey(test_data)), expected_output)
+})
 
+
+test_that("check_loa separates the grouping variables correclty", {
+  loa_test <- data.frame(
+    analysis_type = c("mean", "median"),
+    analysis_var = rep("hh_number_girls", 2),
+    group_var = rep("admin1, hoh_gender", 2),
+    level = rep("0.95", 2)
+  )
+
+  expect_equal(check_loa(loa_test, srvyr::as_survey(analysistools_MSNA_template_data)), loa_test)
 })

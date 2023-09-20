@@ -22,7 +22,7 @@
 #' @param loa list of analysis: Default is NULL. If provided it will be used to create the analysis.
 #' @param group_var Default is NULL. If provided, it will first create a list of analysis and then
 #' will run the analysis. It should be a vector.
-#' @param sm_sep select multiple separator, defaut ".".
+#' @param sm_seperator Separator for choice multiple questions. The default is "."
 #'
 #' @return A list with 3 items:
 #'  - The results table in a long format with the analysis key
@@ -63,7 +63,7 @@
 create_analysis <- function(.design,
                             loa = NULL,
                             group_var = NULL,
-                            sm_sep = ".") {
+                            sm_seperator = ".") {
   if (!"tbl_svy" %in% attributes(.design)$class) {
     stop("It seems object design is not a design, did you use srvyr::as_survey ?")
   }
@@ -77,7 +77,7 @@ create_analysis <- function(.design,
   }
 
   if (is.null(loa)) {
-    loa <- create_loa(.design = .design, group_var = group_var, sm_sep = sm_sep)
+    loa <- create_loa(.design = .design, group_var = group_var, sm_seperator = sm_seperator)
   }
 
 
@@ -107,10 +107,10 @@ create_analysis <- function(.design,
       }
       if (loa[["analysis_type"]] == "prop_select_multiple") {
         return(create_analysis_prop_select_multiple(.design,
-                                                    group_var = loa[["group_var"]],
-                                                    analysis_var = loa[["analysis_var"]],
-                                                    level = loa[["level"]],
-                                                    sm_separator = sm_sep
+          group_var = loa[["group_var"]],
+          analysis_var = loa[["analysis_var"]],
+          level = loa[["level"]],
+          sm_separator = sm_seperator
         ))
       }
       if (loa[["analysis_type"]] == "ratio") {
@@ -147,7 +147,7 @@ create_analysis <- function(.design,
 #'  and "admin1, population" are different:
 #'    - c("admin1", "population") : will perform the analysis grouping once by admin1, and once by population
 #'    - "admin1, population" : will perform the analysis grouping once by admin1 and admin 2
-#' @param sm_sep select multiple separator, defaut ".".
+#' @param sm_seperator Separator for choice multiple questions. The default is "."
 #'
 #' @return a list of analysis.
 #' @export
@@ -165,20 +165,16 @@ create_analysis <- function(.design,
 #' )
 create_loa <- function(.design,
                        group_var = NULL,
-                       sm_sep = ".") {
+                       sm_seperator = ".") {
   loa_dictionary <- data.frame(
     type = c("character", "double", "double", "logical", "integer", "integer"),
     analysis_type = c("prop_select_one", "mean", "median", "prop_select_multiple", "mean", "median")
   )
-  # loa_dictionary <- data.frame(
-  #   type = c("character", "double", "logical", "integer"),
-  #   analysis_type = c("prop_select_one",  "median", "prop_select_multiple","median")
-  # )
   cols_to_remove <- c("start", "end", "today", "uuid")
 
-  select_multiple_parents_columns <- .design %>% cleaningtools::auto_detect_sm_parents(sm_sep = sm_sep)
+  select_multiple_parents_columns <- .design %>% cleaningtools::auto_detect_sm_parents(sm_seperator = sm_seperator)
   select_multiple_children_columns <- .design %>%
-    cleaningtools::auto_sm_parent_children(sm_sep = sm_sep) %>%
+    cleaningtools::auto_sm_parent_children(sm_seperator = sm_seperator) %>%
     dplyr::pull(sm_child)
 
   loa <- .design$variables %>%
@@ -191,8 +187,10 @@ create_loa <- function(.design,
     dplyr::filter(stringr::str_detect(analysis_var, "^(X_|_)", negate = T)) %>%
     dplyr::filter(!analysis_var %in% cols_to_remove) %>%
     dplyr::filter(!analysis_var %in% select_multiple_children_columns) %>%
-    dplyr::mutate(analysis_type = dplyr::case_when(analysis_var %in% select_multiple_parents_columns ~ "prop_select_multiple",
-                                                   TRUE ~ analysis_type))
+    dplyr::mutate(analysis_type = dplyr::case_when(
+      analysis_var %in% select_multiple_parents_columns ~ "prop_select_multiple",
+      TRUE ~ analysis_type
+    ))
 
   if (is.null(group_var)) {
     loa$group_var <- NA_character_
@@ -264,7 +262,9 @@ check_loa <- function(loa, .design) {
 
   # check for variables.
   verify_if_AinB(
-    loa[["group_var"]],
+    loa[["group_var"]][!is.na(loa[["group_var"]])] %>%
+      paste(collapse = ",") %>%
+      char_to_vector(),
     names(.design$variables),
     "The following group variables are not present in the dataset: "
   )

@@ -1,6 +1,6 @@
 #' Add a weight variable using the sample frame
 #'
-#' @param .dataset the clean dataframe
+#' @param dataset the clean dataframe
 #' @param sample_data sample dataframe including poplution numbers and the strata
 #' @param strata_column_dataset name of strata column in the clean dataframe
 #' @param strata_column_sample name of strata column in the sample dataframe
@@ -30,29 +30,29 @@
 #'     strata_column_sample = "strata",
 #'     population_column = "population"
 #'   )
-add_weights <- function(.dataset,
+add_weights <- function(dataset,
                         sample_data,
                         strata_column_dataset = NULL,
                         strata_column_sample = NULL,
                         population_column = NULL,
                         weight_column = "weights") {
   # make dataset a dataframe
-  .dataset <- as.data.frame(.dataset)
+  dataset <- as.data.frame(dataset)
 
   # If strata_column do not exist in sample_data or dataset
   if (!strata_column_sample %in% names(sample_data)) {
     stop("Cannot find the defined strata column in the provided sample frame.")
   }
-  if (!strata_column_dataset %in% names(.dataset)) {
+  if (!strata_column_dataset %in% names(dataset)) {
     stop("Cannot find the defined strata column in the provided dataset.")
   }
 
   # IF all strata from dataset not in sample frame
-  if (!all(.dataset[[strata_column_dataset]] %in% sample_data[[strata_column_sample]])) {
+  if (!all(dataset[[strata_column_dataset]] %in% sample_data[[strata_column_sample]])) {
     stop("Not all strata from dataset are in sample frame")
   }
 
-  if (!all(sample_data[[strata_column_sample]] %in% .dataset[[strata_column_dataset]])) {
+  if (!all(sample_data[[strata_column_sample]] %in% dataset[[strata_column_dataset]])) {
     stop("Not all strata from sample frame are in dataset")
   }
 
@@ -62,12 +62,12 @@ add_weights <- function(.dataset,
   }
 
   # if weight column already exist in dataset
-  if (weight_column %in% names(.dataset)) {
+  if (weight_column %in% names(dataset)) {
     stop("Weight column already exists in the dataset. Please input another weights column")
   }
 
   # Count number of entries by strata
-  count <- .dataset %>%
+  count <- dataset %>%
     dplyr::group_by(!!rlang::sym(strata_column_dataset)) %>%
     dplyr::summarise(count = dplyr::n())
 
@@ -83,12 +83,12 @@ add_weights <- function(.dataset,
     dplyr::select(dplyr::all_of(strata_column_dataset), dplyr::all_of(weight_column))
 
   # join to dataset
-  .dataset <- .dataset %>%
+  dataset <- dataset %>%
     dplyr::left_join(weights, by = strata_column_dataset)
 
-  if (any(is.na(.dataset[[weight_column]]))) {
+  if (any(is.na(dataset[[weight_column]]))) {
     stop("There are NA values in the weights column")
   }
 
-  return(.dataset)
+  return(dataset)
 }

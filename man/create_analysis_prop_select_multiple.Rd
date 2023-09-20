@@ -38,22 +38,25 @@ Calculate proportion from a survey design
 somedata <- data.frame(
   groups = sample(c("group_a", "group_b"), size = 100, replace = TRUE),
   smvar = rep(NA_character_, 100),
-  smvar.option1 = sample(c(TRUE,FALSE), size = 100, replace = TRUE, prob = c(.7,.3)),
-  smvar.option2 = sample(c(TRUE,FALSE), size = 100, replace = TRUE, prob = c(.6,.4)),
-  smvar.option3 = sample(c(TRUE,FALSE), size = 100, replace = TRUE, prob = c(.1,.9)),
-  smvar.option4 = sample(c(TRUE,FALSE), size = 100, replace = TRUE, prob = c(.8,.2)),
-  uuid = 1:100 \%>\% as.character()) \%>\%
-  cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+  smvar.option1 = sample(c(TRUE, FALSE), size = 100, replace = TRUE, prob = c(.7, .3)),
+  smvar.option2 = sample(c(TRUE, FALSE), size = 100, replace = TRUE, prob = c(.6, .4)),
+  smvar.option3 = sample(c(TRUE, FALSE), size = 100, replace = TRUE, prob = c(.1, .9)),
+  smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = TRUE, prob = c(.8, .2)),
+  uuid = 1:100 \%>\% as.character()
+) \%>\%
+  cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
 somedata <- somedata$data_with_fix_concat
 
 create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
-                                     group_var = NA,
-                                     analysis_var = "smvar",
-                                     level = 0.95)
+  group_var = NA,
+  analysis_var = "smvar",
+  level = 0.95
+)
 
 create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
-                                     group_var = "groups",
-                                     analysis_var = "smvar",
-                                     level = 0.95)
+  group_var = "groups",
+  analysis_var = "smvar",
+  level = 0.95
+)
 }

@@ -5,7 +5,7 @@
 \title{Calculate a ratio from a survey}
 \usage{
 create_analysis_ratio(
-  .dataset,
+  design,
   group_var = NA,
   analysis_var_numerator,
   analysis_var_denominator,
@@ -15,7 +15,7 @@ create_analysis_ratio(
 )
 }
 \arguments{
-\item{.dataset}{: design survey}
+\item{design}{design survey}
 
 \item{group_var}{dependent variable(s), variable to group by. If no dependent
 variable, it should be NA or empty string. If more than one variable, it

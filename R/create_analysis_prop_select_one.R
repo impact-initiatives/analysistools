@@ -1,6 +1,6 @@
 #' Calculate proportion from a survey
 #'
-#' @param .dataset design survey
+#' @param design design survey
 #' @param group_var dependent variable(s), variable to group by. If no dependent
 #' variable, it should be NA or empty string. If more than one variable, it
 #' should be one string with each variable separated by comma, e.g. "groupa, groupb"
@@ -33,7 +33,7 @@
 #'   analysis_var = "value",
 #'   level = .95
 #' )
-create_analysis_prop_select_one <- function(.dataset, group_var = NA, analysis_var, level = .95) {
+create_analysis_prop_select_one <- function(design, group_var = NA, analysis_var, level = .95) {
   # check the grouping variable
   if (is.na(group_var)) {
     across_by <- c(analysis_var)
@@ -44,7 +44,7 @@ create_analysis_prop_select_one <- function(.dataset, group_var = NA, analysis_v
   }
 
   # calculate
-  results <- .dataset %>%
+  results <- design %>%
     dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
     dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
     srvyr::summarise(

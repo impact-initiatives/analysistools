@@ -5,14 +5,14 @@
 \title{Calculate proportion from a survey}
 \usage{
 create_analysis_prop_select_one(
-  .dataset,
+  design,
   group_var = NA,
   analysis_var,
   level = 0.95
 )
 }
 \arguments{
-\item{.dataset}{design survey}
+\item{design}{design survey}
 
 \item{group_var}{dependent variable(s), variable to group by. If no dependent
 variable, it should be NA or empty string. If more than one variable, it

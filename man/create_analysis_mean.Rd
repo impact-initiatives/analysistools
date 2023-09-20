@@ -4,10 +4,10 @@
 \alias{create_analysis_mean}
 \title{Calculate a mean from a survey}
 \usage{
-create_analysis_mean(.dataset, group_var = NA, analysis_var, level = 0.95)
+create_analysis_mean(design, group_var = NA, analysis_var, level = 0.95)
 }
 \arguments{
-\item{.dataset}{: design survey}
+\item{design}{design survey}
 
 \item{group_var}{dependent variable(s), variable to group by. If no dependent
 variable, it should be NA or empty string. If more than one variable, it
