@@ -1,6 +1,6 @@
 #' Calculate a median from a survey
 #'
-#' @param .dataset : design survey
+#' @param design design survey
 #' @param group_var dependent variable(s), variable to group by. If no dependent
 #' variable, it should be NA or empty string. If more than one variable, it
 #' should be one string with each variable separated by comma, e.g. "groupa, groupb"
@@ -32,15 +32,13 @@
 #' create_analysis_median(me_design_w, analysis_var = "aa")
 #' create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
 #'
-create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level = .95) {
+create_analysis_median <- function(design, group_var = NA, analysis_var, level = .95) {
   # check the grouping variable
   if (is.na(group_var)) {
     across_by <- c()
   } else {
     across_by <- group_var %>%
-      stringr::str_split(",", simplify = T) %>%
-      stringr::str_trim() %>%
-      as.vector()
+      char_to_vector()
   }
 
   # calculate
@@ -54,7 +52,7 @@ create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level
   missing_value_catch <- function(expr) {
     tryCatch(
       error = function(cnd) {
-        .dataset %>%
+        design %>%
           dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
           dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
           srvyr::summarise(
@@ -77,7 +75,7 @@ create_analysis_median <- function(.dataset, group_var = NA, analysis_var, level
   }
 
   results <- missing_value_catch(
-    .dataset %>%
+    design %>%
       dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
       dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
       srvyr::summarise(

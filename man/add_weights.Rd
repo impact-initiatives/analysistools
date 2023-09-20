@@ -5,7 +5,7 @@
 \title{Add a weight variable using the sample frame}
 \usage{
 add_weights(
-  .dataset,
+  dataset,
   sample_data,
   strata_column_dataset = NULL,
   strata_column_sample = NULL,
@@ -14,7 +14,7 @@ add_weights(
 )
 }
 \arguments{
-\item{.dataset}{the clean dataframe}
+\item{dataset}{the clean dataframe}
 
 \item{sample_data}{sample dataframe including poplution numbers and the strata}
 

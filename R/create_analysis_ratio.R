@@ -9,7 +9,7 @@
 #' addition, by default, all rows with a value equal to 0 will be filtered out, if
 #' filter_denominator_0 is set to TRUE, they will be kept.
 #'
-#' @param .dataset : design survey
+#' @param design design survey
 #' @param group_var dependent variable(s), variable to group by. If no dependent
 #' variable, it should be NA or empty string. If more than one variable, it
 #' should be one string with each variable separated by comma, e.g. "groupa, groupb"
@@ -93,7 +93,7 @@
 #'   level = 0.95
 #' )
 #'
-create_analysis_ratio <- function(.dataset,
+create_analysis_ratio <- function(design,
                                   group_var = NA,
                                   analysis_var_numerator,
                                   analysis_var_denominator,
@@ -101,12 +101,12 @@ create_analysis_ratio <- function(.dataset,
                                   filter_denominator_0 = TRUE,
                                   level = .95) {
   # check if variables exists
-  if (!analysis_var_numerator %in% names(.dataset$variables)) {
+  if (!analysis_var_numerator %in% names(design$variables)) {
     msg <- glue::glue(analysis_var_numerator, " is in the names of the dataset.")
     stop(msg)
   }
 
-  if (!analysis_var_denominator %in% names(.dataset$variables)) {
+  if (!analysis_var_denominator %in% names(design$variables)) {
     msg <- glue::glue(analysis_var_denominator, " is in the names of the dataset.")
     stop(msg)
   }
@@ -116,13 +116,11 @@ create_analysis_ratio <- function(.dataset,
     across_by <- c()
   } else {
     across_by <- group_var %>%
-      stringr::str_split(",", simplify = T) %>%
-      stringr::str_trim() %>%
-      as.vector()
+      char_to_vector()
   }
 
   if (numerator_NA_to_0) {
-    .dataset <- .dataset %>%
+    design <- design %>%
       dplyr::mutate(!!rlang::sym(analysis_var_numerator) := dplyr::if_else(
         is.na(!!rlang::sym(analysis_var_numerator)),
         0,
@@ -133,21 +131,21 @@ create_analysis_ratio <- function(.dataset,
   # filtering
   ## denominator
   if (filter_denominator_0) {
-    results <- .dataset %>%
+    results <- design %>%
       dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
       dplyr::filter(!is.na(!!rlang::sym(analysis_var_denominator)),
         !!rlang::sym(analysis_var_denominator) != 0,
         .preserve = T
       )
   } else {
-    results <- .dataset %>%
+    results <- design %>%
       dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
       dplyr::filter(!is.na(!!rlang::sym(analysis_var_denominator)), .preserve = T)
   }
 
   ## numerator
   if (!numerator_NA_to_0) {
-    results <- .dataset %>%
+    results <- design %>%
       dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
       dplyr::filter(!is.na(!!rlang::sym(analysis_var_numerator)),
         .preserve = T

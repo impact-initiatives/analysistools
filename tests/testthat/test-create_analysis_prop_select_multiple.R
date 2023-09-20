@@ -8,7 +8,7 @@ test_that("create_analysis_prop_select_multiple returns correct output, no weigh
     smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -104,7 +104,7 @@ test_that("create_analysis_prop_select_multiple handles NA", {
     smvar.option4 = rep(NA_character_, 100),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -221,7 +221,7 @@ test_that("create_analysis_prop_select_multiple returns correct output, with wei
     smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -319,7 +319,7 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
     smvar.option4 = c(rep(NA_integer_, 99), T),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
   somedata <- somedata$data_with_fix_concat
   one_value_expected_output <- data.frame(
     analysis_type = rep("prop_select_multiple", 4),
@@ -415,7 +415,7 @@ test_that("create_analysis_prop_select_multiple handles lonely PSU", {
     smvar.option4 = sample(c(TRUE, FALSE), size = 51, replace = T, prob = c(.8, .2)),
     uuid = 1:51 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -478,7 +478,7 @@ test_that("create_analysis_prop_select_multiple returns correct output with 3 gr
     smvar.option4 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.8, .2)),
     uuid = 1:300 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -564,7 +564,7 @@ test_that("create_analysis_prop_select_multiple returns correct output with 2 gr
     smvar.option4 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.8, .2)),
     uuid = 1:300 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -678,18 +678,22 @@ test_that("create_analysis_prop_select_multiple handles NA in the dummy variable
     smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
   # no group
   expected_output <- somedata %>%
     dplyr::filter(!is.na(smvar)) %>%
-    dplyr::summarise(dplyr::across(.cols = dplyr::starts_with("smvar."),
-                                   .fns = list(stat = ~mean(.x, na.rm=T),
-                                               n = ~sum(.x, na.rm =T ),
-                                               n_total = ~sum(!is.na(.x))),
-                                   .names = "{.col}@ / @{.fn}")) %>%
+    dplyr::summarise(dplyr::across(
+      .cols = dplyr::starts_with("smvar."),
+      .fns = list(
+        stat = ~ mean(.x, na.rm = T),
+        n = ~ sum(.x, na.rm = T),
+        n_total = ~ sum(!is.na(.x))
+      ),
+      .names = "{.col}@ / @{.fn}"
+    )) %>%
     tidyr::pivot_longer(
       cols = dplyr::starts_with("smvar."),
       names_to = c("analysis_info", "analysis_type"), values_to = "x", names_sep = "@ / @"
@@ -710,25 +714,29 @@ test_that("create_analysis_prop_select_multiple handles NA in the dummy variable
       n, n_total, n_w, n_w_total, analysis_key
     )
   actual_output <- create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
-                                                        group_var = NA,
-                                                        analysis_var = "smvar",
-                                                        level = 0.95
+    group_var = NA,
+    analysis_var = "smvar",
+    level = 0.95
   ) %>%
     dplyr::select(-stat_low, -stat_upp)
   expect_equal(actual_output,
-               expected_output,
-               ignore_attr = T
+    expected_output,
+    ignore_attr = T
   )
 
   # with 1 group
   one_group_expected_output <- somedata %>%
     dplyr::group_by(groups) %>%
     dplyr::filter(!is.na(smvar)) %>%
-    dplyr::summarise(dplyr::across(.cols = dplyr::starts_with("smvar."),
-                                   .fns = list(stat = ~mean(.x, na.rm=T),
-                                               n = ~sum(.x, na.rm =T ),
-                                               n_total = ~sum(!is.na(.x))),
-                                   .names = "{.col}@ / @{.fn}")) %>%
+    dplyr::summarise(dplyr::across(
+      .cols = dplyr::starts_with("smvar."),
+      .fns = list(
+        stat = ~ mean(.x, na.rm = T),
+        n = ~ sum(.x, na.rm = T),
+        n_total = ~ sum(!is.na(.x))
+      ),
+      .names = "{.col}@ / @{.fn}"
+    )) %>%
     tidyr::pivot_longer(
       cols = -groups,
       names_to = c("analysis_info", "analysis_type"), values_to = "x", names_sep = "@ / @"
@@ -752,15 +760,15 @@ test_that("create_analysis_prop_select_multiple handles NA in the dummy variable
 
   one_group_result <-
     create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
-                                         group_var = "groups",
-                                         analysis_var = "smvar",
-                                         level = 0.95
+      group_var = "groups",
+      analysis_var = "smvar",
+      level = 0.95
     ) %>%
     dplyr::select(-stat_low, -stat_upp)
 
   expect_equal(one_group_result,
-               one_group_expected_output,
-               ignore_attr = T
+    one_group_expected_output,
+    ignore_attr = T
   )
 })
 
@@ -774,7 +782,7 @@ test_that("create_analysis_prop_select_multiple works with 0/1's instead of TRUE
     smvar.option4 = sample(c(1, 0), size = 100, replace = T, prob = c(.8, .2)),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_sep = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -803,14 +811,13 @@ test_that("create_analysis_prop_select_multiple works with 0/1's instead of TRUE
       n, n_total, n_w, n_w_total, analysis_key
     )
   actual_output <- create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
-                                                        group_var = NA,
-                                                        analysis_var = "smvar",
-                                                        level = 0.95
+    group_var = NA,
+    analysis_var = "smvar",
+    level = 0.95
   ) %>%
     dplyr::select(-stat_low, -stat_upp)
   expect_equal(actual_output,
-               expected_output,
-               ignore_attr = T
+    expected_output,
+    ignore_attr = T
   )
 })
-

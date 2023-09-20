@@ -4,7 +4,7 @@
 \alias{create_analysis}
 \title{Create analysis from a design}
 \usage{
-create_analysis(.design, loa = NULL, group_var = NULL, sm_sep = ".")
+create_analysis(.design, loa = NULL, group_var = NULL, sm_seperator = ".")
 }
 \arguments{
 \item{.design}{Survey design object created with srvyr::as_survey or as_survey_design}
@@ -14,7 +14,7 @@ create_analysis(.design, loa = NULL, group_var = NULL, sm_sep = ".")
 \item{group_var}{Default is NULL. If provided, it will first create a list of analysis and then
 will run the analysis. It should be a vector.}
 
-\item{sm_sep}{select multiple separator, defaut ".".}
+\item{sm_seperator}{Separator for choice multiple questions. The default is "."}
 }
 \value{
 A list with 3 items:
