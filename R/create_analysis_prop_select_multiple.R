@@ -24,7 +24,7 @@
 #'   smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = TRUE, prob = c(.8, .2)),
 #'   uuid = 1:100 %>% as.character()
 #' ) %>%
-#'   cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+#'   cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 #'
 #' somedata <- somedata$data_with_fix_concat
 #'

@@ -8,7 +8,7 @@ test_that("create_analysis_prop_select_multiple returns correct output, no weigh
     smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -104,7 +104,7 @@ test_that("create_analysis_prop_select_multiple handles NA", {
     smvar.option4 = rep(NA_character_, 100),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -221,7 +221,7 @@ test_that("create_analysis_prop_select_multiple returns correct output, with wei
     smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -319,7 +319,7 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
     smvar.option4 = c(rep(NA_integer_, 99), T),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
   somedata <- somedata$data_with_fix_concat
   one_value_expected_output <- data.frame(
     analysis_type = rep("prop_select_multiple", 4),
@@ -415,7 +415,7 @@ test_that("create_analysis_prop_select_multiple handles lonely PSU", {
     smvar.option4 = sample(c(TRUE, FALSE), size = 51, replace = T, prob = c(.8, .2)),
     uuid = 1:51 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -478,7 +478,7 @@ test_that("create_analysis_prop_select_multiple returns correct output with 3 gr
     smvar.option4 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.8, .2)),
     uuid = 1:300 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -564,7 +564,7 @@ test_that("create_analysis_prop_select_multiple returns correct output with 2 gr
     smvar.option4 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.8, .2)),
     uuid = 1:300 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -678,7 +678,7 @@ test_that("create_analysis_prop_select_multiple handles NA in the dummy variable
     smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 
   somedata <- somedata$data_with_fix_concat
 
@@ -782,7 +782,7 @@ test_that("create_analysis_prop_select_multiple works with 0/1's instead of TRUE
     smvar.option4 = sample(c(1, 0), size = 100, replace = T, prob = c(.8, .2)),
     uuid = 1:100 %>% as.character()
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_seperator = ".")
+    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
 
   somedata <- somedata$data_with_fix_concat
 

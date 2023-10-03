@@ -4,7 +4,7 @@ test_that("Gives corrects results", {
   no_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_no_loa_v2.RDS"))
 
   no_loa_test_design <- srvyr::as_survey(no_loa_expected_output$dataset)
-  actual_output <- create_analysis(no_loa_test_design, group_var = "admin1", sm_seperator = "/")
+  actual_output <- create_analysis(no_loa_test_design, group_var = "admin1", sm_separator = "/")
 
   expect_equal(actual_output, no_loa_expected_output, ignore_attr = T)
 
@@ -12,7 +12,7 @@ test_that("Gives corrects results", {
   with_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_with_loa_v2.RDS"))
 
   with_loa_test_design <- srvyr::as_survey(with_loa_expected_output$dataset)
-  with_loa_actual_output <- create_analysis(with_loa_test_design, loa = with_loa_expected_output$loa, sm_seperator = "/")
+  with_loa_actual_output <- create_analysis(with_loa_test_design, loa = with_loa_expected_output$loa, sm_separator = "/")
 
   expect_equal(with_loa_actual_output, with_loa_expected_output, ignore_attr = T)
 
@@ -20,7 +20,7 @@ test_that("Gives corrects results", {
   no_ratio_loa <- with_loa_expected_output$loa %>%
     dplyr::filter(analysis_type != "ratio")
 
-  no_ratio_loa_actual_output <- create_analysis(with_loa_test_design, no_ratio_loa, sm_seperator = "/")
+  no_ratio_loa_actual_output <- create_analysis(with_loa_test_design, no_ratio_loa, sm_separator = "/")
 
   no_ratio_loa_expected_results_table <- with_loa_expected_output$results_table %>%
     dplyr::filter(analysis_type != "ratio")
@@ -142,7 +142,7 @@ test_that("If loa and group variable are provided, group_var will be ignored", {
       .design = srvyr::as_survey(expected_output$dataset),
       loa = expected_output$loa,
       group_var = "admin1",
-      sm_seperator = "/"
+      sm_separator = "/"
     ),
     "You have provided a list of analysis and group variable, group variable will be ignored"
   )
