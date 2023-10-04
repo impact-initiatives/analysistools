@@ -53,21 +53,20 @@ If ratios have to be performed, the \emph{loa} should include the following colu
 \examples{
 create_analysis(
   .design = srvyr::as_survey(analysistools_MSNA_template_data),
-  loa = analysistools_loa
+  loa = analysistools_MSNA_template_loa,
+  sm_separator = "/"
 )
-
 create_analysis(
   .design = srvyr::as_survey(analysistools_MSNA_template_data),
-  loa = analysistools_loa_with_ratio
+  loa = analysistools_MSNA_template_loa_with_ratio,
+  sm_separator = "/"
 )
-
 shorter_df <- analysistools_MSNA_template_data[, c(
   "admin1",
   "admin2",
   "expenditure_debt",
   "wash_drinkingwatersource"
 )]
-
 create_analysis(
   .design = srvyr::as_survey(shorter_df),
   group_var = "admin1"

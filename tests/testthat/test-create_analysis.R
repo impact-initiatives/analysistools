@@ -8,24 +8,17 @@ test_that("Gives corrects results", {
 
   expect_equal(actual_output, no_loa_expected_output, ignore_attr = T)
 
-  # with a loa #add ratios
-  with_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_with_loa_v2.RDS"))
+  # with loa without ratio
+  test_design <- srvyr::as_survey(analysistools_MSNA_template_data)
 
-  with_loa_test_design <- srvyr::as_survey(with_loa_expected_output$dataset)
-  with_loa_actual_output <- create_analysis(with_loa_test_design, loa = with_loa_expected_output$loa, sm_separator = "/")
+  no_ratio_loa_actual_output <- create_analysis(test_design, analysistools_MSNA_template_loa, sm_separator = "/")
 
-  expect_equal(with_loa_actual_output, with_loa_expected_output, ignore_attr = T)
+  expect_equal(no_ratio_loa_actual_output, analysistools_MSNA_template_no_ratio_results_table, ignore_attr = T)
 
-  # with loa and no ratio
-  no_ratio_loa <- with_loa_expected_output$loa %>%
-    dplyr::filter(analysis_type != "ratio")
+  # with a loa with ratios
+  with_loa_actual_output <- create_analysis(test_design, loa = analysistools_MSNA_template_loa_with_ratio, sm_separator = "/")
 
-  no_ratio_loa_actual_output <- create_analysis(with_loa_test_design, no_ratio_loa, sm_separator = "/")
-
-  no_ratio_loa_expected_results_table <- with_loa_expected_output$results_table %>%
-    dplyr::filter(analysis_type != "ratio")
-
-  expect_equal(no_ratio_loa_actual_output$results_table, no_ratio_loa_expected_results_table, ignore_attr = T)
+  expect_equal(with_loa_actual_output, analysistools_MSNA_template_with_ratio_results_table, ignore_attr = T)
 })
 
 
@@ -135,12 +128,10 @@ test_that("Errors are caught correctly", {
 })
 
 test_that("If loa and group variable are provided, group_var will be ignored", {
-  expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_with_loa_v2.RDS"))
-
   expect_warning(
     create_analysis(
-      .design = srvyr::as_survey(expected_output$dataset),
-      loa = expected_output$loa,
+      .design = srvyr::as_survey(analysistools::analysistools_MSNA_template_data),
+      loa = analysistools::analysistools_MSNA_template_loa_with_ratio,
       group_var = "admin1",
       sm_separator = "/"
     ),
