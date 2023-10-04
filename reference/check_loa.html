@@ -66,20 +66,22 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">check_loa</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  .design <span class="op">=</span> <span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="http://gdfe.co/srvyr/reference/as_survey.html" class="external-link">as_survey</a></span><span class="op">(</span><span class="va">analysistools_MSNA_template_data</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  loa <span class="op">=</span> <span class="va">analysistools_loa</span></span></span>
+<span class="r-in"><span>  loa <span class="op">=</span> <span class="va">analysistools_MSNA_template_loa</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      analysis_type             analysis_var group_var level</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  prop_select_one                   admin1      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2             mean  income_v1_salaried_work      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3           median  income_v1_salaried_work      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4             mean         expenditure_debt      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5           median         expenditure_debt      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  prop_select_one wash_drinkingwatersource      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7             mean  income_v1_salaried_work    admin1  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8           median  income_v1_salaried_work    admin1  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9             mean         expenditure_debt    admin1  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10          median         expenditure_debt    admin1  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 prop_select_one wash_drinkingwatersource    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           analysis_type                       analysis_var group_var level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       prop_select_one                             admin1      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  mean            income_v1_salaried_work      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                median            income_v1_salaried_work      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                  mean                   expenditure_debt      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                median                   expenditure_debt      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       prop_select_one           wash_drinkingwatersource      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  prop_select_multiple edu_learning_conditions_reasons_v1      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                  mean            income_v1_salaried_work    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                median            income_v1_salaried_work    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                 mean                   expenditure_debt    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11               median                   expenditure_debt    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12      prop_select_one           wash_drinkingwatersource    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 prop_select_multiple edu_learning_conditions_reasons_v1    admin1  0.95</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -94,10 +94,11 @@ It can also include a column <strong>level</strong>, if not provided .95 will be
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">create_analysis</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  .design <span class="op">=</span> <span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="http://gdfe.co/srvyr/reference/as_survey.html" class="external-link">as_survey</a></span><span class="op">(</span><span class="va">analysistools_MSNA_template_data</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  loa <span class="op">=</span> <span class="va">analysistools_loa</span></span></span>
+<span class="r-in"><span>  loa <span class="op">=</span> <span class="va">analysistools_MSNA_template_loa</span>,</span></span>
+<span class="r-in"><span>  sm_separator <span class="op">=</span> <span class="st">"/"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $results_table</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 83 × 13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 143 × 13</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    analysis_type analysis_var analysis_var_value group_var group_var_value  stat</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> prop_select_… admin1       admin1a            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.31</span>
@@ -110,8 +111,8 @@ It can also include a column <strong>level</strong>, if not provided .95 will be
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> prop_select_… wash_drinki… borehole_tubewell  <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> prop_select_… wash_drinki… bottled_water      <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.08</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> prop_select_… wash_drinki… cart_with_tank_dr… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 73 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 more variables: stat_low &lt;dbl&gt;, stat_upp &lt;dbl&gt;, n &lt;int&gt;, n_total &lt;int&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 133 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 more variables: stat_low &lt;dbl&gt;, stat_upp &lt;dbl&gt;, n &lt;dbl&gt;, n_total &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_w &lt;dbl&gt;, n_w_total &lt;dbl&gt;, analysis_key &lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dataset</span>
@@ -137,42 +138,44 @@ It can also include a column <strong>level</strong>, if not provided .95 will be
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ind_relationship_hoh_other &lt;chr&gt;, ind_pos &lt;lgl&gt;, hh_number_men &lt;dbl&gt;, …</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $loa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      analysis_type             analysis_var group_var level</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  prop_select_one                   admin1      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2             mean  income_v1_salaried_work      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3           median  income_v1_salaried_work      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4             mean         expenditure_debt      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5           median         expenditure_debt      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  prop_select_one wash_drinkingwatersource      &lt;NA&gt;  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7             mean  income_v1_salaried_work    admin1  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8           median  income_v1_salaried_work    admin1  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9             mean         expenditure_debt    admin1  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10          median         expenditure_debt    admin1  0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 prop_select_one wash_drinkingwatersource    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           analysis_type                       analysis_var group_var level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       prop_select_one                             admin1      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  mean            income_v1_salaried_work      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                median            income_v1_salaried_work      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                  mean                   expenditure_debt      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                median                   expenditure_debt      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       prop_select_one           wash_drinkingwatersource      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  prop_select_multiple edu_learning_conditions_reasons_v1      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                  mean            income_v1_salaried_work    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                median            income_v1_salaried_work    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                 mean                   expenditure_debt    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11               median                   expenditure_debt    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12      prop_select_one           wash_drinkingwatersource    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 prop_select_multiple edu_learning_conditions_reasons_v1    admin1  0.95</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">create_analysis</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  .design <span class="op">=</span> <span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="http://gdfe.co/srvyr/reference/as_survey.html" class="external-link">as_survey</a></span><span class="op">(</span><span class="va">analysistools_MSNA_template_data</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  loa <span class="op">=</span> <span class="va">analysistools_loa_with_ratio</span></span></span>
+<span class="r-in"><span>  loa <span class="op">=</span> <span class="va">analysistools_MSNA_template_loa_with_ratio</span>,</span></span>
+<span class="r-in"><span>  sm_separator <span class="op">=</span> <span class="st">"/"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% |  ETA:  0s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  93% |  ETA:  0s</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $results_table</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 100 × 13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 147 × 13</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    analysis_type   analysis_var     analysis_var_value group_var group_var_value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> mean            income_v1_salar… <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> median          income_v1_salar… <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> mean            expenditure_debt <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> median          expenditure_debt <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> ratio           income_v1_salar… NA ~/~ NA          <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> prop_select_one wash_drinkingwa… borehole_tubewell  <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> prop_select_one wash_drinkingwa… bottled_water      <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> prop_select_one wash_drinkingwa… cart_with_tank_dr… <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> prop_select_one wash_drinkingwa… dont_know          <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> prop_select_one wash_drinkingwa… other              <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 90 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: stat &lt;dbl&gt;, stat_low &lt;dbl&gt;, stat_upp &lt;dbl&gt;, n &lt;int&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_total &lt;int&gt;, n_w &lt;dbl&gt;, n_w_total &lt;dbl&gt;, analysis_key &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> prop_select_one admin1           admin1a            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> prop_select_one admin1           admin1b            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> prop_select_one admin1           admin1c            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> mean            income_v1_salar… <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> median          income_v1_salar… <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> mean            expenditure_debt <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> median          expenditure_debt <span style="color: #BB0000;">NA</span>                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ratio           income_v1_salar… NA ~/~ NA          <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> prop_select_one wash_drinkingwa… borehole_tubewell  <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> prop_select_one wash_drinkingwa… bottled_water      <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 137 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: stat &lt;dbl&gt;, stat_low &lt;dbl&gt;, stat_upp &lt;dbl&gt;, n &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_total &lt;dbl&gt;, n_w &lt;dbl&gt;, n_w_total &lt;dbl&gt;, analysis_key &lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dataset</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 100 × 449</span></span>
@@ -197,66 +200,61 @@ It can also include a column <strong>level</strong>, if not provided .95 will be
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ind_relationship_hoh_other &lt;chr&gt;, ind_pos &lt;lgl&gt;, hh_number_men &lt;dbl&gt;, …</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $loa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      analysis_type                                              analysis_var</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1             mean                                   income_v1_salaried_work</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2           median                                   income_v1_salaried_work</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3             mean                                          expenditure_debt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4           median                                          expenditure_debt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15           ratio                                                      &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  prop_select_one                                  wash_drinkingwatersource</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  prop_select_one           edu_learning_conditions_reasons_v1/overcrowding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  prop_select_one edu_learning_conditions_reasons_v1/curriculum_not_adapted</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8             mean                                   income_v1_salaried_work</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9           median                                   income_v1_salaried_work</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10            mean                                          expenditure_debt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11          median                                          expenditure_debt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16           ratio                                                      &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 prop_select_one                                  wash_drinkingwatersource</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 prop_select_one           edu_learning_conditions_reasons_v1/overcrowding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 prop_select_one edu_learning_conditions_reasons_v1/curriculum_not_adapted</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    group_var level  analysis_var_numerator analysis_var_denominator</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       &lt;NA&gt;  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       &lt;NA&gt;  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       &lt;NA&gt;  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4       &lt;NA&gt;  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15      &lt;NA&gt;  0.95 income_v1_salaried_work         expenditure_debt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5       &lt;NA&gt;  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6       &lt;NA&gt;  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7       &lt;NA&gt;  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8     admin1  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     admin1  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    admin1  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11    admin1  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16    admin1  0.95 income_v1_salaried_work         expenditure_debt</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    admin1  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13    admin1  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    admin1  0.95                    &lt;NA&gt;                     &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    numerator_NA_to_0 filter_denominator_0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15              TRUE                 TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9                 NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10                NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11                NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16              TRUE                 TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12                NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13                NA                   NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14                NA                   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           analysis_type                       analysis_var group_var level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       prop_select_one                             admin1      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  mean            income_v1_salaried_work      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                median            income_v1_salaried_work      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                  mean                   expenditure_debt      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                median                   expenditure_debt      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 ratio                               &lt;NA&gt;      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       prop_select_one           wash_drinkingwatersource      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  prop_select_multiple edu_learning_conditions_reasons_v1      &lt;NA&gt;  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                  mean            income_v1_salaried_work    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10               median            income_v1_salaried_work    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                 mean                   expenditure_debt    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12               median                   expenditure_debt    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                ratio                               &lt;NA&gt;    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14      prop_select_one           wash_drinkingwatersource    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 prop_select_multiple edu_learning_conditions_reasons_v1    admin1  0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     analysis_var_numerator analysis_var_denominator numerator_NA_to_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                     &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                     &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                     &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                     &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                     &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  income_v1_salaried_work         expenditure_debt              TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                     &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                     &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                     &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                    &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                    &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                    &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 income_v1_salaried_work         expenditure_debt              TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                    &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                    &lt;NA&gt;                     &lt;NA&gt;                NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    filter_denominator_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                  TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                    NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                 TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                   NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                   NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">shorter_df</span> <span class="op">&lt;-</span> <span class="va">analysistools_MSNA_template_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"admin1"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"admin2"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"expenditure_debt"</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"wash_drinkingwatersource"</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">create_analysis</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  .design <span class="op">=</span> <span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="http://gdfe.co/srvyr/reference/as_survey.html" class="external-link">as_survey</a></span><span class="op">(</span><span class="va">shorter_df</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  group_var <span class="op">=</span> <span class="st">"admin1"</span></span></span>

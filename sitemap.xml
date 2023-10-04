@@ -34,13 +34,25 @@
     <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools-package.html</loc>
   </url>
   <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_MSNA_template_choices.html</loc>
+  </url>
+  <url>
     <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_MSNA_template_data.html</loc>
   </url>
   <url>
-    <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_loa.html</loc>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_MSNA_template_loa.html</loc>
   </url>
   <url>
-    <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_loa_with_ratio.html</loc>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_MSNA_template_loa_with_ratio.html</loc>
+  </url>
+  <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_MSNA_template_no_ratio_results_table.html</loc>
+  </url>
+  <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_MSNA_template_survey.html</loc>
+  </url>
+  <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/analysistools_MSNA_template_with_ratio_results_table.html</loc>
   </url>
   <url>
     <loc>https://impact-initiatives.github.io/analysistools/reference/arranging_results_columns.html</loc>
