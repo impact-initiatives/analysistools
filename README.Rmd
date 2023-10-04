@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # analysistools
 
 <!-- badges: start -->
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 [![check-standard](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml)
 [![Codecov test coverage](https://codecov.io/gh/impact-initiatives/analysistools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/impact-initiatives/analysistools?branch=main)
 <!-- badges: end -->
@@ -44,8 +45,9 @@ shorter_df <- analysistools_MSNA_template_data[, c(
   "admin2",
   "expenditure_debt",
   "income_v1_salaried_work",
-  "wash_drinkingwatersource"
-)]
+  "wash_drinkingwatersource", 
+  grep("edu_learning_conditions_reasons_v1", names(analysistools_MSNA_template_data), value = T)
+  )]
 
 example_sample <- data.frame(
   strata = c("admin1a", "admin1b", "admin1c"),
@@ -72,7 +74,7 @@ example_design <- srvyr::as_survey(weighted_shorter_df, strata = admin1, weights
 
 If only the design is provided, it will perform mean, median and proportions.
 ```{r}
-ex1_results <- create_analysis(.design = example_design)
+ex1_results <- create_analysis(.design = example_design, sm_separator = "/")
 ```
 It should return an object with 3 elements: 
 - the results table (in a long format and analysis key),
@@ -95,28 +97,28 @@ The group_var can be used to defined the different grouping, independent variabl
 - one variable
 
 ```{r}
-ex2_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1")
+ex2_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1", sm_separator = "/")
 ex2_results[["loa"]]
 ```
 
 - two variables separately
 
 ```{r}
-ex3_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"))
+ex3_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"), sm_separator = "/")
 ex3_results[["loa"]]
 ```
 
 - two variables combined
 
 ```{r}
-ex4_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2")
+ex4_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2", sm_separator = "/")
 ex4_results[["loa"]]
 ```
 
 ### How to perform a descriptive analysis with a *list of analysis*
 
 ```{r}
-ex5_results <- create_analysis(.design = srvyr::as_survey(shorter_df), loa = analysistools_loa)
+ex5_results <- create_analysis(.design = srvyr::as_survey(shorter_df), loa = analysistools_MSNA_template_loa, sm_separator = "/")
 ex5_results[["loa"]]
 ```
 

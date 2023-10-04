@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![Contributor
+Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 [![check-standard](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/impact-initiatives/analysistools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/impact-initiatives/analysistools?branch=main)
@@ -36,8 +38,9 @@ shorter_df <- analysistools_MSNA_template_data[, c(
   "admin2",
   "expenditure_debt",
   "income_v1_salaried_work",
-  "wash_drinkingwatersource"
-)]
+  "wash_drinkingwatersource", 
+  grep("edu_learning_conditions_reasons_v1", names(analysistools_MSNA_template_data), value = T)
+  )]
 
 example_sample <- data.frame(
   strata = c("admin1a", "admin1b", "admin1c"),
@@ -59,13 +62,125 @@ weighted_shorter_df %>% head()
 #> 4 admin1c admin2b               23                      20
 #> 5 admin1c admin2a               20                      21
 #> 6 admin1c admin2b               23                      22
-#>   wash_drinkingwatersource  weights
-#> 1            tanker_trucks 1.157407
-#> 2            bottled_water 1.190476
-#> 3              water_kiosk 1.190476
-#> 4                dont_know 1.190476
-#> 5                dont_know 1.190476
-#> 6              water_kiosk 1.190476
+#>   wash_drinkingwatersource
+#> 1            tanker_trucks
+#> 2            bottled_water
+#> 3              water_kiosk
+#> 4                dont_know
+#> 5                dont_know
+#> 6              water_kiosk
+#>                                                                                                                                  edu_learning_conditions_reasons_v1
+#> 1 curriculum_not_adapted poor_wash discrimination displacement language_barriers curriculum_not_adapted_remote unreliable_technology lack_equipment other dont_know
+#> 2                 overcrowding curriculum_not_adapted lack_teachers lack_qualified_staff lack_materials discrimination curriculum_not_adapted_remote lack_equipment
+#> 3                                                                           overcrowding lack_materials discrimination curriculum_not_adapted_remote lack_equipment
+#> 4                                            overcrowding curriculum_not_adapted lack_qualified_staff displacement language_barriers lack_equipment other dont_know
+#> 5                                                                          overcrowding lack_materials language_barriers unreliable_technology lack_equipment other
+#> 6                                                                                                                                displacement unreliable_technology
+#>   edu_learning_conditions_reasons_v1/overcrowding
+#> 1                                           FALSE
+#> 2                                            TRUE
+#> 3                                            TRUE
+#> 4                                            TRUE
+#> 5                                            TRUE
+#> 6                                           FALSE
+#>   edu_learning_conditions_reasons_v1/curriculum_not_adapted
+#> 1                                                      TRUE
+#> 2                                                      TRUE
+#> 3                                                     FALSE
+#> 4                                                      TRUE
+#> 5                                                     FALSE
+#> 6                                                     FALSE
+#>   edu_learning_conditions_reasons_v1/lack_teachers
+#> 1                                            FALSE
+#> 2                                             TRUE
+#> 3                                            FALSE
+#> 4                                            FALSE
+#> 5                                            FALSE
+#> 6                                            FALSE
+#>   edu_learning_conditions_reasons_v1/lack_qualified_staff
+#> 1                                                   FALSE
+#> 2                                                    TRUE
+#> 3                                                   FALSE
+#> 4                                                    TRUE
+#> 5                                                   FALSE
+#> 6                                                   FALSE
+#>   edu_learning_conditions_reasons_v1/lack_materials
+#> 1                                             FALSE
+#> 2                                              TRUE
+#> 3                                              TRUE
+#> 4                                             FALSE
+#> 5                                              TRUE
+#> 6                                             FALSE
+#>   edu_learning_conditions_reasons_v1/poor_wash
+#> 1                                         TRUE
+#> 2                                        FALSE
+#> 3                                        FALSE
+#> 4                                        FALSE
+#> 5                                        FALSE
+#> 6                                        FALSE
+#>   edu_learning_conditions_reasons_v1/discrimination
+#> 1                                              TRUE
+#> 2                                              TRUE
+#> 3                                              TRUE
+#> 4                                             FALSE
+#> 5                                             FALSE
+#> 6                                             FALSE
+#>   edu_learning_conditions_reasons_v1/displacement
+#> 1                                            TRUE
+#> 2                                           FALSE
+#> 3                                           FALSE
+#> 4                                            TRUE
+#> 5                                           FALSE
+#> 6                                            TRUE
+#>   edu_learning_conditions_reasons_v1/language_barriers
+#> 1                                                 TRUE
+#> 2                                                FALSE
+#> 3                                                FALSE
+#> 4                                                 TRUE
+#> 5                                                 TRUE
+#> 6                                                FALSE
+#>   edu_learning_conditions_reasons_v1/curriculum_not_adapted_remote
+#> 1                                                             TRUE
+#> 2                                                             TRUE
+#> 3                                                             TRUE
+#> 4                                                            FALSE
+#> 5                                                            FALSE
+#> 6                                                            FALSE
+#>   edu_learning_conditions_reasons_v1/unreliable_technology
+#> 1                                                     TRUE
+#> 2                                                    FALSE
+#> 3                                                    FALSE
+#> 4                                                    FALSE
+#> 5                                                     TRUE
+#> 6                                                     TRUE
+#>   edu_learning_conditions_reasons_v1/lack_equipment
+#> 1                                              TRUE
+#> 2                                              TRUE
+#> 3                                              TRUE
+#> 4                                              TRUE
+#> 5                                              TRUE
+#> 6                                             FALSE
+#>   edu_learning_conditions_reasons_v1/other
+#> 1                                     TRUE
+#> 2                                    FALSE
+#> 3                                    FALSE
+#> 4                                     TRUE
+#> 5                                     TRUE
+#> 6                                    FALSE
+#>   edu_learning_conditions_reasons_v1/dont_know
+#> 1                                         TRUE
+#> 2                                        FALSE
+#> 3                                        FALSE
+#> 4                                         TRUE
+#> 5                                        FALSE
+#> 6                                        FALSE
+#>   edu_learning_conditions_reasons_v1/prefer_not_to_answer  weights
+#> 1                                                   FALSE 1.157407
+#> 2                                                   FALSE 1.190476
+#> 3                                                   FALSE 1.190476
+#> 4                                                   FALSE 1.190476
+#> 5                                                   FALSE 1.190476
+#> 6                                                   FALSE 1.190476
 ```
 
 ### How to perform a descriptive analysis (mean, median, proportions)
@@ -80,7 +195,7 @@ If only the design is provided, it will perform mean, median and
 proportions.
 
 ``` r
-ex1_results <- create_analysis(.design = example_design)
+ex1_results <- create_analysis(.design = example_design, sm_separator = "/")
 #> Joining with `by = join_by(type)`
 ```
 
@@ -104,7 +219,7 @@ ex1_results[["results_table"]] %>% head()
 #> 4 prop_select_o… admin2       admin2a            <NA>      <NA>            0.284
 #> 5 prop_select_o… admin2       admin2b            <NA>      <NA>            0.385
 #> 6 prop_select_o… admin2       admin2c            <NA>      <NA>            0.331
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
@@ -125,101 +240,112 @@ The group_var can be used to defined the different grouping, independent
 variables. For example: - one variable
 
 ``` r
-ex2_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1")
+ex2_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1", sm_separator = "/")
 #> Joining with `by = join_by(type)`
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ex2_results[["loa"]]
-#>      analysis_type             analysis_var group_var level
-#> 1  prop_select_one                   admin1      <NA>  0.95
-#> 2  prop_select_one                   admin2      <NA>  0.95
-#> 3             mean         expenditure_debt      <NA>  0.95
-#> 4           median         expenditure_debt      <NA>  0.95
-#> 5             mean  income_v1_salaried_work      <NA>  0.95
-#> 6           median  income_v1_salaried_work      <NA>  0.95
-#> 7  prop_select_one wash_drinkingwatersource      <NA>  0.95
-#> 8  prop_select_one                   admin2    admin1  0.95
-#> 9             mean         expenditure_debt    admin1  0.95
-#> 10          median         expenditure_debt    admin1  0.95
-#> 11            mean  income_v1_salaried_work    admin1  0.95
-#> 12          median  income_v1_salaried_work    admin1  0.95
-#> 13 prop_select_one wash_drinkingwatersource    admin1  0.95
+#>           analysis_type                       analysis_var group_var level
+#> 1       prop_select_one                             admin1      <NA>  0.95
+#> 2       prop_select_one                             admin2      <NA>  0.95
+#> 3                  mean                   expenditure_debt      <NA>  0.95
+#> 4                median                   expenditure_debt      <NA>  0.95
+#> 5                  mean            income_v1_salaried_work      <NA>  0.95
+#> 6                median            income_v1_salaried_work      <NA>  0.95
+#> 7       prop_select_one           wash_drinkingwatersource      <NA>  0.95
+#> 8  prop_select_multiple edu_learning_conditions_reasons_v1      <NA>  0.95
+#> 9       prop_select_one                             admin2    admin1  0.95
+#> 10                 mean                   expenditure_debt    admin1  0.95
+#> 11               median                   expenditure_debt    admin1  0.95
+#> 12                 mean            income_v1_salaried_work    admin1  0.95
+#> 13               median            income_v1_salaried_work    admin1  0.95
+#> 14      prop_select_one           wash_drinkingwatersource    admin1  0.95
+#> 15 prop_select_multiple edu_learning_conditions_reasons_v1    admin1  0.95
 ```
 
 - two variables separately
 
 ``` r
-ex3_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"))
+ex3_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"), sm_separator = "/")
 #> Joining with `by = join_by(type)`
-#> ■■■■■■■■■■■■ 37% | ETA: 3s
-#> ■■■■■■■■■■■■■■ 42% | ETA: 3s
-#> ■■■■■■■■■■■■■■■ 47% | ETA: 3s
-#> ■■■■■■■■■■■■■■■■■ 53% | ETA: 2s
-#> ■■■■■■■■■■■■■■■■■■ 58% | ETA: 2s
-#> ■■■■■■■■■■■■■■■■■■■■■■ 68% | ETA: 2s
-#> ■■■■■■■■■■■■■■■■■■■■■■■ 74% | ETA: 2s
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■ 84% | ETA: 1s
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 89% | ETA: 1s
+#> ■■■■■■■■■■■■ 36% | ETA: 2s
+#> ■■■■■■■■■■■■■ 41% | ETA: 2s
+#> ■■■■■■■■■■■■■■■■■■■■ 64% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■ 68% | ETA: 2s
+#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■ 77% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■ 82% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 91% | ETA: 0s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 95% | ETA: 0s
 ex3_results[["loa"]]
-#>      analysis_type             analysis_var group_var level
-#> 1  prop_select_one                   admin1      <NA>  0.95
-#> 2  prop_select_one                   admin2      <NA>  0.95
-#> 3             mean         expenditure_debt      <NA>  0.95
-#> 4           median         expenditure_debt      <NA>  0.95
-#> 5             mean  income_v1_salaried_work      <NA>  0.95
-#> 6           median  income_v1_salaried_work      <NA>  0.95
-#> 7  prop_select_one wash_drinkingwatersource      <NA>  0.95
-#> 8  prop_select_one                   admin2    admin1  0.95
-#> 9             mean         expenditure_debt    admin1  0.95
-#> 10          median         expenditure_debt    admin1  0.95
-#> 11            mean  income_v1_salaried_work    admin1  0.95
-#> 12          median  income_v1_salaried_work    admin1  0.95
-#> 13 prop_select_one wash_drinkingwatersource    admin1  0.95
-#> 14 prop_select_one                   admin1    admin2  0.95
-#> 15            mean         expenditure_debt    admin2  0.95
-#> 16          median         expenditure_debt    admin2  0.95
-#> 17            mean  income_v1_salaried_work    admin2  0.95
-#> 18          median  income_v1_salaried_work    admin2  0.95
-#> 19 prop_select_one wash_drinkingwatersource    admin2  0.95
+#>           analysis_type                       analysis_var group_var level
+#> 1       prop_select_one                             admin1      <NA>  0.95
+#> 2       prop_select_one                             admin2      <NA>  0.95
+#> 3                  mean                   expenditure_debt      <NA>  0.95
+#> 4                median                   expenditure_debt      <NA>  0.95
+#> 5                  mean            income_v1_salaried_work      <NA>  0.95
+#> 6                median            income_v1_salaried_work      <NA>  0.95
+#> 7       prop_select_one           wash_drinkingwatersource      <NA>  0.95
+#> 8  prop_select_multiple edu_learning_conditions_reasons_v1      <NA>  0.95
+#> 9       prop_select_one                             admin2    admin1  0.95
+#> 10                 mean                   expenditure_debt    admin1  0.95
+#> 11               median                   expenditure_debt    admin1  0.95
+#> 12                 mean            income_v1_salaried_work    admin1  0.95
+#> 13               median            income_v1_salaried_work    admin1  0.95
+#> 14      prop_select_one           wash_drinkingwatersource    admin1  0.95
+#> 15 prop_select_multiple edu_learning_conditions_reasons_v1    admin1  0.95
+#> 16      prop_select_one                             admin1    admin2  0.95
+#> 17                 mean                   expenditure_debt    admin2  0.95
+#> 18               median                   expenditure_debt    admin2  0.95
+#> 19                 mean            income_v1_salaried_work    admin2  0.95
+#> 20               median            income_v1_salaried_work    admin2  0.95
+#> 21      prop_select_one           wash_drinkingwatersource    admin2  0.95
+#> 22 prop_select_multiple edu_learning_conditions_reasons_v1    admin2  0.95
 ```
 
 - two variables combined
 
 ``` r
-ex4_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2")
+ex4_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2", sm_separator = "/")
 #> Joining with `by = join_by(type)`
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 92% | ETA: 0s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ex4_results[["loa"]]
-#>      analysis_type             analysis_var      group_var level
-#> 1  prop_select_one                   admin1           <NA>  0.95
-#> 2  prop_select_one                   admin2           <NA>  0.95
-#> 3             mean         expenditure_debt           <NA>  0.95
-#> 4           median         expenditure_debt           <NA>  0.95
-#> 5             mean  income_v1_salaried_work           <NA>  0.95
-#> 6           median  income_v1_salaried_work           <NA>  0.95
-#> 7  prop_select_one wash_drinkingwatersource           <NA>  0.95
-#> 8             mean         expenditure_debt admin1, admin2  0.95
-#> 9           median         expenditure_debt admin1, admin2  0.95
-#> 10            mean  income_v1_salaried_work admin1, admin2  0.95
-#> 11          median  income_v1_salaried_work admin1, admin2  0.95
-#> 12 prop_select_one wash_drinkingwatersource admin1, admin2  0.95
+#>           analysis_type                       analysis_var      group_var level
+#> 1       prop_select_one                             admin1           <NA>  0.95
+#> 2       prop_select_one                             admin2           <NA>  0.95
+#> 3                  mean                   expenditure_debt           <NA>  0.95
+#> 4                median                   expenditure_debt           <NA>  0.95
+#> 5                  mean            income_v1_salaried_work           <NA>  0.95
+#> 6                median            income_v1_salaried_work           <NA>  0.95
+#> 7       prop_select_one           wash_drinkingwatersource           <NA>  0.95
+#> 8  prop_select_multiple edu_learning_conditions_reasons_v1           <NA>  0.95
+#> 9                  mean                   expenditure_debt admin1, admin2  0.95
+#> 10               median                   expenditure_debt admin1, admin2  0.95
+#> 11                 mean            income_v1_salaried_work admin1, admin2  0.95
+#> 12               median            income_v1_salaried_work admin1, admin2  0.95
+#> 13      prop_select_one           wash_drinkingwatersource admin1, admin2  0.95
+#> 14 prop_select_multiple edu_learning_conditions_reasons_v1 admin1, admin2  0.95
 ```
 
 ### How to perform a descriptive analysis with a *list of analysis*
 
 ``` r
-ex5_results <- create_analysis(.design = srvyr::as_survey(shorter_df), loa = analysistools_loa)
+ex5_results <- create_analysis(.design = srvyr::as_survey(shorter_df), loa = analysistools_MSNA_template_loa, sm_separator = "/")
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 92% | ETA: 0s
 ex5_results[["loa"]]
-#>      analysis_type             analysis_var group_var level
-#> 1  prop_select_one                   admin1      <NA>  0.95
-#> 2             mean  income_v1_salaried_work      <NA>  0.95
-#> 3           median  income_v1_salaried_work      <NA>  0.95
-#> 4             mean         expenditure_debt      <NA>  0.95
-#> 5           median         expenditure_debt      <NA>  0.95
-#> 6  prop_select_one wash_drinkingwatersource      <NA>  0.95
-#> 7             mean  income_v1_salaried_work    admin1  0.95
-#> 8           median  income_v1_salaried_work    admin1  0.95
-#> 9             mean         expenditure_debt    admin1  0.95
-#> 10          median         expenditure_debt    admin1  0.95
-#> 11 prop_select_one wash_drinkingwatersource    admin1  0.95
+#>           analysis_type                       analysis_var group_var level
+#> 1       prop_select_one                             admin1      <NA>  0.95
+#> 2                  mean            income_v1_salaried_work      <NA>  0.95
+#> 3                median            income_v1_salaried_work      <NA>  0.95
+#> 4                  mean                   expenditure_debt      <NA>  0.95
+#> 5                median                   expenditure_debt      <NA>  0.95
+#> 6       prop_select_one           wash_drinkingwatersource      <NA>  0.95
+#> 7  prop_select_multiple edu_learning_conditions_reasons_v1      <NA>  0.95
+#> 8                  mean            income_v1_salaried_work    admin1  0.95
+#> 9                median            income_v1_salaried_work    admin1  0.95
+#> 10                 mean                   expenditure_debt    admin1  0.95
+#> 11               median                   expenditure_debt    admin1  0.95
+#> 12      prop_select_one           wash_drinkingwatersource    admin1  0.95
+#> 13 prop_select_multiple edu_learning_conditions_reasons_v1    admin1  0.95
 ```
 
 ### How to perform specfic analysis
@@ -341,9 +467,9 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
 #> # A tibble: 3 × 13
 #>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_o… value        a                  <NA>      <NA>             0.51
+#> 1 prop_select_o… value        a                  <NA>      <NA>             0.52
 #> 2 prop_select_o… value        b                  <NA>      <NA>             0.36
-#> 3 prop_select_o… value        c                  <NA>      <NA>             0.13
+#> 3 prop_select_o… value        c                  <NA>      <NA>             0.12
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
@@ -354,12 +480,12 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
 #> # A tibble: 6 × 13
 #>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_o… value        a                  groups    group_a         0.516
-#> 2 prop_select_o… value        b                  groups    group_a         0.359
-#> 3 prop_select_o… value        c                  groups    group_a         0.125
-#> 4 prop_select_o… value        a                  groups    group_b         0.5  
-#> 5 prop_select_o… value        b                  groups    group_b         0.361
-#> 6 prop_select_o… value        c                  groups    group_b         0.139
+#> 1 prop_select_o… value        a                  groups    group_a         0.511
+#> 2 prop_select_o… value        b                  groups    group_a         0.356
+#> 3 prop_select_o… value        c                  groups    group_a         0.133
+#> 4 prop_select_o… value        a                  groups    group_b         0.527
+#> 5 prop_select_o… value        b                  groups    group_b         0.364
+#> 6 prop_select_o… value        c                  groups    group_b         0.109
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
@@ -404,10 +530,10 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
 #> # A tibble: 4 × 13
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
-#> 1 prop_select_… smvar        option1            <NA>      <NA>            0.698 
-#> 2 prop_select_… smvar        option2            <NA>      <NA>            0.635 
-#> 3 prop_select_… smvar        option3            <NA>      <NA>            0.0312
-#> 4 prop_select_… smvar        option4            <NA>      <NA>            0.854 
+#> 1 prop_select_… smvar        option1            <NA>      <NA>            0.616 
+#> 2 prop_select_… smvar        option2            <NA>      <NA>            0.667 
+#> 3 prop_select_… smvar        option3            <NA>      <NA>            0.0707
+#> 4 prop_select_… smvar        option4            <NA>      <NA>            0.768 
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 
@@ -417,16 +543,16 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
   level = 0.95
 )
 #> # A tibble: 8 × 13
-#>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
-#>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_m… smvar        option1            groups    group_a         0.66 
-#> 2 prop_select_m… smvar        option2            groups    group_a         0.66 
-#> 3 prop_select_m… smvar        option3            groups    group_a         0.06 
-#> 4 prop_select_m… smvar        option4            groups    group_a         0.84 
-#> 5 prop_select_m… smvar        option1            groups    group_b         0.739
-#> 6 prop_select_m… smvar        option2            groups    group_b         0.609
-#> 7 prop_select_m… smvar        option3            groups    group_b         0    
-#> 8 prop_select_m… smvar        option4            groups    group_b         0.870
+#>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
+#>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
+#> 1 prop_select_… smvar        option1            groups    group_a         0.543 
+#> 2 prop_select_… smvar        option2            groups    group_a         0.652 
+#> 3 prop_select_… smvar        option3            groups    group_a         0.0652
+#> 4 prop_select_… smvar        option4            groups    group_a         0.783 
+#> 5 prop_select_… smvar        option1            groups    group_b         0.679 
+#> 6 prop_select_… smvar        option2            groups    group_b         0.679 
+#> 7 prop_select_… smvar        option3            groups    group_b         0.0755
+#> 8 prop_select_… smvar        option4            groups    group_b         0.755 
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```

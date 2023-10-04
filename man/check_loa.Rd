@@ -20,6 +20,6 @@ Helper to check the list of analysis format
 \examples{
 check_loa(
   .design = srvyr::as_survey(analysistools_MSNA_template_data),
-  loa = analysistools_loa
+  loa = analysistools_MSNA_template_loa
 )
 }

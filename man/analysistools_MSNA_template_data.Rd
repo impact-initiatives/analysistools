@@ -8,12 +8,6 @@
 analysistools_MSNA_template_data
 }
 \description{
-Clean data and Sample Frame
-}
-\details{
-These data sets include HH data template
-}
-\examples{
-analysistools_MSNA_template_data
+MSNA template dataset (example)
 }
 \keyword{datasets}
