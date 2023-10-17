@@ -67,6 +67,9 @@
     <loc>https://impact-initiatives.github.io/analysistools/reference/create_analysis.html</loc>
   </url>
   <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/create_analysis_key_table.html</loc>
+  </url>
+  <url>
     <loc>https://impact-initiatives.github.io/analysistools/reference/create_analysis_mean.html</loc>
   </url>
   <url>
@@ -82,13 +85,25 @@
     <loc>https://impact-initiatives.github.io/analysistools/reference/create_analysis_ratio.html</loc>
   </url>
   <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/create_group_var.html</loc>
+  </url>
+  <url>
     <loc>https://impact-initiatives.github.io/analysistools/reference/create_loa.html</loc>
+  </url>
+  <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/create_loa_from_results.html</loc>
   </url>
   <url>
     <loc>https://impact-initiatives.github.io/analysistools/reference/index.html</loc>
   </url>
   <url>
     <loc>https://impact-initiatives.github.io/analysistools/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/unite_variables.html</loc>
+  </url>
+  <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/verify_analysis_key.html</loc>
   </url>
   <url>
     <loc>https://impact-initiatives.github.io/analysistools/reference/verify_if_AinB.html</loc>

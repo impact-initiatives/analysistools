@@ -42,7 +42,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_loa</span><span class="op">(</span><span class="va">loa</span>, <span class="va">.design</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_loa</span><span class="op">(</span><span class="va">loa</span>, <span class="va">design</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -51,7 +51,7 @@
 <dd><p>a <em>list of analysis</em></p></dd>
 
 
-<dt>.design</dt>
+<dt>design</dt>
 <dd><p>Survey design object created with srvyr::as_survey or as_survey_design</p></dd>
 
 </dl></div>
@@ -65,7 +65,7 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">check_loa</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  .design <span class="op">=</span> <span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="http://gdfe.co/srvyr/reference/as_survey.html" class="external-link">as_survey</a></span><span class="op">(</span><span class="va">analysistools_MSNA_template_data</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  design <span class="op">=</span> <span class="fu">srvyr</span><span class="fu">::</span><span class="fu"><a href="http://gdfe.co/srvyr/reference/as_survey.html" class="external-link">as_survey</a></span><span class="op">(</span><span class="va">analysistools_MSNA_template_data</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  loa <span class="op">=</span> <span class="va">analysistools_MSNA_template_loa</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           analysis_type                       analysis_var group_var level</span>
