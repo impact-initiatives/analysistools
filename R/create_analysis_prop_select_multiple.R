@@ -1,6 +1,6 @@
 #' Calculate proportion from a survey design
 #'
-#' @param .design design survey
+#' @param design design survey
 #' @param group_var dependent variable(s), variable to group by. If no dependent
 #' variable, it should be NA or empty string. If more than one variable, it
 #' should be one string with each variable separated by comma, e.g. "groupa, groupb"
@@ -39,7 +39,7 @@
 #'   analysis_var = "smvar",
 #'   level = 0.95
 #' )
-create_analysis_prop_select_multiple <- function(.design, group_var = NA, analysis_var, level = .95, sm_separator = ".") {
+create_analysis_prop_select_multiple <- function(design, group_var = NA, analysis_var, level = .95, sm_separator = ".") {
   # check the grouping variable
   if (is.na(group_var)) {
     across_by <- c()
@@ -53,13 +53,13 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
   sm_var_choice_start <- paste0(analysis_var, sm_separator)
 
   ## prepare the dataset
-  .design <- .design %>%
+  design <- design %>%
     dplyr::mutate(dplyr::across(dplyr::starts_with(sm_var_choice_start), as.numeric)) %>%
     dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
     dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T)
 
   ## get the stats
-  results <- .design %>%
+  results <- design %>%
     srvyr::summarise(dplyr::across(dplyr::starts_with(sm_var_choice_start),
       .fns = list(
         stat = ~ srvyr::survey_mean(.x,
@@ -95,7 +95,7 @@ create_analysis_prop_select_multiple <- function(.design, group_var = NA, analys
         TRUE ~ type
       ),
       analysis_var_value = stringr::str_replace(analysis_var_value, "_low$|_upp$", ""),
-      group_var = group_var %>% stringr::str_replace_all(",", " ~/~"),
+      group_var = create_group_var(group_var),
       analysis_type = "prop_select_multiple"
     ) %>%
     dplyr::filter(type %in% c("stat", "stat_low", "stat_upp", "n_w", "n", "n_w_total", "n_total"))

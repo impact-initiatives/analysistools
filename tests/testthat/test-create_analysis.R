@@ -35,16 +35,30 @@ test_that("Errors are caught correctly", {
   wrong_shape_loa3 <- data.frame(analysis_type = "mean", analysis_var = "a1", group = "b1", level = .95)
 
   expect_error(
-    check_loa(loa = data.frame(wrong_shape_loa1)),
-    "Make sure you have at least analysis_type, group_var, analysis_var in your loa"
+    check_loa(loa = wrong_shape_loa1),
+    "Make sure to have analysis_type in your loa"
   )
   expect_error(
-    check_loa(loa = data.frame(wrong_shape_loa2)),
-    "Make sure you have at least analysis_type, group_var, analysis_var in your loa"
+    check_loa(loa = wrong_shape_loa2),
+    "Make sure to have group_var, analysis_var in your loa"
   )
   expect_error(
-    check_loa(loa = data.frame(wrong_shape_loa3)),
-    "Make sure you have at least analysis_type, group_var, analysis_var in your loa"
+    check_loa(loa = wrong_shape_loa3),
+    "Make sure to have group_var, analysis_var in your loa"
+  )
+
+  #checks that a loa can only have ratios
+  ratio_2groups_test_loa <- data.frame(analysis_type = "ratio",
+                                       analysis_var_numerator = "income_v1_salaried_work",
+                                       analysis_var_denominator = "expenditure_debt",
+                                       group_var = "admin1",
+                                       level = ".95",
+                                       numerator_NA_to_0 = TRUE,
+                                       filter_denominator_0 = TRUE
+  )
+  expect_equal(
+    check_loa(loa = ratio_2groups_test_loa, srvyr::as_survey(analysistools_MSNA_template_data)),
+    ratio_2groups_test_loa
   )
 
   typo_loa <- data.frame(
@@ -130,7 +144,7 @@ test_that("Errors are caught correctly", {
 test_that("If loa and group variable are provided, group_var will be ignored", {
   expect_warning(
     create_analysis(
-      .design = srvyr::as_survey(analysistools::analysistools_MSNA_template_data),
+      design = srvyr::as_survey(analysistools::analysistools_MSNA_template_data),
       loa = analysistools::analysistools_MSNA_template_loa_with_ratio,
       group_var = "admin1",
       sm_separator = "/"
@@ -220,3 +234,27 @@ test_that("check_loa separates the grouping variables correclty", {
 
   expect_equal(check_loa(loa_test, srvyr::as_survey(analysistools_MSNA_template_data)), loa_test)
 })
+
+test_that("create_group_var split correctly the group_var for all analysis type", {
+  no_space_loa <- analysistools_MSNA_template_loa_with_ratio %>%
+    dplyr::mutate(group_var = "admin1,admin2,admin3") %>%
+    dplyr::distinct() %>%
+    dplyr::filter(analysis_var != "admin1" | is.na(analysis_var))
+  no_space_results <- create_analysis(srvyr::as_survey(analysistools_MSNA_template_data),
+                              loa = no_space_loa,
+                              sm_separator = "/") %>% suppressWarnings()
+
+  spaced_loa <- analysistools_MSNA_template_loa_with_ratio %>%
+    dplyr::mutate(group_var = "admin1, admin2, admin3") %>%
+    dplyr::distinct() %>%
+    dplyr::filter(analysis_var != "admin1" | is.na(analysis_var))
+
+  spaced_results <- create_analysis(srvyr::as_survey(analysistools_MSNA_template_data),
+                              loa = spaced_loa,
+                              sm_separator = "/") %>% suppressWarnings()
+  expect_equal(no_space_results$results_table, spaced_results$results_table)
+  }
+)
+
+#check_loa does not break when no grouping variables
+# analysistools_MSNA_template_loa %>% filter(is.na(group_var)) %>% check_loa(design = srvyr::as_survey(analysistools_MSNA_template_data))

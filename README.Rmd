@@ -1,5 +1,8 @@
 ---
 output: github_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,16 +19,21 @@ knitr::opts_chunk$set(
 # analysistools
 
 <!-- badges: start -->
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
+
+[![Contributor
+Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 [![check-standard](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml)
-[![Codecov test coverage](https://codecov.io/gh/impact-initiatives/analysistools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/impact-initiatives/analysistools?branch=main)
+[![Codecov test
+coverage](https://codecov.io/gh/impact-initiatives/analysistools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/impact-initiatives/analysistools?branch=main)
+
 <!-- badges: end -->
 
 The goal of analysistools is to ...
 
 ## Installation
 
-You can install the development version of analysistools from [GitHub](https://github.com/) with:
+You can install the development version of analysistools from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -33,6 +41,7 @@ devtools::install_github("impact-initiatives/analysistools")
 ```
 
 ## Example
+
 ```{r load}
 library(analysistools)
 ```
@@ -61,25 +70,27 @@ weighted_shorter_df <- shorter_df %>%
     population_column = "population"
   )
 
-weighted_shorter_df %>% head()
+weighted_shorter_df[, c("admin1", "weights")] %>% head()
 ```
-
 
 ### How to perform a descriptive analysis (mean, median, proportions)
 
 The *create_analysis* function needs a survey design from *srvyr*.
+
 ```{r}
 example_design <- srvyr::as_survey(weighted_shorter_df, strata = admin1, weights = weights)
 ```
 
-If only the design is provided, it will perform mean, median and proportions.
+If only the design is provided, it will perform mean, median and
+proportions.
+
 ```{r}
-ex1_results <- create_analysis(.design = example_design, sm_separator = "/")
+ex1_results <- create_analysis(design = example_design, sm_separator = "/")
 ```
-It should return an object with 3 elements: 
-- the results table (in a long format and analysis key),
-- the dataset used,
-- the list of analysis performed.
+
+It should return an object with 3 elements: - the results table (in a
+long format and analysis key), - the dataset used, - the list of
+analysis performed.
 
 ```{r}
 names(ex1_results)
@@ -88,44 +99,48 @@ names(ex1_results)
 ```{r}
 ex1_results[["results_table"]] %>% head()
 ```
+
 ```{r}
 ex1_results[["loa"]] %>% head()
 ```
 
 #### Grouping variables
-The group_var can be used to defined the different grouping, independent variables. For example:
-- one variable
+
+The group_var can be used to defined the different grouping, independent
+variables. For example: - one variable
 
 ```{r}
-ex2_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1", sm_separator = "/")
+ex2_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = "admin1", sm_separator = "/")
 ex2_results[["loa"]]
 ```
 
-- two variables separately
+-   two variables separately
 
 ```{r}
-ex3_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"), sm_separator = "/")
+ex3_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"), sm_separator = "/")
 ex3_results[["loa"]]
 ```
 
-- two variables combined
+-   two variables combined
 
 ```{r}
-ex4_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2", sm_separator = "/")
+ex4_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2", sm_separator = "/")
 ex4_results[["loa"]]
 ```
 
 ### How to perform a descriptive analysis with a *list of analysis*
 
 ```{r}
-ex5_results <- create_analysis(.design = srvyr::as_survey(shorter_df), loa = analysistools_MSNA_template_loa, sm_separator = "/")
+ex5_results <- create_analysis(design = srvyr::as_survey(shorter_df), loa = analysistools_MSNA_template_loa, sm_separator = "/")
 ex5_results[["loa"]]
 ```
 
 ### How to perform specfic analysis
 
 #### Mean
+
 This is a basic example which shows you how to calculate the mean:
+
 ```{r mean}
 somedata <- data.frame(
   aa = 1:10,
@@ -163,7 +178,9 @@ create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
 #### Proportion
 
 ##### Select one
-This is a basic example which shows you how to calculate the proportion for select one:
+
+This is a basic example which shows you how to calculate the proportion
+for select one:
 
 ```{r proportion}
 somedata <- data.frame(
@@ -219,7 +236,8 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
 
 #### Ratios
 
-This is a basic example which shows you how to calculate the ratio between 2 numeric variables:
+This is a basic example which shows you how to calculate the ratio
+between 2 numeric variables:
 
 ```{r}
 school_ex <- data.frame(
@@ -232,10 +250,12 @@ school_ex <- data.frame(
 me_design <- srvyr::as_survey(school_ex)
 ```
 
-Default value will give a ratio of 0.2 as there are 1 child out of 5 attending school. In the
-hh3, the NA is present because there is a skip logic, there cannot be a child attending as none
-are enrolled.
-The number of household counted, n, is equal to 2, as there are 2 households only having child.
+Default value will give a ratio of 0.2 as there are 1 child out of 5
+attending school. In the hh3, the NA is present because there is a skip
+logic, there cannot be a child attending as none are enrolled. The
+number of household counted, n, is equal to 2, as there are 2 households
+only having child.
+
 ```{r}
 create_analysis_ratio(me_design,
   analysis_var_numerator = "num_attending",
@@ -243,21 +263,10 @@ create_analysis_ratio(me_design,
 )
 ```
 
-If numerator_NA_to_0 is set to FALSE, ratio will be 1/3, as hh3 with 2 children and NA for
-attending will be removed with the na.rm = T inside the survey_ratio calculation.
-The number of household used in the calculation is 1.
-```{r}
-create_analysis_ratio(me_design,
-  analysis_var_numerator = "num_attending",
-  analysis_var_denominator = "num_children",
-  numerator_NA_to_0 = FALSE
-)
-```
-If filter_denominator_0 is set to FALSE, ratio will be 0.2 as there are 1 child out of 5
-attending school. In the hh3, the NA is present because there is a skip logic,
-there cannot be a child attending as none are enrolled.
-The number of household counted, n, is equal to 3 instead 2. The household with 0 child is
-counted in the n.
+If numerator_NA_to_0 is set to FALSE, ratio will be 1/3, as hh3 with 2
+children and NA for attending will be removed with the na.rm = T inside
+the survey_ratio calculation. The number of household used in the
+calculation is 1.
 
 ```{r}
 create_analysis_ratio(me_design,
@@ -266,6 +275,21 @@ create_analysis_ratio(me_design,
   numerator_NA_to_0 = FALSE
 )
 ```
+
+If filter_denominator_0 is set to FALSE, ratio will be 0.2 as there are
+1 child out of 5 attending school. In the hh3, the NA is present because
+there is a skip logic, there cannot be a child attending as none are
+enrolled. The number of household counted, n, is equal to 3 instead 2.
+The household with 0 child is counted in the n.
+
+```{r}
+create_analysis_ratio(me_design,
+  analysis_var_numerator = "num_attending",
+  analysis_var_denominator = "num_children",
+  numerator_NA_to_0 = FALSE
+)
+```
+
 For weigths and group:
 
 ```{r}
@@ -294,8 +318,76 @@ create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = gro
 )
 ```
 
+### How to review results
+
+The logic behind reviewing analysis is to compare the results from 2
+independent analysis of the same variables using the
+*review_one_variable* or *review_variables* from
+[addindicators](https://github.com/impact-initiatives/addindicators)
+package
+
+In this example, the results table to be review and the dataset are
+loaded.
+
+```{r}
+results_to_review <- analysistools::analysistools_MSNA_template_with_ratio_results_table$results_table
+
+dataset_to_analyse <- analysistools::analysistools_MSNA_template_data
+```
+
+The list of analysis from the results can be reproduced with
+*create_loa_from_results* and the analysis key. This *loa* can be used
+to create a new analysis to be compared with.
+
+```{r}
+me_loa <- create_loa_from_results(results_to_review)
+
+me_analysis <- create_analysis(srvyr::as_survey(dataset_to_analyse),
+                               loa = me_loa,
+                               sm_separator = "/")
+```
+
+The new results and the results to be reviewed are bound together by the
+*analysis_key*.
+
+```{r}
+binded_results <- results_to_review %>%
+  dplyr::full_join(me_analysis$results_table, by ="analysis_key")
+```
+
+There are 2 functions in the
+[addindicators](https://github.com/impact-initiatives/addindicators)
+packages that can be used to review:\
+- review_one_variable, to review only one variable\
+- review_variables, a wrapper around review_one_variable to be able to
+review several variables.
+
+``` r
+# install.packages("devtools")
+devtools::install_github("impact-initiatives/analysistools")
+```
+
+```{r}
+library(addindicators)
+```
+
+```{r}
+review_results <- review_variables(binded_results, 
+                                   columns_to_review = c("stat.x", "stat_low.x", "stat_upp.x"),
+                                   columns_to_compare_with = c("stat.y", "stat_low.y", "stat_upp.y"))
+
+review_results$review_table %>%
+  dplyr::group_by(variable) %>%
+  dplyr::summarise(prop_correction = mean(review_check))
+
+review_results$review_table %>%
+  dplyr::group_by(variable, review_comment) %>%
+  dplyr::tally(sort = T)
+```
+
 ## Code of Conduct
 
-Please note that the analysistools project is released with a [Contributor Code of Conduct](https://impact-initiatives.github.io/analysistools/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
-
-
+Please note that the analysistools project is released with a
+[Contributor Code of
+Conduct](https://impact-initiatives.github.io/analysistools/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.

@@ -4,12 +4,12 @@
 \alias{check_loa}
 \title{Helper to check the list of analysis format}
 \usage{
-check_loa(loa, .design)
+check_loa(loa, design)
 }
 \arguments{
 \item{loa}{a \emph{list of analysis}}
 
-\item{.design}{Survey design object created with srvyr::as_survey or as_survey_design}
+\item{design}{Survey design object created with srvyr::as_survey or as_survey_design}
 }
 \value{
 The loa with default values added if missing or an error if something is not correct.
@@ -19,7 +19,7 @@ Helper to check the list of analysis format
 }
 \examples{
 check_loa(
-  .design = srvyr::as_survey(analysistools_MSNA_template_data),
+  design = srvyr::as_survey(analysistools_MSNA_template_data),
   loa = analysistools_MSNA_template_loa
 )
 }

@@ -165,7 +165,7 @@ create_analysis_ratio <- function(design,
       )
     ) %>%
     dplyr::mutate(
-      group_var = group_var %>% stringr::str_replace_all(",", " ~/~"),
+      group_var = create_group_var(group_var),
       analysis_var = paste(analysis_var_numerator, "~/~", analysis_var_denominator),
       analysis_var_value = "NA ~/~ NA",
       analysis_type = "ratio",

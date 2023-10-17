@@ -61,7 +61,7 @@ create_analysis_prop_select_one <- function(design, group_var = NA, analysis_var
       )
     ) %>%
     dplyr::mutate(
-      group_var = group_var %>% stringr::str_replace_all(",", " ~/~"),
+      group_var = create_group_var(group_var),
       analysis_var = analysis_var,
       analysis_type = "prop_select_one",
       n_total = sum(n),
