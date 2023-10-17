@@ -4,10 +4,10 @@
 \alias{create_loa}
 \title{Create a list of analysis from design and a grouping variable}
 \usage{
-create_loa(.design, group_var = NULL, sm_separator = ".")
+create_loa(design, group_var = NULL, sm_separator = ".")
 }
 \arguments{
-\item{.design}{Survey design object created with srvyr::as_survey or as_survey_design}
+\item{design}{Survey design object created with srvyr::as_survey or as_survey_design}
 
 \item{group_var}{The grouping variable as string. If a combination of grouping variable should be
 used together it should be 1 string character separated with a ",". i.e. c("admin1", "population")
@@ -34,7 +34,7 @@ shorter_df <- analysistools_MSNA_template_data[, c(
 )]
 
 create_loa(
-  .design = srvyr::as_survey(shorter_df),
+  design = srvyr::as_survey(shorter_df),
   group_var = "admin1"
 )
 }

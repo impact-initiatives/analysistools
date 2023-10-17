@@ -4,10 +4,10 @@
 \alias{create_analysis}
 \title{Create analysis from a design}
 \usage{
-create_analysis(.design, loa = NULL, group_var = NULL, sm_separator = ".")
+create_analysis(design, loa = NULL, group_var = NULL, sm_separator = ".")
 }
 \arguments{
-\item{.design}{Survey design object created with srvyr::as_survey or as_survey_design}
+\item{design}{Survey design object created with srvyr::as_survey or as_survey_design}
 
 \item{loa}{list of analysis: Default is NULL. If provided it will be used to create the analysis.}
 
@@ -52,12 +52,12 @@ If ratios have to be performed, the \emph{loa} should include the following colu
 }
 \examples{
 create_analysis(
-  .design = srvyr::as_survey(analysistools_MSNA_template_data),
+  design = srvyr::as_survey(analysistools_MSNA_template_data),
   loa = analysistools_MSNA_template_loa,
   sm_separator = "/"
 )
 create_analysis(
-  .design = srvyr::as_survey(analysistools_MSNA_template_data),
+  design = srvyr::as_survey(analysistools_MSNA_template_data),
   loa = analysistools_MSNA_template_loa_with_ratio,
   sm_separator = "/"
 )
@@ -68,15 +68,15 @@ shorter_df <- analysistools_MSNA_template_data[, c(
   "wash_drinkingwatersource"
 )]
 create_analysis(
-  .design = srvyr::as_survey(shorter_df),
+  design = srvyr::as_survey(shorter_df),
   group_var = "admin1"
 )
 create_analysis(
-  .design = srvyr::as_survey(shorter_df),
+  design = srvyr::as_survey(shorter_df),
   group_var = "admin1, admin2"
 )
 create_analysis(
-  .design = srvyr::as_survey(shorter_df),
+  design = srvyr::as_survey(shorter_df),
   group_var = c("admin1", "admin2")
 )
 }

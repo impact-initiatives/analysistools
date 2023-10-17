@@ -14,3 +14,9 @@ test_that("char_to_vector returns the correct outputs", {
   expect_error(char_to_vector("   ,group_a "), "The group_var seems to have empty value, please check the inputs values")
   expect_error(char_to_vector(c("group_a ", "group_b")), "The group_var to be turned into a vector is already a vector.")
 })
+
+test_that("create_group_var separates correctly", {
+  expect_equal(create_group_var("groupa, groupb"), "groupa ~/~ groupb")
+  expect_equal(create_group_var("groupa,groupb"), "groupa ~/~ groupb")
+  expect_equal(create_group_var(NA), NA_character_)
+})

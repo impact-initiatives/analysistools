@@ -187,3 +187,20 @@ verify_if_AinB <- function(.A, .B, msg_error) {
     stop(msg)
   }
 }
+
+#' Helper to reformat the group_var for the results table
+#'
+#' @param group_var one string with each variable separated by comma, e.g. "groupa, groupb"
+#' to group for groupa and groupb
+#'
+#' @return group_var separated by " ~/~ " instead of a ","
+#' @export
+#'
+#' @examples
+#' create_group_var("groupa, groupb")
+#' create_group_var("groupa,groupb")
+#' create_group_var(NA)
+
+create_group_var <- function(group_var) {
+  group_var %>% stringr::str_replace_all(",", " ~/~ ") %>% stringr::str_squish()
+}

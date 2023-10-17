@@ -10,6 +10,7 @@ Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](c
 [![check-standard](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/impact-initiatives/analysistools/actions/workflows/check-standard.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/impact-initiatives/analysistools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/impact-initiatives/analysistools?branch=main)
+
 <!-- badges: end -->
 
 The goal of analysistools is to …
@@ -54,133 +55,14 @@ weighted_shorter_df <- shorter_df %>%
     population_column = "population"
   )
 
-weighted_shorter_df %>% head()
-#>    admin1  admin2 expenditure_debt income_v1_salaried_work
-#> 1 admin1b admin2a               22                      18
-#> 2 admin1c admin2b               18                      24
-#> 3 admin1c admin2b               18                      22
-#> 4 admin1c admin2b               23                      20
-#> 5 admin1c admin2a               20                      21
-#> 6 admin1c admin2b               23                      22
-#>   wash_drinkingwatersource
-#> 1            tanker_trucks
-#> 2            bottled_water
-#> 3              water_kiosk
-#> 4                dont_know
-#> 5                dont_know
-#> 6              water_kiosk
-#>                                                                                                                                  edu_learning_conditions_reasons_v1
-#> 1 curriculum_not_adapted poor_wash discrimination displacement language_barriers curriculum_not_adapted_remote unreliable_technology lack_equipment other dont_know
-#> 2                 overcrowding curriculum_not_adapted lack_teachers lack_qualified_staff lack_materials discrimination curriculum_not_adapted_remote lack_equipment
-#> 3                                                                           overcrowding lack_materials discrimination curriculum_not_adapted_remote lack_equipment
-#> 4                                            overcrowding curriculum_not_adapted lack_qualified_staff displacement language_barriers lack_equipment other dont_know
-#> 5                                                                          overcrowding lack_materials language_barriers unreliable_technology lack_equipment other
-#> 6                                                                                                                                displacement unreliable_technology
-#>   edu_learning_conditions_reasons_v1/overcrowding
-#> 1                                           FALSE
-#> 2                                            TRUE
-#> 3                                            TRUE
-#> 4                                            TRUE
-#> 5                                            TRUE
-#> 6                                           FALSE
-#>   edu_learning_conditions_reasons_v1/curriculum_not_adapted
-#> 1                                                      TRUE
-#> 2                                                      TRUE
-#> 3                                                     FALSE
-#> 4                                                      TRUE
-#> 5                                                     FALSE
-#> 6                                                     FALSE
-#>   edu_learning_conditions_reasons_v1/lack_teachers
-#> 1                                            FALSE
-#> 2                                             TRUE
-#> 3                                            FALSE
-#> 4                                            FALSE
-#> 5                                            FALSE
-#> 6                                            FALSE
-#>   edu_learning_conditions_reasons_v1/lack_qualified_staff
-#> 1                                                   FALSE
-#> 2                                                    TRUE
-#> 3                                                   FALSE
-#> 4                                                    TRUE
-#> 5                                                   FALSE
-#> 6                                                   FALSE
-#>   edu_learning_conditions_reasons_v1/lack_materials
-#> 1                                             FALSE
-#> 2                                              TRUE
-#> 3                                              TRUE
-#> 4                                             FALSE
-#> 5                                              TRUE
-#> 6                                             FALSE
-#>   edu_learning_conditions_reasons_v1/poor_wash
-#> 1                                         TRUE
-#> 2                                        FALSE
-#> 3                                        FALSE
-#> 4                                        FALSE
-#> 5                                        FALSE
-#> 6                                        FALSE
-#>   edu_learning_conditions_reasons_v1/discrimination
-#> 1                                              TRUE
-#> 2                                              TRUE
-#> 3                                              TRUE
-#> 4                                             FALSE
-#> 5                                             FALSE
-#> 6                                             FALSE
-#>   edu_learning_conditions_reasons_v1/displacement
-#> 1                                            TRUE
-#> 2                                           FALSE
-#> 3                                           FALSE
-#> 4                                            TRUE
-#> 5                                           FALSE
-#> 6                                            TRUE
-#>   edu_learning_conditions_reasons_v1/language_barriers
-#> 1                                                 TRUE
-#> 2                                                FALSE
-#> 3                                                FALSE
-#> 4                                                 TRUE
-#> 5                                                 TRUE
-#> 6                                                FALSE
-#>   edu_learning_conditions_reasons_v1/curriculum_not_adapted_remote
-#> 1                                                             TRUE
-#> 2                                                             TRUE
-#> 3                                                             TRUE
-#> 4                                                            FALSE
-#> 5                                                            FALSE
-#> 6                                                            FALSE
-#>   edu_learning_conditions_reasons_v1/unreliable_technology
-#> 1                                                     TRUE
-#> 2                                                    FALSE
-#> 3                                                    FALSE
-#> 4                                                    FALSE
-#> 5                                                     TRUE
-#> 6                                                     TRUE
-#>   edu_learning_conditions_reasons_v1/lack_equipment
-#> 1                                              TRUE
-#> 2                                              TRUE
-#> 3                                              TRUE
-#> 4                                              TRUE
-#> 5                                              TRUE
-#> 6                                             FALSE
-#>   edu_learning_conditions_reasons_v1/other
-#> 1                                     TRUE
-#> 2                                    FALSE
-#> 3                                    FALSE
-#> 4                                     TRUE
-#> 5                                     TRUE
-#> 6                                    FALSE
-#>   edu_learning_conditions_reasons_v1/dont_know
-#> 1                                         TRUE
-#> 2                                        FALSE
-#> 3                                        FALSE
-#> 4                                         TRUE
-#> 5                                        FALSE
-#> 6                                        FALSE
-#>   edu_learning_conditions_reasons_v1/prefer_not_to_answer  weights
-#> 1                                                   FALSE 1.157407
-#> 2                                                   FALSE 1.190476
-#> 3                                                   FALSE 1.190476
-#> 4                                                   FALSE 1.190476
-#> 5                                                   FALSE 1.190476
-#> 6                                                   FALSE 1.190476
+weighted_shorter_df[, c("admin1", "weights")] %>% head()
+#>    admin1  weights
+#> 1 admin1b 1.157407
+#> 2 admin1c 1.190476
+#> 3 admin1c 1.190476
+#> 4 admin1c 1.190476
+#> 5 admin1c 1.190476
+#> 6 admin1c 1.190476
 ```
 
 ### How to perform a descriptive analysis (mean, median, proportions)
@@ -195,7 +77,7 @@ If only the design is provided, it will perform mean, median and
 proportions.
 
 ``` r
-ex1_results <- create_analysis(.design = example_design, sm_separator = "/")
+ex1_results <- create_analysis(design = example_design, sm_separator = "/")
 #> Joining with `by = join_by(type)`
 ```
 
@@ -240,7 +122,7 @@ The group_var can be used to defined the different grouping, independent
 variables. For example: - one variable
 
 ``` r
-ex2_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1", sm_separator = "/")
+ex2_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = "admin1", sm_separator = "/")
 #> Joining with `by = join_by(type)`
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ex2_results[["loa"]]
@@ -265,16 +147,15 @@ ex2_results[["loa"]]
 - two variables separately
 
 ``` r
-ex3_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"), sm_separator = "/")
+ex3_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"), sm_separator = "/")
 #> Joining with `by = join_by(type)`
-#> ■■■■■■■■■■■■ 36% | ETA: 2s
 #> ■■■■■■■■■■■■■ 41% | ETA: 2s
+#> ■■■■■■■■■■■■■■■■ 50% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■ 64% | ETA: 1s
-#> ■■■■■■■■■■■■■■■■■■■■■ 68% | ETA: 2s
+#> ■■■■■■■■■■■■■■■■■■■■■ 68% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■■■ 77% | ETA: 1s
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■ 82% | ETA: 1s
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 91% | ETA: 0s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■ 86% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 95% | ETA: 0s
 ex3_results[["loa"]]
 #>           analysis_type                       analysis_var group_var level
@@ -305,7 +186,7 @@ ex3_results[["loa"]]
 - two variables combined
 
 ``` r
-ex4_results <- create_analysis(.design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2", sm_separator = "/")
+ex4_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2", sm_separator = "/")
 #> Joining with `by = join_by(type)`
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ex4_results[["loa"]]
@@ -329,8 +210,7 @@ ex4_results[["loa"]]
 ### How to perform a descriptive analysis with a *list of analysis*
 
 ``` r
-ex5_results <- create_analysis(.design = srvyr::as_survey(shorter_df), loa = analysistools_MSNA_template_loa, sm_separator = "/")
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 92% | ETA: 0s
+ex5_results <- create_analysis(design = srvyr::as_survey(shorter_df), loa = analysistools_MSNA_template_loa, sm_separator = "/")
 ex5_results[["loa"]]
 #>           analysis_type                       analysis_var group_var level
 #> 1       prop_select_one                             admin1      <NA>  0.95
@@ -467,9 +347,9 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
 #> # A tibble: 3 × 13
 #>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_o… value        a                  <NA>      <NA>             0.52
-#> 2 prop_select_o… value        b                  <NA>      <NA>             0.36
-#> 3 prop_select_o… value        c                  <NA>      <NA>             0.12
+#> 1 prop_select_o… value        a                  <NA>      <NA>             0.58
+#> 2 prop_select_o… value        b                  <NA>      <NA>             0.31
+#> 3 prop_select_o… value        c                  <NA>      <NA>             0.11
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
@@ -478,14 +358,14 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
   level = .95
 )
 #> # A tibble: 6 × 13
-#>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
-#>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_o… value        a                  groups    group_a         0.511
-#> 2 prop_select_o… value        b                  groups    group_a         0.356
-#> 3 prop_select_o… value        c                  groups    group_a         0.133
-#> 4 prop_select_o… value        a                  groups    group_b         0.527
-#> 5 prop_select_o… value        b                  groups    group_b         0.364
-#> 6 prop_select_o… value        c                  groups    group_b         0.109
+#>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
+#>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
+#> 1 prop_select_… value        a                  groups    group_a         0.569 
+#> 2 prop_select_… value        b                  groups    group_a         0.353 
+#> 3 prop_select_… value        c                  groups    group_a         0.0784
+#> 4 prop_select_… value        a                  groups    group_b         0.592 
+#> 5 prop_select_… value        b                  groups    group_b         0.265 
+#> 6 prop_select_… value        c                  groups    group_b         0.143 
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
@@ -528,12 +408,12 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
   level = 0.95
 )
 #> # A tibble: 4 × 13
-#>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
-#>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
-#> 1 prop_select_… smvar        option1            <NA>      <NA>            0.616 
-#> 2 prop_select_… smvar        option2            <NA>      <NA>            0.667 
-#> 3 prop_select_… smvar        option3            <NA>      <NA>            0.0707
-#> 4 prop_select_… smvar        option4            <NA>      <NA>            0.768 
+#>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
+#>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
+#> 1 prop_select_m… smvar        option1            <NA>      <NA>            0.677
+#> 2 prop_select_m… smvar        option2            <NA>      <NA>            0.566
+#> 3 prop_select_m… smvar        option3            <NA>      <NA>            0.101
+#> 4 prop_select_m… smvar        option4            <NA>      <NA>            0.778
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 
@@ -545,14 +425,14 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
 #> # A tibble: 8 × 13
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
-#> 1 prop_select_… smvar        option1            groups    group_a         0.543 
-#> 2 prop_select_… smvar        option2            groups    group_a         0.652 
-#> 3 prop_select_… smvar        option3            groups    group_a         0.0652
-#> 4 prop_select_… smvar        option4            groups    group_a         0.783 
-#> 5 prop_select_… smvar        option1            groups    group_b         0.679 
-#> 6 prop_select_… smvar        option2            groups    group_b         0.679 
-#> 7 prop_select_… smvar        option3            groups    group_b         0.0755
-#> 8 prop_select_… smvar        option4            groups    group_b         0.755 
+#> 1 prop_select_… smvar        option1            groups    group_a         0.614 
+#> 2 prop_select_… smvar        option2            groups    group_a         0.568 
+#> 3 prop_select_… smvar        option3            groups    group_a         0.0909
+#> 4 prop_select_… smvar        option4            groups    group_a         0.773 
+#> 5 prop_select_… smvar        option1            groups    group_b         0.727 
+#> 6 prop_select_… smvar        option2            groups    group_b         0.564 
+#> 7 prop_select_… smvar        option3            groups    group_b         0.109 
+#> 8 prop_select_… smvar        option4            groups    group_b         0.782 
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
@@ -682,6 +562,88 @@ create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = gro
 #> 2 ratio         children_enr… NA ~/~ NA          groups    b               0.578
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
+```
+
+### How to review results
+
+The logic behind reviewing analysis is to compare the results from 2
+independent analysis of the same variables using the
+*review_one_variable* or *review_variables* from
+[addindicators](https://github.com/impact-initiatives/addindicators)
+package
+
+In this example, the results table to be review and the dataset are
+loaded.
+
+``` r
+results_to_review <- analysistools::analysistools_MSNA_template_with_ratio_results_table$results_table
+
+dataset_to_analyse <- analysistools::analysistools_MSNA_template_data
+```
+
+The list of analysis from the results can be reproduced with
+*create_loa_from_results* and the analysis key. This *loa* can be used
+to create a new analysis to be compared with.
+
+``` r
+me_loa <- create_loa_from_results(results_to_review)
+
+me_analysis <- create_analysis(srvyr::as_survey(dataset_to_analyse),
+                               loa = me_loa,
+                               sm_separator = "/")
+#> ■■■■■■■■■■■■■■■ 47% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
+```
+
+The new results and the results to be reviewed are bound together by the
+*analysis_key*.
+
+``` r
+binded_results <- results_to_review %>%
+  dplyr::full_join(me_analysis$results_table, by ="analysis_key")
+```
+
+There are 2 functions in the
+[addindicators](https://github.com/impact-initiatives/addindicators)
+packages that can be used to review:  
+- review_one_variable, to review only one variable  
+- review_variables, a wrapper around review_one_variable to be able to
+review several variables.
+
+``` r
+# install.packages("devtools")
+devtools::install_github("impact-initiatives/analysistools")
+```
+
+``` r
+library(addindicators)
+```
+
+``` r
+review_results <- review_variables(binded_results, 
+                                   columns_to_review = c("stat.x", "stat_low.x", "stat_upp.x"),
+                                   columns_to_compare_with = c("stat.y", "stat_low.y", "stat_upp.y"))
+
+review_results$review_table %>%
+  dplyr::group_by(variable) %>%
+  dplyr::summarise(prop_correction = mean(review_check))
+#> # A tibble: 3 × 2
+#>   variable   prop_correction
+#>   <chr>                <dbl>
+#> 1 stat.x                   1
+#> 2 stat_low.x               1
+#> 3 stat_upp.x               1
+
+review_results$review_table %>%
+  dplyr::group_by(variable, review_comment) %>%
+  dplyr::tally(sort = T)
+#> # A tibble: 3 × 3
+#> # Groups:   variable [3]
+#>   variable   review_comment     n
+#>   <chr>      <glue>         <int>
+#> 1 stat.x     Same results     147
+#> 2 stat_low.x Same results     147
+#> 3 stat_upp.x Same results     147
 ```
 
 ## Code of Conduct

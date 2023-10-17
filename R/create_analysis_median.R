@@ -96,7 +96,7 @@ create_analysis_median <- function(design, group_var = NA, analysis_var, level =
 
   results <- results %>%
     dplyr::mutate(
-      group_var = group_var %>% stringr::str_replace_all(",", " ~/~"),
+      group_var = create_group_var(group_var),
       analysis_var = analysis_var,
       analysis_var_value = NA_character_,
       analysis_type = "median",
