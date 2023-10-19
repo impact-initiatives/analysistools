@@ -204,3 +204,31 @@ verify_if_AinB <- function(.A, .B, msg_error) {
 create_group_var <- function(group_var) {
   group_var %>% stringr::str_replace_all(",", " ~/~ ") %>% stringr::str_squish()
 }
+
+#' Helper to correct values to NaN when totals are 0's
+#'
+#' @param results Results to corrected
+#' @param stat_columns Columns to be corrected
+#' @param total_column Total column to be used
+#'
+#' @return The results with the stats_columns turn to NaN if total column is 0.
+#' @export
+#'
+#' @examples
+#' test_table <- data.frame(stat = c(NaN, 0, 1),
+#'                          stat_low = c(NaN, 0, 1),
+#'                          stat_upp = c(NaN, 0, 1),
+#'                          n_total = c(0,0,1))
+#'
+#' correct_nan(test_table)
+correct_nan <- function(results,
+                        stat_columns = c("stat", "stat_upp", "stat_low"),
+                        total_column = "n_total") {
+  if(!all(c(stat_columns, total_column) %in% names(results))) {
+    stop("Cannot identify one column.")
+  }
+  results %>%
+    dplyr::mutate(dplyr::across(tidyr::all_of(stat_columns),
+                                ~dplyr::case_when(!!dplyr::sym(total_column) == 0 ~ NaN,
+                                                 TRUE ~ .x)))
+}

@@ -66,12 +66,7 @@ create_analysis_mean <- function(design, group_var = NA, analysis_var, level = .
       stat_low = `_low`,
       stat_upp = `_upp`
     ) %>%
-    dplyr::mutate(stat = dplyr::case_when(
-      is.nan(stat_low) &
-        is.nan(stat_upp) &
-        stat == 0 ~ NaN,
-      TRUE ~ stat
-    ))
+    correct_nan()
 
   # adding group_var_value
   results <- adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)

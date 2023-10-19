@@ -529,3 +529,33 @@ test_that("create_analysis_mean returns correct output with 2 grouping variables
     dplyr::select(-stat_upp, -stat_low)
   expect_equal(results, expected_output)
 })
+
+
+test_that("stat is set to NaN when there is no value", {
+  somedata <- data.frame(
+    group = c(rep("group_value_a", 49), "group_value_b"),
+    value = c(rep(NA,49),0)
+  )
+
+  results <- create_analysis_mean(srvyr::as_survey(somedata),
+                                  group_var = "group",
+                                  analysis_var = "value") %>%
+    suppressWarnings()
+
+  expected_output <- data.frame(analysis_type = rep("mean", 2),
+                                analysis_var = rep("value", 2),
+                                analysis_var_value = rep(NA_character_,2),
+                                group_var = rep("group", 2),
+                                group_var_value = c("group_value_a", "group_value_b"),
+                                stat = c(NaN,0),
+                                stat_low = rep(NaN,2),
+                                stat_upp = rep(NaN,2),
+                                n = c(0,1),
+                                n_total = c(0,1),
+                                n_w = c(0,1),
+                                n_w_total = c(0,1),
+                                analysis_key = c("mean @/@ value ~/~ NA @/@ group ~/~ group_value_a",
+                                                 "mean @/@ value ~/~ NA @/@ group ~/~ group_value_b"))
+
+  expect_equal(results, expected_output, ignore_attr = T)
+})
