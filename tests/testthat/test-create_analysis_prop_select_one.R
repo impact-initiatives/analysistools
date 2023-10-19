@@ -255,7 +255,7 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
     analysis_var_value = c("a", NA_character_),
     group_var = rep(NA_character_, 2),
     group_var_value = rep(NA_character_, 2),
-    stat = c(1, NaN),
+    stat = c(1, 0),
     stat_low = rep(NaN, 2),
     stat_upp = rep(NaN, 2),
     n = c(1, 0),
@@ -298,7 +298,7 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
       analysis_var_value = c(NA_character_, "a", NA_character_),
       group_var = rep("groups", 3),
       group_var_value = c("group_a", "group_b", "group_b"),
-      stat = c(NaN, 1, NaN),
+      stat = c(NaN, 1, 0),
       stat_low = rep(NaN, 3),
       stat_upp = rep(NaN, 3),
       n = c(0, 1, 0),
@@ -537,4 +537,33 @@ test_that("create_analysis_prop_select_one returns correct output with 2 groupin
     ) %>%
     dplyr::select(-stat_upp, -stat_low)
   expect_equal(results, expected_output)
+})
+
+test_that("When one option has never been selected, stats is 0 and not NaN", {
+  test_data <- data.frame(uuid = letters[1:3],
+                          so_question = c("option1", "option2", NA),
+                          group = c("group_a", "group_b", "group_c"))
+
+  expected_output <- data.frame(analysis_type = rep("prop_select_one", 3),
+                                analysis_var = rep("so_question", 3),
+                                analysis_var_value = c("option1", "option2", NA),
+                                group_var = c("group", "group", "group"),
+                                group_var_value = c("group_a", "group_b", "group_c"),
+                                stat = c(1,1,NaN),
+                                stat_low = c(1,1,NaN),
+                                stat_upp = c(1,1,NaN),
+                                n = c(1,1,0),
+                                n_total = c(1,1,0),
+                                n_w = c(1,1,0),
+                                n_w_total = c(1,1,0),
+                                analysis_key = c("prop_select_one @/@ so_question ~/~ option1 @/@ group ~/~ group_a",
+                                                 "prop_select_one @/@ so_question ~/~ option2 @/@ group ~/~ group_b",
+                                                 "prop_select_one @/@ so_question ~/~ NA @/@ group ~/~ group_c"))
+
+  current_output <- create_analysis_prop_select_one(srvyr::as_survey(test_data),
+                                                    group_var = "group",
+                                                    analysis_var = "so_question") %>%
+    suppressWarnings()
+
+  expect_equal(current_output, expected_output, ignore_attr = T)
 })

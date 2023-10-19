@@ -327,7 +327,7 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
     analysis_var_value = paste0("option", 1:4),
     group_var = rep(NA_character_, 4),
     group_var_value = rep(NA_character_, 4),
-    stat = c(1, NaN, NaN, 1),
+    stat = c(1, 0, 0, 1),
     stat_low = rep(NaN, 4),
     stat_upp = rep(NaN, 4),
     n = c(1, 0, 0, 1),
@@ -369,7 +369,7 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
       analysis_var_value = rep(paste0("option", 1:4), 2),
       group_var = rep("groups", 8),
       group_var_value = c(rep("group_a", 4), rep("group_b", 4)),
-      stat = c(rep(NaN, 4), c(1, NaN, NaN, 1)),
+      stat = c(rep(NaN, 4), c(1, 0, 0, 1)),
       stat_low = rep(NaN, 8),
       stat_upp = rep(NaN, 8),
       n = c(rep(0, 4), c(1, 0, 0, 1)),
@@ -820,4 +820,32 @@ test_that("create_analysis_prop_select_multiple works with 0/1's instead of TRUE
     expected_output,
     ignore_attr = T
   )
+})
+
+test_that("When one option has never been selected, stats is 0 and not NaN", {
+  test_data <- data.frame(uuid = letters[1:6],
+                          sm_question = c("option1", rep(NA,5)),
+                          sm_question.option1 = c(TRUE, rep(NA,5)),
+                          sm_question.option2 = c(FALSE, rep(NA,5)))
+
+  expected_output <- data.frame(analysis_type = rep("prop_select_multiple", 2),
+                                analysis_var = rep("sm_question", 2),
+                                analysis_var_value = c("option1", "option2"),
+                                group_var = rep(NA_character_,2),
+                                group_var_value = rep(NA_character_,2),
+                                stat = c(1,0),
+                                stat_low = rep(NaN,2),
+                                stat_upp = rep(NaN,2),
+                                n = c(1,0),
+                                n_total = c(1,1),
+                                n_w = c(1,0),
+                                n_w_total = c(1,1),
+                                analysis_key = c("prop_select_multiple @/@ sm_question ~/~ option1 @/@ NA ~/~ NA",
+                                                 "prop_select_multiple @/@ sm_question ~/~ option2 @/@ NA ~/~ NA"))
+
+  current_output <- create_analysis_prop_select_multiple(srvyr::as_survey(test_data),
+                                                         analysis_var = "sm_question") %>%
+    suppressWarnings()
+
+  expect_equal(current_output, expected_output, ignore_attr = T)
 })

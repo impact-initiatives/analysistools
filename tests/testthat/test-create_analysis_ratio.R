@@ -771,3 +771,35 @@ test_that("denomiator is ok when filter_denominator_0 is set FALSE", {
 
   expect_equal(long_results_FALSE$n, sum(!is.na(school_ex_long$num_child)))
 })
+
+test_that("stat is set to NaN when there is no value", {
+  somedata <- data.frame(
+    group = c("group_value_a", "group_value_b", "group_value_c"),
+    num_child = c(0, NA, 1),
+    num_enrolled = c(0, NA, NA)
+  )
+
+  results <- create_analysis_ratio(srvyr::as_survey(somedata),
+                                   analysis_var_numerator = "num_enrolled",
+                                   analysis_var_denominator = "num_child",
+                                  group_var = "group") %>%
+    suppressWarnings()
+
+  expected_output <- data.frame(analysis_type = rep("ratio", 3),
+                                analysis_var = rep("num_enrolled ~/~ num_child", 3),
+                                analysis_var_value = rep("NA ~/~ NA",3),
+                                group_var = rep("group", 3),
+                                group_var_value = c("group_value_a", "group_value_b", "group_value_c"),
+                                stat = c(NaN, NaN, 0),
+                                stat_low = rep(NaN,3),
+                                stat_upp = rep(NaN,3),
+                                n = c(0,0,1),
+                                n_total = c(0,0,1),
+                                n_w = c(0,0,1),
+                                n_w_total = c(0,0,1),
+                                analysis_key = c("ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_a",
+                                                 "ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_b",
+                                                 "ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_c"))
+
+  expect_equal(results, expected_output, ignore_attr = T)
+})

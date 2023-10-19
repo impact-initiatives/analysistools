@@ -20,3 +20,19 @@ test_that("create_group_var separates correctly", {
   expect_equal(create_group_var("groupa,groupb"), "groupa ~/~ groupb")
   expect_equal(create_group_var(NA), NA_character_)
 })
+
+test_that("correct_nan behaves correctly", {
+  test_table <- data.frame(stat = c(NaN, 0, 1),
+                           stat_low = c(NaN, 0, 1),
+                           stat_upp = c(NaN, 0, 1),
+                           n_total = c(0,0,1))
+  expected_output <- data.frame(stat = c(NaN, NaN, 1),
+                                stat_low = c(NaN, NaN, 1),
+                                stat_upp = c(NaN, NaN, 1),
+                                n_total = c(0,0,1))
+
+  expect_equal(correct_nan(test_table), expected_output, ignore_attr = T)
+
+  expect_error(correct_nan(test_table, stat_columns = c("STATS")), "Cannot identify one column.")
+  expect_error(correct_nan(test_table, total_column = c("TOTAL")), "Cannot identify one column.")
+})

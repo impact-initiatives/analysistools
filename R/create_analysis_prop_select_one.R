@@ -73,12 +73,7 @@ create_analysis_prop_select_one <- function(design, group_var = NA, analysis_var
       stat_upp = `_upp`,
       analysis_var_value = !!rlang::sym(analysis_var)
     ) %>%
-    dplyr::mutate(stat = dplyr::case_when(
-      is.nan(stat_low) &
-        is.nan(stat_upp) &
-        stat == 0 ~ NaN,
-      TRUE ~ stat
-    ))
+    correct_nan()
 
   # adding group_var_value
   results <-

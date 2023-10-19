@@ -103,12 +103,7 @@ create_analysis_median <- function(design, group_var = NA, analysis_var, level =
       n_total = n, # for median we want the denominator
       n_w_total = n_w # for median we want the denominator
     ) %>%
-    dplyr::mutate(stat = dplyr::case_when(
-      is.nan(stat_low) &
-        is.nan(stat_upp) &
-        stat == 0 ~ NaN,
-      TRUE ~ stat
-    ))
+    correct_nan()
 
   # adding group_var_value
   results <- adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)
