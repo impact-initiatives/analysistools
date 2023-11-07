@@ -403,6 +403,26 @@ review_results2$review_table %>%
   dplyr::select(review_check, analysis_type,analysis_var,group_var) %>% 
   dplyr::distinct()
 ```
+### Converting the analysis index into a table
+
+This is is how to turn the analysis index into a table
+
+```{r create_analysis_key_table}
+resultstable <- data.frame(analysis_index = c(
+  "mean @/@ v1 ~/~ NA @/@ NA ~/~ NA",
+  "mean @/@ v1 ~/~ NA @/@ gro ~/~ A",
+  "mean @/@ v1 ~/~ NA @/@ gro ~/~ B"
+))
+
+key_table <- create_analysis_key_table(resultstable, "analysis_index")
+key_table
+```
+
+You can then unite the analysis and grouping variables if needed.
+
+```{r}
+unite_variables(key_table)
+```
 
 ## Code of Conduct
 

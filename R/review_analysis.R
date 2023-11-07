@@ -57,15 +57,12 @@ review_analysis <- function(results_table,
                                     columns_to_compare_with = stat_columns_to_compare_with,
                                     uuid_column = analysis_key_column)
   analysis_key_split_table <- results_review$review_table %>%
-    create_analysis_key_table(analysis_key_column = analysis_key_column)
+    create_analysis_key_table(analysis_key_column = analysis_key_column) %>%
+    unite_variables()
 
-  analysis_var_names <- names(analysis_key_split_table) %>% stringr::str_subset("analysis_var_(?!value)")
-  group_var_names <- names(analysis_key_split_table) %>% stringr::str_subset("group_var_(?!value)")
   review_names <- c("analysis_type","analysis_var", "group_var")
 
   analysis_info_table <- analysis_key_split_table %>%
-    tidyr::unite(analysis_var, tidyselect::all_of(analysis_var_names),sep = " ~/~ ", na.rm = T) %>%
-    tidyr::unite(group_var, tidyselect::all_of(group_var_names),sep = " ~/~ ", na.rm = T) %>%
     dplyr::select(tidyselect::all_of(review_names))
 
   results_review$review_table <- results_review$review_table %>%
