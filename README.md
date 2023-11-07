@@ -124,6 +124,8 @@ variables. For example: - one variable
 ``` r
 ex2_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = "admin1", sm_separator = "/")
 #> Joining with `by = join_by(type)`
+#> ■■■■■■■■■■■■■■■ 47% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■ 80% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ex2_results[["loa"]]
 #>           analysis_type                       analysis_var group_var level
@@ -149,16 +151,14 @@ ex2_results[["loa"]]
 ``` r
 ex3_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"), sm_separator = "/")
 #> Joining with `by = join_by(type)`
-#> ■■■■■■■■■■■ 32% | ETA: 3s
-#> ■■■■■■■■■■■■ 36% | ETA: 4s
-#> ■■■■■■■■■■■■■ 41% | ETA: 3s
-#> ■■■■■■■■■■■■■■■ 45% | ETA: 3s
-#> ■■■■■■■■■■■■■■■■■ 55% | ETA: 2s
+#> ■■■■■■■■■■■■ 36% | ETA: 2s
+#> ■■■■■■■■■■■■■ 41% | ETA: 2s
+#> ■■■■■■■■■■■■■■■ 45% | ETA: 2s
 #> ■■■■■■■■■■■■■■■■■■■■ 64% | ETA: 2s
 #> ■■■■■■■■■■■■■■■■■■■■■ 68% | ETA: 2s
-#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 2s
-#> ■■■■■■■■■■■■■■■■■■■■■■■■ 77% | ETA: 2s
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 91% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■ 77% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■ 86% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 95% | ETA: 0s
 ex3_results[["loa"]]
 #>           analysis_type                       analysis_var group_var level
@@ -351,9 +351,9 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
 #> # A tibble: 3 × 13
 #>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_o… value        a                  <NA>      <NA>             0.61
-#> 2 prop_select_o… value        b                  <NA>      <NA>             0.29
-#> 3 prop_select_o… value        c                  <NA>      <NA>             0.1 
+#> 1 prop_select_o… value        a                  <NA>      <NA>             0.59
+#> 2 prop_select_o… value        b                  <NA>      <NA>             0.36
+#> 3 prop_select_o… value        c                  <NA>      <NA>             0.05
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
@@ -364,12 +364,12 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
 #> # A tibble: 6 × 13
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
-#> 1 prop_select_… value        a                  groups    group_a         0.509 
-#> 2 prop_select_… value        b                  groups    group_a         0.377 
-#> 3 prop_select_… value        c                  groups    group_a         0.113 
-#> 4 prop_select_… value        a                  groups    group_b         0.723 
-#> 5 prop_select_… value        b                  groups    group_b         0.191 
-#> 6 prop_select_… value        c                  groups    group_b         0.0851
+#> 1 prop_select_… value        a                  groups    group_a         0.536 
+#> 2 prop_select_… value        b                  groups    group_a         0.393 
+#> 3 prop_select_… value        c                  groups    group_a         0.0714
+#> 4 prop_select_… value        a                  groups    group_b         0.659 
+#> 5 prop_select_… value        b                  groups    group_b         0.318 
+#> 6 prop_select_… value        c                  groups    group_b         0.0227
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
@@ -415,9 +415,9 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
 #>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 prop_select_m… smvar        option1            <NA>      <NA>            0.663
-#> 2 prop_select_m… smvar        option2            <NA>      <NA>            0.622
+#> 2 prop_select_m… smvar        option2            <NA>      <NA>            0.643
 #> 3 prop_select_m… smvar        option3            <NA>      <NA>            0.122
-#> 4 prop_select_m… smvar        option4            <NA>      <NA>            0.847
+#> 4 prop_select_m… smvar        option4            <NA>      <NA>            0.816
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 
@@ -427,16 +427,16 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
   level = 0.95
 )
 #> # A tibble: 8 × 13
-#>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
-#>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_m… smvar        option1            groups    group_a         0.58 
-#> 2 prop_select_m… smvar        option2            groups    group_a         0.68 
-#> 3 prop_select_m… smvar        option3            groups    group_a         0.14 
-#> 4 prop_select_m… smvar        option4            groups    group_a         0.84 
-#> 5 prop_select_m… smvar        option1            groups    group_b         0.75 
-#> 6 prop_select_m… smvar        option2            groups    group_b         0.562
-#> 7 prop_select_m… smvar        option3            groups    group_b         0.104
-#> 8 prop_select_m… smvar        option4            groups    group_b         0.854
+#>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
+#>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
+#> 1 prop_select_… smvar        option1            groups    group_a         0.660 
+#> 2 prop_select_… smvar        option2            groups    group_a         0.660 
+#> 3 prop_select_… smvar        option3            groups    group_a         0.0943
+#> 4 prop_select_… smvar        option4            groups    group_a         0.868 
+#> 5 prop_select_… smvar        option1            groups    group_b         0.667 
+#> 6 prop_select_… smvar        option2            groups    group_b         0.622 
+#> 7 prop_select_… smvar        option3            groups    group_b         0.156 
+#> 8 prop_select_… smvar        option4            groups    group_b         0.756 
 #> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
@@ -571,10 +571,7 @@ create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = gro
 ### How to review results
 
 The logic behind reviewing analysis is to compare the results from 2
-independent analysis of the same variables using the
-*review_one_variable* or *review_variables* from
-[addindicators](https://github.com/impact-initiatives/addindicators)
-package
+independent analysis of the same variables using the *review_analysis*.
 
 In this example, the results table to be review and the dataset are
 loaded.
@@ -595,6 +592,9 @@ me_loa <- create_loa_from_results(results_to_review)
 me_analysis <- create_analysis(srvyr::as_survey(dataset_to_analyse),
                                loa = me_loa,
                                sm_separator = "/")
+#> ■■■■■■■■■■■■■■■ 47% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■ 87% | ETA: 0s
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ```
 
@@ -606,47 +606,127 @@ binded_results <- results_to_review %>%
   dplyr::full_join(me_analysis$results_table, by ="analysis_key")
 ```
 
-There are 2 functions in the
-[addindicators](https://github.com/impact-initiatives/addindicators)
-packages that can be used to review:  
-- review_one_variable, to review only one variable  
-- review_variables, a wrapper around review_one_variable to be able to
-review several variables.
-
 ``` r
-# install.packages("devtools")
-devtools::install_github("impact-initiatives/analysistools")
-```
-
-``` r
-library(addindicators)
-```
-
-``` r
-review_results <- review_variables(binded_results, 
-                                   columns_to_review = c("stat.x", "stat_low.x", "stat_upp.x"),
-                                   columns_to_compare_with = c("stat.y", "stat_low.y", "stat_upp.y"))
+review_results <- review_analysis(binded_results, 
+                                   stat_columns_to_review = c("stat.x", "stat_low.x", "stat_upp.x"),
+                                   stat_columns_to_compare_with = c("stat.y", "stat_low.y", "stat_upp.y"))
 
 review_results$review_table %>%
-  dplyr::group_by(variable) %>%
-  dplyr::summarise(prop_correction = mean(review_check))
+  dplyr::group_by(stat) %>%
+  dplyr::summarise(prop_correct = mean(review_check))
 #> # A tibble: 3 × 2
-#>   variable   prop_correction
-#>   <chr>                <dbl>
-#> 1 stat.x                   1
-#> 2 stat_low.x               1
-#> 3 stat_upp.x               1
+#>   stat       prop_correct
+#>   <chr>             <dbl>
+#> 1 stat.x                1
+#> 2 stat_low.x            1
+#> 3 stat_upp.x            1
 
 review_results$review_table %>%
-  dplyr::group_by(variable, review_comment) %>%
+  dplyr::group_by(stat, review_comment) %>%
   dplyr::tally(sort = T)
 #> # A tibble: 3 × 3
-#> # Groups:   variable [3]
-#>   variable   review_comment     n
+#> # Groups:   stat [3]
+#>   stat       review_comment     n
 #>   <chr>      <glue>         <int>
 #> 1 stat.x     Same results     147
 #> 2 stat_low.x Same results     147
 #> 3 stat_upp.x Same results     147
+
+review_results$review_table %>%
+  dplyr::filter(!review_check) %>%
+  dplyr::select(analysis_type,analysis_var,group_var) %>% 
+  dplyr::distinct()
+#> [1] analysis_type analysis_var  group_var    
+#> <0 rows> (or 0-length row.names)
+```
+
+``` r
+analysis_key_column <-  c("mean @/@ income ~/~ NA @/@ NA ~/~ NA",
+                          "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a",
+                          "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a ~/~ population ~/~ displaced",
+                          "prop_select_multiple @/@ source_information ~/~ relatives @/@ NA ~/~ NA")
+test_analysis_results <- data.frame(
+  test = c(
+    "test equality",
+    "test difference",
+    "test Missing in y",
+    "test Missing in x"
+  ),
+  stat_col.x = c(0, 1, 2, NA),
+  stat_col.y = c(0, 2, NA, 3),
+  analysis_key = analysis_key_column
+)
+review_results2 <- review_analysis(test_analysis_results,
+                stat_columns_to_review = "stat_col.x",
+                stat_columns_to_compare_with = "stat_col.y")
+review_results2$review_table %>%
+  dplyr::group_by(stat) %>%
+  dplyr::summarise(prop_correct = mean(review_check))
+#> # A tibble: 1 × 2
+#>   stat       prop_correct
+#>   <chr>             <dbl>
+#> 1 stat_col.x         0.25
+
+review_results2$review_table %>%
+  dplyr::group_by(stat, review_comment) %>%
+  dplyr::tally(sort = T)
+#> # A tibble: 4 × 3
+#> # Groups:   stat [1]
+#>   stat       review_comment            n
+#>   <chr>      <glue>                <int>
+#> 1 stat_col.x Different results         1
+#> 2 stat_col.x Missing in stat_col.x     1
+#> 3 stat_col.x Missing in stat_col.y     1
+#> 4 stat_col.x Same results              1
+review_results2$review_table %>%
+  dplyr::filter(!review_check) %>%
+  dplyr::select(review_check, analysis_type,analysis_var,group_var) %>% 
+  dplyr::distinct()
+#>   review_check        analysis_type       analysis_var               group_var
+#> 1        FALSE      prop_select_one       water_source                district
+#> 2        FALSE      prop_select_one       water_source district ~/~ population
+#> 3        FALSE prop_select_multiple source_information                      NA
+```
+
+### Converting the analysis index into a table
+
+This is is how to turn the analysis index into a table
+
+``` r
+resultstable <- data.frame(analysis_index = c(
+  "mean @/@ v1 ~/~ NA @/@ NA ~/~ NA",
+  "mean @/@ v1 ~/~ NA @/@ gro ~/~ A",
+  "mean @/@ v1 ~/~ NA @/@ gro ~/~ B"
+))
+
+key_table <- create_analysis_key_table(resultstable, "analysis_index")
+key_table
+#>                     analysis_index analysis_type analysis_var_1
+#> 1 mean @/@ v1 ~/~ NA @/@ NA ~/~ NA          mean             v1
+#> 2 mean @/@ v1 ~/~ NA @/@ gro ~/~ A          mean             v1
+#> 3 mean @/@ v1 ~/~ NA @/@ gro ~/~ B          mean             v1
+#>   analysis_var_value_1 group_var_1 group_var_value_1 nb_analysis_var
+#> 1                   NA          NA                NA               1
+#> 2                   NA         gro                 A               1
+#> 3                   NA         gro                 B               1
+#>   nb_group_var
+#> 1            1
+#> 2            1
+#> 3            1
+```
+
+You can then unite the analysis and grouping variables if needed.
+
+``` r
+unite_variables(key_table)
+#>                     analysis_index analysis_type analysis_var
+#> 1 mean @/@ v1 ~/~ NA @/@ NA ~/~ NA          mean           v1
+#> 2 mean @/@ v1 ~/~ NA @/@ gro ~/~ A          mean           v1
+#> 3 mean @/@ v1 ~/~ NA @/@ gro ~/~ B          mean           v1
+#>   analysis_var_value group_var group_var_value nb_analysis_var nb_group_var
+#> 1                 NA        NA              NA               1            1
+#> 2                 NA       gro               A               1            1
+#> 3                 NA       gro               B               1            1
 ```
 
 ## Code of Conduct
