@@ -321,10 +321,7 @@ create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = gro
 ### How to review results
 
 The logic behind reviewing analysis is to compare the results from 2
-independent analysis of the same variables using the
-*review_one_variable* or *review_variables* from
-[addindicators](https://github.com/impact-initiatives/addindicators)
-package
+independent analysis of the same variables using the *review_analysis*.
 
 In this example, the results table to be review and the dataset are
 loaded.
@@ -355,34 +352,56 @@ binded_results <- results_to_review %>%
   dplyr::full_join(me_analysis$results_table, by ="analysis_key")
 ```
 
-There are 2 functions in the
-[addindicators](https://github.com/impact-initiatives/addindicators)
-packages that can be used to review:\
-- review_one_variable, to review only one variable\
-- review_variables, a wrapper around review_one_variable to be able to
-review several variables.
-
-``` r
-# install.packages("devtools")
-devtools::install_github("impact-initiatives/analysistools")
-```
-
 ```{r}
-library(addindicators)
-```
-
-```{r}
-review_results <- review_variables(binded_results, 
-                                   columns_to_review = c("stat.x", "stat_low.x", "stat_upp.x"),
-                                   columns_to_compare_with = c("stat.y", "stat_low.y", "stat_upp.y"))
+review_results <- review_analysis(binded_results, 
+                                   stat_columns_to_review = c("stat.x", "stat_low.x", "stat_upp.x"),
+                                   stat_columns_to_compare_with = c("stat.y", "stat_low.y", "stat_upp.y"))
 
 review_results$review_table %>%
-  dplyr::group_by(variable) %>%
-  dplyr::summarise(prop_correction = mean(review_check))
+  dplyr::group_by(stat) %>%
+  dplyr::summarise(prop_correct = mean(review_check))
 
 review_results$review_table %>%
-  dplyr::group_by(variable, review_comment) %>%
+  dplyr::group_by(stat, review_comment) %>%
   dplyr::tally(sort = T)
+
+review_results$review_table %>%
+  dplyr::filter(!review_check) %>%
+  dplyr::select(analysis_type,analysis_var,group_var) %>% 
+  dplyr::distinct()
+```
+
+
+```{r}
+analysis_key_column <-  c("mean @/@ income ~/~ NA @/@ NA ~/~ NA",
+                          "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a",
+                          "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a ~/~ population ~/~ displaced",
+                          "prop_select_multiple @/@ source_information ~/~ relatives @/@ NA ~/~ NA")
+test_analysis_results <- data.frame(
+  test = c(
+    "test equality",
+    "test difference",
+    "test Missing in y",
+    "test Missing in x"
+  ),
+  stat_col.x = c(0, 1, 2, NA),
+  stat_col.y = c(0, 2, NA, 3),
+  analysis_key = analysis_key_column
+)
+review_results2 <- review_analysis(test_analysis_results,
+                stat_columns_to_review = "stat_col.x",
+                stat_columns_to_compare_with = "stat_col.y")
+review_results2$review_table %>%
+  dplyr::group_by(stat) %>%
+  dplyr::summarise(prop_correct = mean(review_check))
+
+review_results2$review_table %>%
+  dplyr::group_by(stat, review_comment) %>%
+  dplyr::tally(sort = T)
+review_results2$review_table %>%
+  dplyr::filter(!review_check) %>%
+  dplyr::select(review_check, analysis_type,analysis_var,group_var) %>% 
+  dplyr::distinct()
 ```
 
 ## Code of Conduct
