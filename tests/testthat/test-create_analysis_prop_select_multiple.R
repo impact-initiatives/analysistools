@@ -296,7 +296,7 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
   one_value_expected_output <- data.frame(
     analysis_type = rep("prop_select_multiple", 5),
     analysis_var = rep("smvar", 5),
-    analysis_var_value = c(paste0("option", 1:4), NA),
+    analysis_var_value = c(paste0("option", 1:4), "NA"),
     group_var = rep(NA_character_, 5),
     group_var_value = rep(NA_character_, 5),
     stat = c(1, 0, 0, 1, NaN),
@@ -338,7 +338,7 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
     data.frame(
       analysis_type = "prop_select_multiple",
       analysis_var = "smvar",
-      analysis_var_value = c(paste0("option", 1:4),NA, paste0("option", 1:4),NA),
+      analysis_var_value = c(paste0("option", 1:4),"NA", paste0("option", 1:4),"NA"),
       group_var = "groups",
       group_var_value = c(rep("group_a", 5), rep("group_b", 5)),
       stat = c(rep(NaN, 5), c(1, 0, 0, 1), NaN),
@@ -839,7 +839,7 @@ test_that("prop_select_multiple create a row for missing values, it returns the 
 
   expected_output <- data.frame(analysis_type = rep("prop_select_multiple", 3),
                                 analysis_var = rep("sm_question", 3),
-                                analysis_var_value = c("option1", "option2", NA),
+                                analysis_var_value = c("option1", "option2", "NA"),
                                 group_var = rep(NA_character_,3),
                                 group_var_value = rep(NA_character_,3),
                                 stat = c(0.762,0.714,NaN),
@@ -865,7 +865,7 @@ test_that("prop_select_multiple create a row for missing values, it returns the 
 
   expected_group_output <- data.frame(analysis_type = "prop_select_multiple",
                                       analysis_var = "sm_question",
-                                      analysis_var_value = rep(c("option1", "option2", NA),2),
+                                      analysis_var_value = rep(c("option1", "option2", "NA"),2),
                                       group_var = "group",
                                       group_var_value = rep(c("group_a", "group_b"),each =3),
                                       stat = c(0.667,0.75 ,NaN,0.889,0.667 ,NaN),

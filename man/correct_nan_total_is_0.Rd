@@ -24,13 +24,15 @@ The results table with the stats_columns turn to NaN if total column is 0.
 Helper to correct values to NaN when totals are 0's
 }
 \examples{
-test_table <- data.frame(stat = c(NaN, 0, 1),
-                         stat_low = c(NaN, 0, 1),
-                         stat_upp = c(NaN, 0, 1),
-                         n = c(0,0,1),
-                         n_total = c(0,0,1),
-                         n_w = c(0,0,1),
-                         n_w_total = c(0,0,1))
+test_table <- data.frame(
+  stat = c(NaN, 0, 1),
+  stat_low = c(NaN, 0, 1),
+  stat_upp = c(NaN, 0, 1),
+  n = c(0, 0, 1),
+  n_total = c(0, 0, 1),
+  n_w = c(0, 0, 1),
+  n_w_total = c(0, 0, 1)
+)
 
 correct_nan_total_is_0(test_table)
 }

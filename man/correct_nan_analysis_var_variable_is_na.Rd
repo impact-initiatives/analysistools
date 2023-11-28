@@ -15,23 +15,26 @@ correct_nan_analysis_var_variable_is_na(
 
 \item{stat_columns}{Columns to be corrected}
 
-\item{total_column}{Total column to be used}
+\item{analysis_var_value_column}{Analysis variable value to be checked.}
 }
 \value{
-The results table with the stats_columns turn to NaN if total column is 0.
+The results table with the stats_columns turn to NaN if analysis_var_value_column is
+missing.
 }
 \description{
 Helper to correct values to NaN when totals are 0's
 }
 \examples{
-test_table <- data.frame(stat = c(NaN, 0, 1),
-                         stat_low = c(NaN, 0, 1),
-                         stat_upp = c(NaN, 0, 1),
-                         n = c(5,5,1),
-                         n_total = c(0,0,1),
-                         n_w = c(0,0,1),
-                         n_w_total = c(0,0,1),
-                         analysis_var_value = c(NA,NA,"hello"))
+test_table <- data.frame(
+  stat = c(NaN, 0, 1),
+  stat_low = c(NaN, 0, 1),
+  stat_upp = c(NaN, 0, 1),
+  n = c(5, 5, 1),
+  n_total = c(0, 0, 1),
+  n_w = c(0, 0, 1),
+  n_w_total = c(0, 0, 1),
+  analysis_var_value = c(NA, NA, "hello")
+)
 
 correct_nan_analysis_var_variable_is_na(test_table)
 }
