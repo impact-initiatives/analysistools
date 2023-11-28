@@ -79,6 +79,9 @@ proportions.
 ``` r
 ex1_results <- create_analysis(design = example_design, sm_separator = "/")
 #> Joining with `by = join_by(type)`
+#> Joining with `by = join_by(admin1)`
+#> Joining with `by = join_by(admin2)`
+#> Joining with `by = join_by(wash_drinkingwatersource)`
 ```
 
 It should return an object with 3 elements: - the results table (in a
@@ -124,8 +127,14 @@ variables. For example: - one variable
 ``` r
 ex2_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = "admin1", sm_separator = "/")
 #> Joining with `by = join_by(type)`
+#> Joining with `by = join_by(admin1)`
+#> Joining with `by = join_by(admin2)`
+#> Joining with `by = join_by(wash_drinkingwatersource)`
 #> ■■■■■■■■■■■■■■■ 47% | ETA: 1s
-#> ■■■■■■■■■■■■■■■■■■■■■■■■■ 80% | ETA: 1s
+#> Joining with `by = join_by(admin1, admin2)`
+#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■■■ 87% | ETA: 0s
+#> Joining with `by = join_by(admin1, wash_drinkingwatersource)`
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ex2_results[["loa"]]
 #>           analysis_type                       analysis_var group_var level
@@ -151,14 +160,23 @@ ex2_results[["loa"]]
 ``` r
 ex3_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = c("admin1", "admin2"), sm_separator = "/")
 #> Joining with `by = join_by(type)`
-#> ■■■■■■■■■■■■ 36% | ETA: 2s
-#> ■■■■■■■■■■■■■ 41% | ETA: 2s
+#> Joining with `by = join_by(admin1)`
+#> Joining with `by = join_by(admin2)`
+#> Joining with `by = join_by(wash_drinkingwatersource)`
+#> ■■■■■■■■■■■ 32% | ETA: 2s
+#> ■■■■■■■■■■■■ 36% | ETA: 3s
+#> Joining with `by = join_by(admin1, admin2)`
+#> ■■■■■■■■■■■■■ 41% | ETA: 3s
 #> ■■■■■■■■■■■■■■■ 45% | ETA: 2s
+#> ■■■■■■■■■■■■■■■■■■■ 59% | ETA: 2s
+#> Joining with `by = join_by(admin1, wash_drinkingwatersource)`
 #> ■■■■■■■■■■■■■■■■■■■■ 64% | ETA: 2s
 #> ■■■■■■■■■■■■■■■■■■■■■ 68% | ETA: 2s
-#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 1s
+#> Joining with `by = join_by(admin2, admin1)`
+#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 2s
 #> ■■■■■■■■■■■■■■■■■■■■■■■■ 77% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■ 86% | ETA: 1s
+#> Joining with `by = join_by(admin2, wash_drinkingwatersource)`
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 95% | ETA: 0s
 ex3_results[["loa"]]
 #>           analysis_type                       analysis_var group_var level
@@ -191,6 +209,10 @@ ex3_results[["loa"]]
 ``` r
 ex4_results <- create_analysis(design = srvyr::as_survey(shorter_df), group_var = "admin1, admin2", sm_separator = "/")
 #> Joining with `by = join_by(type)`
+#> Joining with `by = join_by(admin1)`
+#> Joining with `by = join_by(admin2)`
+#> Joining with `by = join_by(wash_drinkingwatersource)`
+#> Joining with `by = join_by(admin1, admin2, wash_drinkingwatersource)`
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ex4_results[["loa"]]
 #>           analysis_type                       analysis_var      group_var level
@@ -214,6 +236,9 @@ ex4_results[["loa"]]
 
 ``` r
 ex5_results <- create_analysis(design = srvyr::as_survey(shorter_df), loa = analysistools_MSNA_template_loa, sm_separator = "/")
+#> Joining with `by = join_by(admin1)`
+#> Joining with `by = join_by(wash_drinkingwatersource)`
+#> Joining with `by = join_by(admin1, wash_drinkingwatersource)`
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 92% | ETA: 0s
 ex5_results[["loa"]]
 #>           analysis_type                       analysis_var group_var level
@@ -251,7 +276,7 @@ create_analysis_mean(me_design, analysis_var = "aa")
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 mean          aa           <NA>               <NA>      <NA>              5.5
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_mean(me_design, group_var = "bb", analysis_var = "aa")
 #> # A tibble: 2 × 13
@@ -259,7 +284,7 @@ create_analysis_mean(me_design, group_var = "bb", analysis_var = "aa")
 #>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 mean          aa           <NA>               bb        a                   5
 #> 2 mean          aa           <NA>               bb        b                   6
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 me_design_w <- srvyr::as_survey(somedata, weights = weights)
 create_analysis_mean(me_design_w, analysis_var = "aa")
@@ -267,7 +292,7 @@ create_analysis_mean(me_design_w, analysis_var = "aa")
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 mean          aa           <NA>               <NA>      <NA>             5.75
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_mean(me_design_w, group_var = "bb", analysis_var = "aa")
 #> # A tibble: 2 × 13
@@ -275,7 +300,7 @@ create_analysis_mean(me_design_w, group_var = "bb", analysis_var = "aa")
 #>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 mean          aa           <NA>               bb        a                   5
 #> 2 mean          aa           <NA>               bb        b                   6
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
@@ -296,7 +321,7 @@ create_analysis_median(me_design, analysis_var = "aa")
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 median        aa           <NA>               <NA>      <NA>                5
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_median(me_design, group_var = "bb", analysis_var = "aa")
 #> # A tibble: 2 × 13
@@ -304,7 +329,7 @@ create_analysis_median(me_design, group_var = "bb", analysis_var = "aa")
 #>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 median        aa           <NA>               bb        a                   5
 #> 2 median        aa           <NA>               bb        b                   6
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 me_design_w <- srvyr::as_survey(somedata, weights = weights)
 create_analysis_median(me_design_w, analysis_var = "aa")
@@ -312,7 +337,7 @@ create_analysis_median(me_design_w, analysis_var = "aa")
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 median        aa           <NA>               <NA>      <NA>                6
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
 #> # A tibble: 2 × 13
@@ -320,7 +345,7 @@ create_analysis_median(me_design_w, group_var = "bb", analysis_var = "aa")
 #>   <chr>         <chr>        <chr>              <chr>     <chr>           <dbl>
 #> 1 median        aa           <NA>               bb        a                   5
 #> 2 median        aa           <NA>               bb        b                   6
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
@@ -348,29 +373,31 @@ create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
   analysis_var = "value",
   level = .95
 )
+#> Joining with `by = join_by(value)`
 #> # A tibble: 3 × 13
 #>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
 #>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_o… value        a                  <NA>      <NA>             0.59
-#> 2 prop_select_o… value        b                  <NA>      <NA>             0.36
-#> 3 prop_select_o… value        c                  <NA>      <NA>             0.05
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> 1 prop_select_o… value        a                  <NA>      <NA>             0.56
+#> 2 prop_select_o… value        b                  <NA>      <NA>             0.38
+#> 3 prop_select_o… value        c                  <NA>      <NA>             0.06
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_prop_select_one(srvyr::as_survey(somedata, strata = groups),
   group_var = "groups",
   analysis_var = "value",
   level = .95
 )
+#> Joining with `by = join_by(groups, value)`
 #> # A tibble: 6 × 13
 #>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
 #>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
-#> 1 prop_select_… value        a                  groups    group_a         0.536 
-#> 2 prop_select_… value        b                  groups    group_a         0.393 
-#> 3 prop_select_… value        c                  groups    group_a         0.0714
-#> 4 prop_select_… value        a                  groups    group_b         0.659 
-#> 5 prop_select_… value        b                  groups    group_b         0.318 
-#> 6 prop_select_… value        c                  groups    group_b         0.0227
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> 1 prop_select_… value        a                  groups    group_a         0.528 
+#> 2 prop_select_… value        b                  groups    group_a         0.377 
+#> 3 prop_select_… value        c                  groups    group_a         0.0943
+#> 4 prop_select_… value        a                  groups    group_b         0.596 
+#> 5 prop_select_… value        b                  groups    group_b         0.383 
+#> 6 prop_select_… value        c                  groups    group_b         0.0213
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
@@ -411,34 +438,37 @@ create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
   analysis_var = "smvar",
   level = 0.95
 )
-#> # A tibble: 4 × 13
-#>   analysis_type  analysis_var analysis_var_value group_var group_var_value  stat
-#>   <chr>          <chr>        <chr>              <chr>     <chr>           <dbl>
-#> 1 prop_select_m… smvar        option1            <NA>      <NA>            0.663
-#> 2 prop_select_m… smvar        option2            <NA>      <NA>            0.643
-#> 3 prop_select_m… smvar        option3            <NA>      <NA>            0.122
-#> 4 prop_select_m… smvar        option4            <NA>      <NA>            0.816
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
-#> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
+#> # A tibble: 5 × 13
+#>   analysis_type        analysis_var analysis_var_value group_var group_var_value
+#>   <chr>                <chr>        <chr>              <chr>     <chr>          
+#> 1 prop_select_multiple smvar        option1            <NA>      <NA>           
+#> 2 prop_select_multiple smvar        option2            <NA>      <NA>           
+#> 3 prop_select_multiple smvar        option3            <NA>      <NA>           
+#> 4 prop_select_multiple smvar        option4            <NA>      <NA>           
+#> 5 prop_select_multiple smvar        NA                 <NA>      <NA>           
+#> # ℹ 8 more variables: stat <dbl>, stat_low <dbl>, stat_upp <dbl>, n <dbl>,
+#> #   n_total <dbl>, n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 
 create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
   group_var = "groups",
   analysis_var = "smvar",
   level = 0.95
 )
-#> # A tibble: 8 × 13
-#>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat
-#>   <chr>         <chr>        <chr>              <chr>     <chr>            <dbl>
-#> 1 prop_select_… smvar        option1            groups    group_a         0.660 
-#> 2 prop_select_… smvar        option2            groups    group_a         0.660 
-#> 3 prop_select_… smvar        option3            groups    group_a         0.0943
-#> 4 prop_select_… smvar        option4            groups    group_a         0.868 
-#> 5 prop_select_… smvar        option1            groups    group_b         0.667 
-#> 6 prop_select_… smvar        option2            groups    group_b         0.622 
-#> 7 prop_select_… smvar        option3            groups    group_b         0.156 
-#> 8 prop_select_… smvar        option4            groups    group_b         0.756 
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <dbl>, n_total <dbl>,
-#> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
+#> # A tibble: 10 × 13
+#>    analysis_type       analysis_var analysis_var_value group_var group_var_value
+#>    <chr>               <chr>        <chr>              <chr>     <chr>          
+#>  1 prop_select_multip… smvar        option1            groups    group_a        
+#>  2 prop_select_multip… smvar        option2            groups    group_a        
+#>  3 prop_select_multip… smvar        option3            groups    group_a        
+#>  4 prop_select_multip… smvar        option4            groups    group_a        
+#>  5 prop_select_multip… smvar        NA                 groups    group_a        
+#>  6 prop_select_multip… smvar        option1            groups    group_b        
+#>  7 prop_select_multip… smvar        option2            groups    group_b        
+#>  8 prop_select_multip… smvar        option3            groups    group_b        
+#>  9 prop_select_multip… smvar        option4            groups    group_b        
+#> 10 prop_select_multip… smvar        NA                 groups    group_b        
+#> # ℹ 8 more variables: stat <dbl>, stat_low <dbl>, stat_upp <dbl>, n <dbl>,
+#> #   n_total <dbl>, n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
 #### Ratios
@@ -472,7 +502,7 @@ create_analysis_ratio(me_design,
 #>   analysis_type analysis_var  analysis_var_value group_var group_var_value  stat
 #>   <chr>         <chr>         <chr>              <chr>     <chr>           <dbl>
 #> 1 ratio         num_attendin… NA ~/~ NA          <NA>      <NA>              0.2
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
@@ -497,7 +527,7 @@ create_analysis_ratio(me_design,
 #>   analysis_type analysis_var  analysis_var_value group_var group_var_value  stat
 #>   <chr>         <chr>         <chr>              <chr>     <chr>           <dbl>
 #> 1 ratio         num_attendin… NA ~/~ NA          <NA>      <NA>            0.333
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
@@ -523,7 +553,7 @@ create_analysis_ratio(me_design,
 #>   analysis_type analysis_var  analysis_var_value group_var group_var_value  stat
 #>   <chr>         <chr>         <chr>              <chr>     <chr>           <dbl>
 #> 1 ratio         num_attendin… NA ~/~ NA          <NA>      <NA>            0.333
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
@@ -551,7 +581,7 @@ create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = gro
 #>   analysis_type analysis_var  analysis_var_value group_var group_var_value  stat
 #>   <chr>         <chr>         <chr>              <chr>     <chr>           <dbl>
 #> 1 ratio         children_enr… NA ~/~ NA          <NA>      <NA>            0.639
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = groups),
   group_var = "groups",
@@ -564,7 +594,7 @@ create_analysis_ratio(srvyr::as_survey(somedata, weights = weights, strata = gro
 #>   <chr>         <chr>         <chr>              <chr>     <chr>           <dbl>
 #> 1 ratio         children_enr… NA ~/~ NA          groups    a               0.670
 #> 2 ratio         children_enr… NA ~/~ NA          groups    b               0.578
-#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <int>,
+#> # ℹ 7 more variables: stat_low <dbl>, stat_upp <dbl>, n <int>, n_total <dbl>,
 #> #   n_w <dbl>, n_w_total <dbl>, analysis_key <chr>
 ```
 
@@ -592,9 +622,14 @@ me_loa <- create_loa_from_results(results_to_review)
 me_analysis <- create_analysis(srvyr::as_survey(dataset_to_analyse),
                                loa = me_loa,
                                sm_separator = "/")
-#> ■■■■■■■■■■■■■■■ 47% | ETA: 1s
-#> ■■■■■■■■■■■■■■■■■■■■■■■ 73% | ETA: 1s
+#> Joining with `by = join_by(admin1)`
+#> Joining with `by = join_by(wash_drinkingwatersource)`
+#> ■■■■■■■■■■■■■■■ 47% | ETA: 2s
+#> ■■■■■■■■■■■■■■■■■ 53% | ETA: 2s
+#> ■■■■■■■■■■■■■■■■■■■■■ 67% | ETA: 1s
+#> ■■■■■■■■■■■■■■■■■■■■■■■■■ 80% | ETA: 1s
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■ 87% | ETA: 0s
+#> Joining with `by = join_by(admin1, wash_drinkingwatersource)`
 #> ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 93% | ETA: 0s
 ```
 

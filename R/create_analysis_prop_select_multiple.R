@@ -53,13 +53,13 @@ create_analysis_prop_select_multiple <- function(design, group_var = NA, analysi
   sm_var_choice_start <- paste0(analysis_var, sm_separator)
 
   ## prepare the dataset
-  design <- design %>%
+  predesign <- design %>%
     dplyr::mutate(dplyr::across(dplyr::starts_with(sm_var_choice_start), as.numeric)) %>%
-    dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
-    dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T)
+    dplyr::group_by(dplyr::across(dplyr::any_of(across_by)))
 
   ## get the stats
-  results <- design %>%
+  results <- predesign %>%
+    dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
     srvyr::summarise(dplyr::across(dplyr::starts_with(sm_var_choice_start),
       .fns = list(
         stat = ~ srvyr::survey_mean(.x,
@@ -82,6 +82,15 @@ create_analysis_prop_select_multiple <- function(design, group_var = NA, analysi
       .names = "{.fn}...{.col}"
     ))
 
+  n...sm_var_NA <- paste0("n...",sm_var_choice_start,"NA")
+  NA_counts <- predesign %>%
+    dplyr::filter(is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
+    dplyr::summarise(!!rlang::sym(n...sm_var_NA) := dplyr::n()) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(tidyr::contains("n..."))
+
+  results <- results %>% cbind(NA_counts)
+
   ## 1st manipulation to get all the information in a long format
   results <- results %>%
     dplyr::mutate(analysis_var = sm_var) %>%
@@ -98,15 +107,19 @@ create_analysis_prop_select_multiple <- function(design, group_var = NA, analysi
       group_var = create_group_var(group_var),
       analysis_type = "prop_select_multiple"
     ) %>%
-    dplyr::filter(type %in% c("stat", "stat_low", "stat_upp", "n_w", "n", "n_w_total", "n_total"))
+    dplyr::filter(type %in% c("stat", "stat_low", "stat_upp", "n_w", "n", "n_w_total", "n_total", "na_count"))
   ## 2nd manipulation to the wide format
   results <- results %>%
     tidyr::pivot_wider(
       id_cols = c(dplyr::all_of(across_by), group_var, analysis_var, analysis_var_value, analysis_type),
       names_from = type,
       values_from = stat
-    ) %>%
-    correct_nan()
+    )  %>%
+    ## filter NA is 0 and correcting for NaN. To count NA for select_multiple, I need to keep the
+    ## NA counts in the data manipulation above
+    dplyr::filter(!(analysis_var_value == "NA" & n == 0)) %>%
+    correct_nan_analysis_var_variable_is_na() %>%
+    correct_nan_total_is_0()
 
   # adding group_var_value
   results <- adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)

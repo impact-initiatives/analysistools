@@ -1,11 +1,12 @@
 test_that("create_analysis_prop_select_multiple returns correct output, no weights", {
+  set.seed(111)
   somedata <- data.frame(
     groups = sample(c("group_a", "group_b"), size = 100, replace = T),
     smvar = rep(NA_character_, 100),
     smvar.option1 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.7, .3)),
     smvar.option2 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.6, .4)),
     smvar.option3 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.1, .9)),
-    smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
+    smvar.option4 = sample(TRUE),
     uuid = 1:100 %>% as.character()
   ) %>%
     cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
@@ -14,7 +15,6 @@ test_that("create_analysis_prop_select_multiple returns correct output, no weigh
 
   # no group
   expected_output <- somedata %>%
-    dplyr::filter(!is.na(smvar)) %>%
     dplyr::summarise(dplyr::across(.cols = dplyr::starts_with("smvar."), .fns = list(stat = mean, n = sum))) %>%
     tidyr::pivot_longer(
       cols = dplyr::everything(),
@@ -96,52 +96,39 @@ test_that("create_analysis_prop_select_multiple returns correct output, no weigh
 test_that("create_analysis_prop_select_multiple handles NA", {
   # only NAs no grouping
   somedata <- data.frame(
-    groups = sample(c("group_a", "group_b"), size = 100, replace = T),
+    groups = rep(c("group_a", "group_b"), 50),
     smvar = rep(NA_character_, 100),
     smvar.option1 = rep(NA_character_, 100),
     smvar.option2 = rep(NA_character_, 100),
     smvar.option3 = rep(NA_character_, 100),
     smvar.option4 = rep(NA_character_, 100),
     uuid = 1:100 %>% as.character()
+  )
+  na_expected_output <- data.frame(
+    analysis_type = "prop_select_multiple",
+    analysis_var = "smvar",
+    analysis_var_value = c("option1", "option2", "option3", "option4", "NA"),
+    group_var = NA_character_,
+    group_var_value = NA_character_,
+    stat = NaN,
+    stat_low = NaN,
+    stat_upp = NaN,
+    n = c(0,0,0,0,100),
+    n_total = NaN,
+    n_w = NaN,
+    n_w_total = NaN
   ) %>%
-    cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
-
-  somedata <- somedata$data_with_fix_concat
-
-  na_expected_output <- somedata %>%
-    dplyr::summarise(dplyr::across(dplyr::starts_with("smvar."), mean)) %>%
-    tidyr::pivot_longer(cols = dplyr::everything(), values_to = "stat") %>%
-    tidyr::separate_wider_delim(name, delim = ".", names = c("analysis_var", "analysis_var_value")) %>%
-    dplyr::mutate(
-      analysis_type = "prop_select_multiple",
-      group_var = NA_character_,
-      group_var_value = NA_character_,
-      stat_low = NaN,
-      stat_upp = NaN
-    ) %>%
-    dplyr::mutate(
-      n = 0,
-      n_total = 0,
-      n_w = 0,
-      n_w_total = 0,
-      analysis_key = paste0(
-        analysis_type,
-        " @/@ ",
-        analysis_var,
-        " ~/~ ",
-        analysis_var_value,
-        " @/@ ",
-        group_var,
-        " ~/~ ",
-        group_var_value
-      )
-    ) %>%
-    dplyr::select(
-      analysis_type, analysis_var, analysis_var_value,
-      group_var, group_var_value, stat, stat_low, stat_upp,
-      n, n_total, n_w, n_w_total, analysis_key
-    ) %>%
-    suppressWarnings()
+    dplyr::mutate(analysis_key = paste0(
+      analysis_type,
+      " @/@ ",
+      analysis_var,
+      " ~/~ ",
+      analysis_var_value,
+      " @/@ ",
+      group_var,
+      " ~/~ ",
+      group_var_value
+    ))
 
   na_results <- create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
     group_var = NA_character_,
@@ -157,46 +144,31 @@ test_that("create_analysis_prop_select_multiple handles NA", {
   )
 
   # only NA with groupings
-  groups_n <- somedata %>%
-    dplyr::group_by(groups) %>%
-    dplyr::tally(name = "n_total")
-
-  na_one_group_expected_output <- somedata %>%
-    dplyr::group_by(groups) %>%
-    dplyr::summarise(dplyr::across(dplyr::starts_with("smvar."), mean)) %>%
-    tidyr::pivot_longer(cols = -groups, values_to = "stat") %>%
-    tidyr::separate_wider_delim(name, delim = ".", names = c("analysis_var", "analysis_var_value")) %>%
-    dplyr::mutate(
-      analysis_type = "prop_select_multiple",
-      group_var = "groups",
-      group_var_value = groups,
-      stat_low = NaN,
-      stat_upp = NaN
-    ) %>%
-    dplyr::mutate(
-      n = 0,
-      n_total = 0,
-      n_w = 0,
-      n_w_total = 0,
-      analysis_key = paste0(
-        analysis_type,
-        " @/@ ",
-        analysis_var,
-        " ~/~ ",
-        analysis_var_value,
-        " @/@ ",
-        group_var,
-        " ~/~ ",
-        group_var_value
-      )
-    ) %>%
-    dplyr::select(
-      analysis_type, analysis_var, analysis_var_value,
-      group_var, group_var_value, stat, stat_low, stat_upp,
-      n, n_total, n_w, n_w_total, analysis_key
-    ) %>%
-    suppressWarnings()
-
+  na_one_group_expected_output <- data.frame(
+    analysis_type = "prop_select_multiple",
+    analysis_var = "smvar",
+    analysis_var_value = rep(c("option1", "option2", "option3", "option4", "NA"), 2),
+    group_var = "groups",
+    group_var_value = rep(c("group_a", "group_b"), each = 5),
+    stat = NaN,
+    stat_low = NaN,
+    stat_upp = NaN,
+    n = c(0,0,0,0,50),
+    n_total = NaN,
+    n_w = NaN,
+    n_w_total = NaN
+  ) %>%
+    dplyr::mutate(analysis_key = paste0(
+      analysis_type,
+      " @/@ ",
+      analysis_var,
+      " ~/~ ",
+      analysis_var_value,
+      " @/@ ",
+      group_var,
+      " ~/~ ",
+      group_var_value
+    ))
   one_group_result <-
     create_analysis_prop_select_multiple(srvyr::as_survey(somedata),
       group_var = "groups",
@@ -213,12 +185,12 @@ test_that("create_analysis_prop_select_multiple handles NA", {
 # test_that("create_analysis_prop_select_multiple returns correct output, with weights", {
 test_that("create_analysis_prop_select_multiple returns correct output, with weights", {
   somedata <- data.frame(
-    groups = sample(c("group_a", "group_b"), size = 100, replace = T),
+    groups = rep(c("group_a", "group_b"), size = 100),
     smvar = rep(NA_character_, 100),
     smvar.option1 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.7, .3)),
     smvar.option2 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.6, .4)),
     smvar.option3 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.1, .9)),
-    smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
+    smvar.option4 = TRUE,
     uuid = 1:100 %>% as.character()
   ) %>%
     cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
@@ -322,18 +294,18 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
     cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
   somedata <- somedata$data_with_fix_concat
   one_value_expected_output <- data.frame(
-    analysis_type = rep("prop_select_multiple", 4),
-    analysis_var = rep("smvar", 4),
-    analysis_var_value = paste0("option", 1:4),
-    group_var = rep(NA_character_, 4),
-    group_var_value = rep(NA_character_, 4),
-    stat = c(1, 0, 0, 1),
-    stat_low = rep(NaN, 4),
-    stat_upp = rep(NaN, 4),
-    n = c(1, 0, 0, 1),
-    n_total = rep(1, 4),
-    n_w = c(1, 0, 0, 1),
-    n_w_total = rep(1, 4)
+    analysis_type = rep("prop_select_multiple", 5),
+    analysis_var = rep("smvar", 5),
+    analysis_var_value = c(paste0("option", 1:4), NA),
+    group_var = rep(NA_character_, 5),
+    group_var_value = rep(NA_character_, 5),
+    stat = c(1, 0, 0, 1, NaN),
+    stat_low = rep(NaN, 5),
+    stat_upp = rep(NaN, 5),
+    n = c(1, 0, 0, 1, 99),
+    n_total = c(1,1,1,1,NaN),
+    n_w = c(1, 0, 0, 1, NaN),
+    n_w_total = c(1,1,1,1,NaN)
   ) %>%
     dplyr::mutate(
       analysis_key = paste0(
@@ -364,18 +336,18 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
   # one value with groupings
   one_value_one_group_expected_output <-
     data.frame(
-      analysis_type = rep("prop_select_multiple", 8),
-      analysis_var = rep("smvar", 8),
-      analysis_var_value = rep(paste0("option", 1:4), 2),
-      group_var = rep("groups", 8),
-      group_var_value = c(rep("group_a", 4), rep("group_b", 4)),
-      stat = c(rep(NaN, 4), c(1, 0, 0, 1)),
-      stat_low = rep(NaN, 8),
-      stat_upp = rep(NaN, 8),
-      n = c(rep(0, 4), c(1, 0, 0, 1)),
-      n_total = c(rep(0, 4), rep(1, 4)),
-      n_w = c(rep(0, 4), c(1, 0, 0, 1)),
-      n_w_total = c(rep(0, 4), rep(1, 4))
+      analysis_type = "prop_select_multiple",
+      analysis_var = "smvar",
+      analysis_var_value = c(paste0("option", 1:4),NA, paste0("option", 1:4),NA),
+      group_var = "groups",
+      group_var_value = c(rep("group_a", 5), rep("group_b", 5)),
+      stat = c(rep(NaN, 5), c(1, 0, 0, 1), NaN),
+      stat_low = rep(NaN, 10),
+      stat_upp = rep(NaN, 10),
+      n = c(0,0,0,0,50, 1, 0, 0, 1,49),
+      n_total = c(rep(NaN,5), rep(1, 4), NaN),
+      n_w = c(rep(NaN,5), c(1, 0, 0, 1), NaN),
+      n_w_total = c(rep(NaN,5), rep(1, 4), NaN)
     ) %>%
     dplyr::mutate(
       analysis_key = paste0(
@@ -406,6 +378,7 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
 
 test_that("create_analysis_prop_select_multiple handles lonely PSU", {
   # 1 group has 50 observation, 1 group has 1 observation.
+  set.seed(144)
   somedata <- data.frame(
     groups = c(rep("group_a", 50), "group_b"),
     smvar = rep(NA_character_, 51),
@@ -475,7 +448,7 @@ test_that("create_analysis_prop_select_multiple returns correct output with 3 gr
     smvar.option1 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.7, .3)),
     smvar.option2 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.6, .4)),
     smvar.option3 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.1, .9)),
-    smvar.option4 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.8, .2)),
+    smvar.option4 = TRUE,
     uuid = 1:300 %>% as.character()
   ) %>%
     cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
@@ -561,7 +534,7 @@ test_that("create_analysis_prop_select_multiple returns correct output with 2 gr
     smvar.option1 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.7, .3)),
     smvar.option2 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.6, .4)),
     smvar.option3 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.1, .9)),
-    smvar.option4 = sample(c(TRUE, FALSE), size = 300, replace = T, prob = c(.8, .2)),
+    smvar.option4 = TRUE,
     uuid = 1:300 %>% as.character()
   ) %>%
     cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
@@ -675,7 +648,7 @@ test_that("create_analysis_prop_select_multiple handles NA in the dummy variable
     smvar.option1 = sample(c(TRUE, FALSE, NA), size = 100, replace = T, prob = c(.65, .25, .1)),
     smvar.option2 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.6, .4)),
     smvar.option3 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.1, .9)),
-    smvar.option4 = sample(c(TRUE, FALSE), size = 100, replace = T, prob = c(.8, .2)),
+    smvar.option4 = TRUE,
     uuid = 1:100 %>% as.character()
   ) %>%
     cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
@@ -779,7 +752,7 @@ test_that("create_analysis_prop_select_multiple works with 0/1's instead of TRUE
     smvar.option1 = sample(c(1, 0), size = 100, replace = T, prob = c(.7, .3)),
     smvar.option2 = sample(c(1, 0), size = 100, replace = T, prob = c(.6, .4)),
     smvar.option3 = sample(c(1, 0), size = 100, replace = T, prob = c(.1, .9)),
-    smvar.option4 = sample(c(1, 0), size = 100, replace = T, prob = c(.8, .2)),
+    smvar.option4 = TRUE,
     uuid = 1:100 %>% as.character()
   ) %>%
     cleaningtools::recreate_parent_column(uuid = "uuid", sm_separator = ".")
@@ -828,20 +801,21 @@ test_that("When one option has never been selected, stats is 0 and not NaN", {
                           sm_question.option1 = c(TRUE, rep(NA,5)),
                           sm_question.option2 = c(FALSE, rep(NA,5)))
 
-  expected_output <- data.frame(analysis_type = rep("prop_select_multiple", 2),
-                                analysis_var = rep("sm_question", 2),
-                                analysis_var_value = c("option1", "option2"),
-                                group_var = rep(NA_character_,2),
-                                group_var_value = rep(NA_character_,2),
-                                stat = c(1,0),
-                                stat_low = rep(NaN,2),
-                                stat_upp = rep(NaN,2),
-                                n = c(1,0),
-                                n_total = c(1,1),
-                                n_w = c(1,0),
-                                n_w_total = c(1,1),
+  expected_output <- data.frame(analysis_type = rep("prop_select_multiple", 3),
+                                analysis_var = rep("sm_question", 3),
+                                analysis_var_value = c("option1", "option2", "NA"),
+                                group_var = NA_character_,
+                                group_var_value = NA_character_,
+                                stat = c(1,0, NaN),
+                                stat_low = NaN,
+                                stat_upp = NaN,
+                                n = c(1,0,5),
+                                n_total = c(1,1,NaN),
+                                n_w = c(1,0,NaN),
+                                n_w_total = c(1,1,NaN),
                                 analysis_key = c("prop_select_multiple @/@ sm_question ~/~ option1 @/@ NA ~/~ NA",
-                                                 "prop_select_multiple @/@ sm_question ~/~ option2 @/@ NA ~/~ NA"))
+                                                 "prop_select_multiple @/@ sm_question ~/~ option2 @/@ NA ~/~ NA",
+                                                 "prop_select_multiple @/@ sm_question ~/~ NA @/@ NA ~/~ NA"))
 
   current_output <- create_analysis_prop_select_multiple(srvyr::as_survey(test_data),
                                                          analysis_var = "sm_question") %>%
@@ -849,3 +823,75 @@ test_that("When one option has never been selected, stats is 0 and not NaN", {
 
   expect_equal(current_output, expected_output, ignore_attr = T)
 })
+
+test_that("prop_select_multiple create a row for missing values, it returns the correct number of missing values", {
+
+  set.seed(123)
+  test_data <- data.frame(uuid = letters,
+                          sm_question = rep(NA_character_, 26),
+                          sm_question.option1 = sample(c(TRUE,FALSE), size = 26, replace = T),
+                          sm_question.option2 = sample(c(TRUE,FALSE), size = 26, replace = T))
+
+  test_data <- cleaningtools::recreate_parent_column(dataset = test_data, uuid_column = "uuid")
+
+  test_data <- test_data$data_with_fix_concat
+  test_data[is.na(test_data$sm_question), c("sm_question.option1", "sm_question.option2")] <- NA
+
+  expected_output <- data.frame(analysis_type = rep("prop_select_multiple", 3),
+                                analysis_var = rep("sm_question", 3),
+                                analysis_var_value = c("option1", "option2", NA),
+                                group_var = rep(NA_character_,3),
+                                group_var_value = rep(NA_character_,3),
+                                stat = c(0.762,0.714,NaN),
+                                stat_low = c(0.564, 0.505, NaN),
+                                stat_upp = c(0.960, 0.924, NaN),
+                                n = c(16,15,5),
+                                n_total = c(21,21, NaN),
+                                n_w = c(16,15,NaN),
+                                n_w_total =  c(21,21, NaN),
+                                analysis_key = c("prop_select_multiple @/@ sm_question ~/~ option1 @/@ NA ~/~ NA",
+                                                 "prop_select_multiple @/@ sm_question ~/~ option2 @/@ NA ~/~ NA",
+                                                 "prop_select_multiple @/@ sm_question ~/~ NA @/@ NA ~/~ NA"))
+
+  current_output <- create_analysis_prop_select_multiple(srvyr::as_survey(test_data),
+                                                         analysis_var = "sm_question") %>%
+    suppressWarnings()
+  current_output[, c("stat", "stat_low", "stat_upp")] <- current_output[, c("stat", "stat_low", "stat_upp")] %>%
+    round(3)
+
+  expect_equal(current_output, expected_output, ignore_attr = T)
+
+  test_data$group <- rep(c("group_a", "group_b"), 13)
+
+  expected_group_output <- data.frame(analysis_type = "prop_select_multiple",
+                                      analysis_var = "sm_question",
+                                      analysis_var_value = rep(c("option1", "option2", NA),2),
+                                      group_var = "group",
+                                      group_var_value = rep(c("group_a", "group_b"),each =3),
+                                      stat = c(0.667,0.75 ,NaN,0.889,0.667 ,NaN),
+                                      stat_low = c(0.377 ,0.484 ,NaN,0.666,0.332 ,NaN),
+                                      stat_upp = c(0.956 ,1.016 ,NaN,1.112,1.001 ,NaN),
+                                      n = c(8,9,1,8,6,4),
+                                      n_total = c(12,12, NaN,9,9, NaN),
+                                      n_w = c(8,9,NaN,8,6,NaN),
+                                      n_w_total =  c(12,12, NaN,9,9, NaN),
+                                      analysis_key = c("prop_select_multiple @/@ sm_question ~/~ option1 @/@ group ~/~ group_a",
+                                                       "prop_select_multiple @/@ sm_question ~/~ option2 @/@ group ~/~ group_a",
+                                                       "prop_select_multiple @/@ sm_question ~/~ NA @/@ group ~/~ group_a",
+                                                       "prop_select_multiple @/@ sm_question ~/~ option1 @/@ group ~/~ group_b",
+                                                       "prop_select_multiple @/@ sm_question ~/~ option2 @/@ group ~/~ group_b",
+                                                       "prop_select_multiple @/@ sm_question ~/~ NA @/@ group ~/~ group_b"))
+
+  current_group_output <- create_analysis_prop_select_multiple(srvyr::as_survey(test_data),
+                                                               analysis_var = "sm_question",
+                                                               group_var = "group") %>%
+    suppressWarnings()
+
+  current_group_output[, c("stat", "stat_low", "stat_upp")] <- current_group_output[, c("stat", "stat_low", "stat_upp")] %>%
+    round(3)
+
+
+  expect_equal(current_group_output, expected_group_output,
+               ignore_attr = TRUE)
+})
+

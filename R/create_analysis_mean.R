@@ -66,7 +66,7 @@ create_analysis_mean <- function(design, group_var = NA, analysis_var, level = .
       stat_low = `_low`,
       stat_upp = `_upp`
     ) %>%
-    correct_nan()
+    correct_nan_total_is_0()
 
   # adding group_var_value
   results <- adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)

@@ -107,13 +107,14 @@ test_that("create_analysis_mean handles NA", {
     group_var_value = NA_character_,
     stat = NaN,
     stat_low = NaN,
-    stat_upp = NaN
+    stat_upp = NaN,
+    n = 0,
+    n_total = NaN,
+    n_w = NaN,
+    n_w_total = NaN
   ) %>%
     dplyr::mutate(
-      n = 0,
-      n_total = 0,
-      n_w = 0,
-      n_w_total = 0,
+
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
@@ -150,13 +151,13 @@ test_that("create_analysis_mean handles NA", {
       group_var_value = c("a", "b"),
       stat = rep(NaN, 2),
       stat_low = rep(NaN, 2),
-      stat_upp = rep(NaN, 2)
+      stat_upp = rep(NaN, 2),
+      n = rep(0, 2),
+      n_total = NaN,
+      n_w = NaN,
+      n_w_total = NaN
     ) %>%
     dplyr::mutate(
-      n = 0,
-      n_total = 0,
-      n_w = 0,
-      n_w_total = 0,
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
@@ -233,9 +234,9 @@ test_that("create_analysis_mean handles when only 1 value", {
       stat_low = rep(NaN, 2),
       stat_upp = rep(NaN, 2),
       n = c(0, 1),
-      n_total = c(0, 1),
-      n_w = c(0, 1),
-      n_w_total = c(0, 1)
+      n_total = c(NaN, 1),
+      n_w = c(NaN, 1),
+      n_w_total = c(NaN, 1)
     ) %>%
     dplyr::mutate(
       analysis_key = paste0(
@@ -551,9 +552,9 @@ test_that("stat is set to NaN when there is no value", {
                                 stat_low = rep(NaN,2),
                                 stat_upp = rep(NaN,2),
                                 n = c(0,1),
-                                n_total = c(0,1),
-                                n_w = c(0,1),
-                                n_w_total = c(0,1),
+                                n_total = c(NaN,1),
+                                n_w = c(NaN,1),
+                                n_w_total = c(NaN,1),
                                 analysis_key = c("mean @/@ value ~/~ NA @/@ group ~/~ group_value_a",
                                                  "mean @/@ value ~/~ NA @/@ group ~/~ group_value_b"))
 

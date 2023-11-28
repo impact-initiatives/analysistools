@@ -44,8 +44,11 @@ create_analysis_prop_select_one <- function(design, group_var = NA, analysis_var
   }
 
   # calculate
-  results <- design %>%
-    dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
+  pre_design <- design %>%
+    dplyr::group_by(dplyr::across(dplyr::any_of(across_by)))
+
+
+  results <- pre_design %>%
     dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
     srvyr::summarise(
       srvyr::survey_prop(
@@ -59,21 +62,31 @@ create_analysis_prop_select_one <- function(design, group_var = NA, analysis_var
         level = as.numeric(level),
         na.rm = T
       )
-    ) %>%
+    )  %>%
     dplyr::mutate(
       group_var = create_group_var(group_var),
       analysis_var = analysis_var,
       analysis_type = "prop_select_one",
       n_total = sum(n),
       n_w_total = sum(n_w)
-    ) %>%
+    )
+
+  NA_counts <- pre_design %>%
+    dplyr::filter(is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
+    dplyr::summarise(na_counts = dplyr::n())
+
+  results <- results %>%
+    dplyr::left_join(NA_counts) %>%
+    dplyr::mutate(n = dplyr::if_else(na_counts > 0, na_counts, n))
+
+  results <- results %>%
     dplyr::rename(
       stat = coef,
       stat_low = `_low`,
       stat_upp = `_upp`,
       analysis_var_value = !!rlang::sym(analysis_var)
     ) %>%
-    correct_nan()
+    correct_nan_analysis_var_variable_is_na()
 
   # adding group_var_value
   results <-
@@ -85,6 +98,8 @@ create_analysis_prop_select_one <- function(design, group_var = NA, analysis_var
   # adding analysis key
   results <- adding_analysis_key(results = results)
   # re-arranging the columns
-  results %>%
+  results <- results %>%
     arranging_results_columns()
+
+  return(results)
 }
