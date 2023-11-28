@@ -200,9 +200,10 @@ verify_if_AinB <- function(.A, .B, msg_error) {
 #' create_group_var("groupa, groupb")
 #' create_group_var("groupa,groupb")
 #' create_group_var(NA)
-
 create_group_var <- function(group_var) {
-  group_var %>% stringr::str_replace_all(",", " ~/~ ") %>% stringr::str_squish()
+  group_var %>%
+    stringr::str_replace_all(",", " ~/~ ") %>%
+    stringr::str_squish()
 }
 
 #' Helper to correct values to NaN when totals are 0's
@@ -211,24 +212,72 @@ create_group_var <- function(group_var) {
 #' @param stat_columns Columns to be corrected
 #' @param total_column Total column to be used
 #'
-#' @return The results with the stats_columns turn to NaN if total column is 0.
+#' @return The results table with the stats_columns turn to NaN if total column is 0.
 #' @export
 #'
 #' @examples
-#' test_table <- data.frame(stat = c(NaN, 0, 1),
-#'                          stat_low = c(NaN, 0, 1),
-#'                          stat_upp = c(NaN, 0, 1),
-#'                          n_total = c(0,0,1))
+#' test_table <- data.frame(
+#'   stat = c(NaN, 0, 1),
+#'   stat_low = c(NaN, 0, 1),
+#'   stat_upp = c(NaN, 0, 1),
+#'   n = c(0, 0, 1),
+#'   n_total = c(0, 0, 1),
+#'   n_w = c(0, 0, 1),
+#'   n_w_total = c(0, 0, 1)
+#' )
 #'
-#' correct_nan(test_table)
-correct_nan <- function(results,
-                        stat_columns = c("stat", "stat_upp", "stat_low"),
-                        total_column = "n_total") {
-  if(!all(c(stat_columns, total_column) %in% names(results))) {
+#' correct_nan_total_is_0(test_table)
+correct_nan_total_is_0 <- function(results,
+                                   stat_columns = c("stat", "stat_upp", "stat_low", "n_w_total", "n_total", "n_w"),
+                                   total_column = "n_total") {
+  if (!all(c(stat_columns, total_column) %in% names(results))) {
     stop("Cannot identify one column.")
   }
   results %>%
-    dplyr::mutate(dplyr::across(tidyr::all_of(stat_columns),
-                                ~dplyr::case_when(!!dplyr::sym(total_column) == 0 ~ NaN,
-                                                 TRUE ~ .x)))
+    dplyr::mutate(dplyr::across(
+      tidyr::all_of(stat_columns),
+      ~ dplyr::case_when(
+        !!dplyr::sym(total_column) == 0 ~ NaN,
+        TRUE ~ .x
+      )
+    ))
+}
+
+#' Helper to correct values to NaN when totals are 0's
+#'
+#' @param results Results to corrected
+#' @param analysis_var_value_column Analysis variable value to be checked.
+#' @param stat_columns Columns to be corrected
+#'
+#' @return The results table with the stats_columns turn to NaN if analysis_var_value_column is
+#' missing.
+#' @export
+#'
+#' @examples
+#' test_table <- data.frame(
+#'   stat = c(NaN, 0, 1),
+#'   stat_low = c(NaN, 0, 1),
+#'   stat_upp = c(NaN, 0, 1),
+#'   n = c(5, 5, 1),
+#'   n_total = c(0, 0, 1),
+#'   n_w = c(0, 0, 1),
+#'   n_w_total = c(0, 0, 1),
+#'   analysis_var_value = c(NA, NA, "hello")
+#' )
+#'
+#' correct_nan_analysis_var_variable_is_na(test_table)
+correct_nan_analysis_var_variable_is_na <- function(results,
+                                                    stat_columns = c("stat", "stat_upp", "stat_low", "n_w_total", "n_total", "n_w"),
+                                                    analysis_var_value_column = "analysis_var_value") {
+  if (!all(c(stat_columns, analysis_var_value_column) %in% names(results))) {
+    stop("Cannot identify one column.")
+  }
+  results %>%
+    dplyr::mutate(dplyr::across(
+      tidyr::all_of(stat_columns),
+      ~ dplyr::case_when(
+        is.na(!!dplyr::sym(analysis_var_value_column)) | dplyr::sym(analysis_var_value_column) == "NA" ~ NaN,
+        TRUE ~ .x
+      )
+    ))
 }

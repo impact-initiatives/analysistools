@@ -5,7 +5,6 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
   )
 
   # no group
-  # dap <- c(group_var = NA,analysis_var = "value",level = 0.95)
 
   expected_output <- somedata %>%
     dplyr::group_by(value) %>%
@@ -22,12 +21,9 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
       n_w_total = 100,
       analysis_key = paste0("prop_select_one @/@ value ~/~ ", value, " @/@ NA ~/~ NA")
     ) %>%
-    # stat_low = round((stat - qnorm(0.975)*sqrt(stat*(1-stat)/n_total)),2),
-    # stat_upp = round((stat + qnorm(0.975)*sqrt(stat*(1-stat)/n_total)),2)) %>%
     dplyr::select(
       analysis_type, analysis_var, analysis_var_value,
       group_var, group_var_value, stat,
-      # stat_low, stat_upp,
       n, n_total, n_w, n_w_total, analysis_key
     )
   actual_output <- create_analysis_prop_select_one(srvyr::as_survey(somedata), group_var = NA, analysis_var = "value", level = 0.95) %>%
@@ -64,12 +60,9 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
       )
     ) %>%
     dplyr::ungroup() %>%
-    # stat_low = (stat - qnorm(0.975)*sqrt(stat*(1-stat)/n_total)),
-    # stat_upp = (stat + qnorm(0.975)*sqrt(stat*(1-stat)/n_total))) %>%
     dplyr::select(
       analysis_type, analysis_var, analysis_var_value,
       group_var, group_var_value, stat,
-      # stat_low, stat_upp,
       n, n_total, n_w, n_w_total, analysis_key
     )
 
@@ -102,13 +95,13 @@ test_that("create_analysis_prop_select_one handles NA", {
     group_var_value = NA_character_,
     stat = NaN,
     stat_low = NaN,
-    stat_upp = NaN
+    stat_upp = NaN,
+    n = 100,
+    n_total = NaN,
+    n_w = NaN,
+    n_w_total = NaN
   ) %>%
     dplyr::mutate(
-      n = 0,
-      n_total = 0,
-      n_w = 0,
-      n_w_total = 0,
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
@@ -145,13 +138,13 @@ test_that("create_analysis_prop_select_one handles NA", {
       group_var_value = c("a", "b"),
       stat = rep(NaN, 2),
       stat_low = rep(NaN, 2),
-      stat_upp = rep(NaN, 2)
+      stat_upp = rep(NaN, 2),
+      n = rep(50, 2),
+      n_total = rep(NaN, 2),
+      n_w = rep(NaN, 2),
+      n_w_total = rep(NaN, 2)
     ) %>%
     dplyr::mutate(
-      n = 0,
-      n_total = 0,
-      n_w = 0,
-      n_w_total = 0,
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
@@ -178,7 +171,7 @@ test_that("create_analysis_prop_select_one handles NA", {
     ignore_attr = T
   )
 })
-# test_that("create_analysis_prop_select_one returns correct output, with weights", {
+
 test_that("create_analysis_prop_select_one returns correct output, with weights", {
   somedata <- data.frame(
     groups = sample(c("group_a", "group_b"), size = 100, replace = T),
@@ -255,13 +248,13 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
     analysis_var_value = c("a", NA_character_),
     group_var = rep(NA_character_, 2),
     group_var_value = rep(NA_character_, 2),
-    stat = c(1, 0),
+    stat = c(1, NaN),
     stat_low = rep(NaN, 2),
     stat_upp = rep(NaN, 2),
-    n = c(1, 0),
-    n_total = c(1, 1),
-    n_w = c(1, 0),
-    n_w_total = c(1, 1)
+    n = c(1, 99),
+    n_total = c(1, NaN),
+    n_w = c(1, NaN),
+    n_w_total = c(1, NaN)
   ) %>%
     dplyr::mutate(
       analysis_key = paste0(
@@ -298,13 +291,13 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
       analysis_var_value = c(NA_character_, "a", NA_character_),
       group_var = rep("groups", 3),
       group_var_value = c("group_a", "group_b", "group_b"),
-      stat = c(NaN, 1, 0),
+      stat = c(NaN, 1, NaN),
       stat_low = rep(NaN, 3),
       stat_upp = rep(NaN, 3),
-      n = c(0, 1, 0),
-      n_total = c(0, 1, 1),
-      n_w = c(0, 1, 0),
-      n_w_total = c(0, 1, 1)
+      n = c(50, 1, 49),
+      n_total = c(NaN, 1, NaN),
+      n_w = c(NaN, 1, NaN),
+      n_w_total = c(NaN, 1, NaN)
     ) %>%
     dplyr::mutate(
       analysis_key = paste0(
@@ -552,10 +545,10 @@ test_that("When one option has never been selected, stats is 0 and not NaN", {
                                 stat = c(1,1,NaN),
                                 stat_low = c(1,1,NaN),
                                 stat_upp = c(1,1,NaN),
-                                n = c(1,1,0),
-                                n_total = c(1,1,0),
-                                n_w = c(1,1,0),
-                                n_w_total = c(1,1,0),
+                                n = c(1,1,1),
+                                n_total = c(1,1,NaN),
+                                n_w = c(1,1,NaN),
+                                n_w_total = c(1,1,NaN),
                                 analysis_key = c("prop_select_one @/@ so_question ~/~ option1 @/@ group ~/~ group_a",
                                                  "prop_select_one @/@ so_question ~/~ option2 @/@ group ~/~ group_b",
                                                  "prop_select_one @/@ so_question ~/~ NA @/@ group ~/~ group_c"))
@@ -566,4 +559,38 @@ test_that("When one option has never been selected, stats is 0 and not NaN", {
     suppressWarnings()
 
   expect_equal(current_output, expected_output, ignore_attr = T)
+})
+
+test_that("prop_select_one does not create a row for missing values that is empty, it returns the
+          correct number of missing values", {
+  set.seed(123)
+  test_dataset <- data.frame(uuid = letters,
+                             hoh = sample(c("no", "yes", "other", NA_character_),
+                                          size = 26,
+                                          replace = T,
+                                          prob = c(0.44,0.44,0.1,0.1)))
+  my_surveyx <- srvyr::as_survey(test_dataset)
+
+  expected_output <- data.frame(analysis_type = "prop_select_one",
+                                analysis_var = "hoh",
+                                analysis_var_value = c("no", "other", "yes", NA_character_),
+                                group_var = NA_character_,
+                                group_var_value = NA_character_,
+                                stat = c(0.273, 0.182, 0.545, NaN),
+                                stat_low = c(0.0710, 0.007, 0.320, NaN),
+                                stat_upp = c(0.474, 0.356, 0.771, NaN),
+                                n = c(6,4,12, 4),
+                                n_total = c(22, 22, 22, NaN),
+                                n_w = c(6,4,12, NaN),
+                                n_w_total = c(22, 22, 22, NaN),
+                                analysis_key = c("prop_select_one @/@ hoh ~/~ no @/@ NA ~/~ NA",
+                                                 "prop_select_one @/@ hoh ~/~ other @/@ NA ~/~ NA",
+                                                 "prop_select_one @/@ hoh ~/~ yes @/@ NA ~/~ NA",
+                                                 "prop_select_one @/@ hoh ~/~ NA @/@ NA ~/~ NA"))
+  actual_output <- create_analysis_prop_select_one(my_surveyx,
+                                                   analysis_var = "hoh")
+  actual_output[, c("stat", "stat_low", "stat_upp")] <- actual_output[, c("stat", "stat_low", "stat_upp")] %>%
+    round(3)
+  expect_equal(actual_output, expected_output,
+               ignore_attr = TRUE)
 })

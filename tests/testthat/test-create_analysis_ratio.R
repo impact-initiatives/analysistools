@@ -114,13 +114,13 @@ test_that("create_analysis_ratio handles NA", {
     group_var_value = NA_character_,
     stat = NaN,
     stat_low = NaN,
-    stat_upp = NaN
+    stat_upp = NaN,
+    n = 0,
+    n_total = NaN,
+    n_w = NaN,
+    n_w_total = NaN
   ) %>%
     dplyr::mutate(
-      n = 0,
-      n_total = 0,
-      n_w = 0,
-      n_w_total = 0,
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
@@ -155,15 +155,16 @@ test_that("create_analysis_ratio handles NA", {
       analysis_var_value = rep("NA ~/~ NA", 2),
       group_var = rep("groups", 2),
       group_var_value = c("a", "b"),
-      stat = rep(NaN, 2),
-      stat_low = rep(NaN, 2),
-      stat_upp = rep(NaN, 2)
+      stat = NaN,
+      stat_low = NaN,
+      stat_upp = NaN,
+      n = 0,
+      n_total = NaN,
+      n_w = NaN,
+      n_w_total = NaN
     ) %>%
     dplyr::mutate(
-      n = 0,
-      n_total = 0,
-      n_w = 0,
-      n_w_total = 0,
+
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
@@ -242,9 +243,9 @@ test_that("create_analysis_ratio handles when only 1 value", {
       stat_low = rep(NaN, 2),
       stat_upp = rep(NaN, 2),
       n = c(0, 1),
-      n_total = c(0, 1),
-      n_w = c(0, 1),
-      n_w_total = c(0, 1)
+      n_total = c(NaN, 1),
+      n_w = c(NaN, 1),
+      n_w_total = c(NaN, 1)
     ) %>%
     dplyr::mutate(
       analysis_key = paste0(
@@ -794,9 +795,9 @@ test_that("stat is set to NaN when there is no value", {
                                 stat_low = rep(NaN,3),
                                 stat_upp = rep(NaN,3),
                                 n = c(0,0,1),
-                                n_total = c(0,0,1),
-                                n_w = c(0,0,1),
-                                n_w_total = c(0,0,1),
+                                n_total = c(NaN,NaN,1),
+                                n_w = c(NaN,NaN,1),
+                                n_w_total = c(NaN,NaN,1),
                                 analysis_key = c("ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_a",
                                                  "ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_b",
                                                  "ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_c"))

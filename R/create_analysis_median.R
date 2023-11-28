@@ -103,7 +103,7 @@ create_analysis_median <- function(design, group_var = NA, analysis_var, level =
       n_total = n, # for median we want the denominator
       n_w_total = n_w # for median we want the denominator
     ) %>%
-    correct_nan()
+    correct_nan_total_is_0()
 
   # adding group_var_value
   results <- adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)

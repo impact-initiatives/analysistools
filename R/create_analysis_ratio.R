@@ -177,7 +177,7 @@ create_analysis_ratio <- function(design,
       stat_low = `_low`,
       stat_upp = `_upp`
     ) %>%
-    correct_nan()
+    correct_nan_total_is_0()
 
 
   # adding group_var_value
