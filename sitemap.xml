@@ -64,7 +64,10 @@
     <loc>https://impact-initiatives.github.io/analysistools/reference/check_loa.html</loc>
   </url>
   <url>
-    <loc>https://impact-initiatives.github.io/analysistools/reference/correct_nan.html</loc>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/correct_nan_analysis_var_variable_is_na.html</loc>
+  </url>
+  <url>
+    <loc>https://impact-initiatives.github.io/analysistools/reference/correct_nan_total_is_0.html</loc>
   </url>
   <url>
     <loc>https://impact-initiatives.github.io/analysistools/reference/create_analysis.html</loc>
