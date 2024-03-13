@@ -125,10 +125,10 @@ select multiple</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 13</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   analysis_type analysis_var analysis_var_value group_var group_var_value   stat</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> prop_select_… smvar        option1            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.717</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> prop_select_… smvar        option2            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.525</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> prop_select_… smvar        option3            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.111</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> prop_select_… smvar        option4            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.798</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> prop_select_… smvar        option1            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> prop_select_… smvar        option2            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> prop_select_… smvar        option3            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> prop_select_… smvar        option4            <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>               0.854</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> prop_select_… smvar        NA                 <span style="color: #BB0000;">NA</span>        <span style="color: #BB0000;">NA</span>              <span style="color: #BB0000;">NA</span>    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 more variables: stat_low &lt;dbl&gt;, stat_upp &lt;dbl&gt;, n &lt;dbl&gt;, n_total &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_w &lt;dbl&gt;, n_w_total &lt;dbl&gt;, analysis_key &lt;chr&gt;</span></span>
@@ -138,18 +138,19 @@ select multiple</p></dd>
 <span class="r-in"><span>  analysis_var <span class="op">=</span> <span class="st">"smvar"</span>,</span></span>
 <span class="r-in"><span>  level <span class="op">=</span> <span class="fl">0.95</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 × 13</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   analysis_type        analysis_var analysis_var_value group_var group_var_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> prop_select_multiple smvar        option1            groups    group_a        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> prop_select_multiple smvar        option2            groups    group_a        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> prop_select_multiple smvar        option3            groups    group_a        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> prop_select_multiple smvar        option4            groups    group_a        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> prop_select_multiple smvar        option1            groups    group_b        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> prop_select_multiple smvar        option2            groups    group_b        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> prop_select_multiple smvar        option3            groups    group_b        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> prop_select_multiple smvar        option4            groups    group_b        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">9</span> prop_select_multiple smvar        NA                 groups    group_b        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    analysis_type       analysis_var analysis_var_value group_var group_var_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> prop_select_multip… smvar        option1            groups    group_a        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> prop_select_multip… smvar        option2            groups    group_a        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> prop_select_multip… smvar        option3            groups    group_a        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> prop_select_multip… smvar        option4            groups    group_a        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> prop_select_multip… smvar        NA                 groups    group_a        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> prop_select_multip… smvar        option1            groups    group_b        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> prop_select_multip… smvar        option2            groups    group_b        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> prop_select_multip… smvar        option3            groups    group_b        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> prop_select_multip… smvar        option4            groups    group_b        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> prop_select_multip… smvar        NA                 groups    group_b        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: stat &lt;dbl&gt;, stat_low &lt;dbl&gt;, stat_upp &lt;dbl&gt;, n &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   n_total &lt;dbl&gt;, n_w &lt;dbl&gt;, n_w_total &lt;dbl&gt;, analysis_key &lt;chr&gt;</span></span>
 </code></pre></div>
