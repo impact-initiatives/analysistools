@@ -19,8 +19,12 @@ char_to_vector <- function(string) {
     stringr::str_trim() %>%
     as.vector()
 
-  if (any(vector_to_return == "")) {
+  if ((any(vector_to_return == "") & length(vector_to_return) > 1) ) {
     stop("The group_var seems to have empty value, please check the inputs values")
+  }
+
+  if ((any(vector_to_return == "") & length(vector_to_return) == 1) ) {
+    return(NA_character_)
   }
   return(vector_to_return)
 }
