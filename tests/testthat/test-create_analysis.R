@@ -256,5 +256,17 @@ test_that("create_group_var split correctly the group_var for all analysis type"
   }
 )
 
-#check_loa does not break when no grouping variables
+test_that("check_loa does not break when no grouping variables", {
+  expected_results <- data.frame(analysis_type = c("prop_select_one", "mean", "median", "mean", "median", "prop_select_one", "prop_select_multiple"),
+                                 analysis_var = c("admin1", "income_v1_salaried_work", "income_v1_salaried_work", "expenditure_debt", "expenditure_debt", "wash_drinkingwatersource" , "edu_learning_conditions_reasons_v1"),
+                                 group_var = NA_character_,
+                                 level = .95)
+
+  actual_results <- analysistools_MSNA_template_loa %>%
+    dplyr::filter(is.na(group_var)) %>%
+    check_loa(design = srvyr::as_survey(analysistools_MSNA_template_data))
+
+  expect_equal(actual_results, expected_results, ignore_attr = T)
+})
+#
 # analysistools_MSNA_template_loa %>% filter(is.na(group_var)) %>% check_loa(design = srvyr::as_survey(analysistools_MSNA_template_data))
