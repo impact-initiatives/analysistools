@@ -19,8 +19,8 @@ test_that("char_to_vector returns the correct outputs", {
 })
 
 test_that("create_group_var separates correctly", {
-  expect_equal(create_group_var("groupa, groupb"), "groupa ~/~ groupb")
-  expect_equal(create_group_var("groupa,groupb"), "groupa ~/~ groupb")
+  expect_equal(create_group_var("groupa, groupb"), "groupa %/% groupb")
+  expect_equal(create_group_var("groupa,groupb"), "groupa %/% groupb")
   expect_equal(create_group_var(NA), NA_character_)
 })
 

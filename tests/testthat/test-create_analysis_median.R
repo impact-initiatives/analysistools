@@ -30,7 +30,7 @@ test_that("create_analysis_median returns correct output, no weights", {
       n_total = 100,
       n_w = 100,
       n_w_total = 100,
-      analysis_key = "median @/@ value ~/~ NA @/@ NA ~/~ NA"
+      analysis_key = "median @/@ value %/% NA @/@ NA %/% NA"
     ) %>%
     dplyr::rename(
       stat = quantile,
@@ -66,11 +66,11 @@ test_that("create_analysis_median returns correct output, no weights", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       ),
     ) %>%
@@ -128,11 +128,11 @@ test_that("create_analysis_median handles NA", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -172,11 +172,11 @@ test_that("create_analysis_median handles NA", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -215,7 +215,7 @@ test_that("create_analysis_median handles when only 1 value", {
     n_total = 1,
     n_w = 1,
     n_w_total = 1,
-    analysis_key = "median @/@ value ~/~ NA @/@ NA ~/~ NA"
+    analysis_key = "median @/@ value %/% NA @/@ NA %/% NA"
   )
 
   one_value_results <- create_analysis_median(srvyr::as_survey(somedata),
@@ -252,11 +252,11 @@ test_that("create_analysis_median handles when only 1 value", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -322,11 +322,11 @@ test_that("create_analysis_median handles lonely PSU", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -372,7 +372,7 @@ test_that("create_analysis_median returns correct output, with weights", {
       n_total = 100,
       n_w = 100,
       n_w_total = 100,
-      analysis_key = "median @/@ value ~/~ NA @/@ NA ~/~ NA"
+      analysis_key = "median @/@ value %/% NA @/@ NA %/% NA"
     ) %>%
     dplyr::rename(
       stat = quantile,
@@ -430,16 +430,16 @@ test_that("create_analysis_median returns correct output with 3 grouping variabl
       n = dplyr::n()
     ) %>%
     dplyr::mutate(
-      group_var = "group_a ~/~ group_b ~/~ group_c",
+      group_var = "group_a %/% group_b %/% group_c",
       analysis_var = "value",
       analysis_var_value = NA_character_,
       analysis_type = "median",
       n_total = n,
       n_w = n,
       n_w_total = n,
-      analysis_key = "median @/@ value ~/~ NA @/@"
+      analysis_key = "median @/@ value %/% NA @/@"
     ) %>%
-    tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " ~/~ ", remove = F)
+    tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " %/% ", remove = F)
 
   expected_output <- expected_output_part2 %>%
     dplyr::ungroup() %>%
@@ -447,15 +447,15 @@ test_that("create_analysis_median returns correct output with 3 grouping variabl
     dplyr::select(dplyr::all_of(names(results)))
 
   x <-
-    expected_output$group_var %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var %>% stringr::str_split(" %/% ")
   y <-
-    expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var_value %>% stringr::str_split(" %/% ")
 
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
   expected_output <- expected_output %>%
@@ -526,15 +526,15 @@ test_that("create_analysis_median returns correct output with 2 grouping variabl
       n_w = sum(weights)
     ) %>%
     dplyr::mutate(
-      group_var = "group_a ~/~ group_b",
+      group_var = "group_a %/% group_b",
       analysis_var = "value",
       analysis_var_value = NA_character_,
       analysis_type = "median",
       n_total = n,
       n_w_total = n_w,
-      analysis_key = "median @/@ value ~/~ NA @/@"
+      analysis_key = "median @/@ value %/% NA @/@"
     ) %>%
-    tidyr::unite(group_var_value, group_a, group_b, sep = " ~/~ ", remove = F)
+    tidyr::unite(group_var_value, group_a, group_b, sep = " %/% ", remove = F)
 
   expected_output <- expected_output_part2 %>%
     dplyr::ungroup() %>%
@@ -542,15 +542,15 @@ test_that("create_analysis_median returns correct output with 2 grouping variabl
     dplyr::select(dplyr::all_of(names(results)))
 
   x <-
-    expected_output$group_var %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var %>% stringr::str_split(" %/% ")
   y <-
-    expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var_value %>% stringr::str_split(" %/% ")
 
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
   expected_output <- expected_output %>%
@@ -585,8 +585,8 @@ test_that("stat is set to NaN when there is no value", {
                                 n_total = c(NaN,1),
                                 n_w = c(NaN,1),
                                 n_w_total = c(NaN,1),
-                                analysis_key = c("median @/@ value ~/~ NA @/@ group ~/~ group_value_a",
-                                                 "median @/@ value ~/~ NA @/@ group ~/~ group_value_b"))
+                                analysis_key = c("median @/@ value %/% NA @/@ group %/% group_value_a",
+                                                 "median @/@ value %/% NA @/@ group %/% group_value_b"))
 
   expect_equal(results, expected_output, ignore_attr = T)
 })

@@ -29,7 +29,7 @@ test_that("create_analysis_prop_select_multiple returns correct output, no weigh
       n_total = sum(!is.na(somedata$smvar)),
       n_w = n,
       n_w_total = sum(!is.na(somedata$smvar)),
-      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ NA ~/~ NA")
+      analysis_key = paste0("prop_select_multiple @/@ smvar %/% ", analysis_var_value, " @/@ NA %/% NA")
     ) %>%
     dplyr::select(
       analysis_type, analysis_var, analysis_var_value,
@@ -69,7 +69,7 @@ test_that("create_analysis_prop_select_multiple returns correct output, no weigh
       group_var_value = groups,
       n_w = n,
       n_w_total = n_total,
-      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ groups ~/~ ", group_var_value)
+      analysis_key = paste0("prop_select_multiple @/@ smvar %/% ", analysis_var_value, " @/@ groups %/% ", group_var_value)
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
@@ -122,11 +122,11 @@ test_that("create_analysis_prop_select_multiple handles NA", {
       analysis_type,
       " @/@ ",
       analysis_var,
-      " ~/~ ",
+      " %/% ",
       analysis_var_value,
       " @/@ ",
       group_var,
-      " ~/~ ",
+      " %/% ",
       group_var_value
     ))
 
@@ -162,11 +162,11 @@ test_that("create_analysis_prop_select_multiple handles NA", {
       analysis_type,
       " @/@ ",
       analysis_var,
-      " ~/~ ",
+      " %/% ",
       analysis_var_value,
       " @/@ ",
       group_var,
-      " ~/~ ",
+      " %/% ",
       group_var_value
     ))
   one_group_result <-
@@ -243,11 +243,11 @@ test_that("create_analysis_prop_select_multiple returns correct output, with wei
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     ) %>%
@@ -312,11 +312,11 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -354,11 +354,11 @@ test_that("create_analysis_prop_select_multiple handles when only 1 value", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -414,7 +414,7 @@ test_that("create_analysis_prop_select_multiple handles lonely PSU", {
       group_var_value = groups,
       n_w = n,
       n_w_total = n_total,
-      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ groups ~/~ ", group_var_value)
+      analysis_key = paste0("prop_select_multiple @/@ smvar %/% ", analysis_var_value, " @/@ groups %/% ", group_var_value)
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
@@ -473,23 +473,23 @@ test_that("create_analysis_prop_select_multiple returns correct output with 3 gr
     dplyr::left_join(groups_n) %>%
     dplyr::mutate(
       analysis_type = "prop_select_multiple",
-      group_var = "group_a ~/~ group_b ~/~ group_c",
+      group_var = "group_a %/% group_b %/% group_c",
       n_w = n,
       n_w_total = n_total,
-      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@")
+      analysis_key = paste0("prop_select_multiple @/@ smvar %/% ", analysis_var_value, " @/@")
     ) %>%
-    tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " ~/~ ") %>%
+    tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " %/% ") %>%
     dplyr::ungroup()
   x <-
-    expected_output$group_var %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var %>% stringr::str_split(" %/% ")
   y <-
-    expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var_value %>% stringr::str_split(" %/% ")
 
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
 
@@ -598,21 +598,21 @@ test_that("create_analysis_prop_select_multiple returns correct output with 2 gr
     dplyr::mutate(
       analysis_type = "prop_select_multiple",
       analysis_var = "smvar",
-      group_var = "group_a ~/~ group_b",
-      analysis_key = paste("prop_select_multiple @/@ smvar ~/~", analysis_var_value, "@/@")
+      group_var = "group_a %/% group_b",
+      analysis_key = paste("prop_select_multiple @/@ smvar %/%", analysis_var_value, "@/@")
     ) %>%
-    tidyr::unite(group_var_value, group_a, group_b, sep = " ~/~ ")
+    tidyr::unite(group_var_value, group_a, group_b, sep = " %/% ")
 
   x <-
-    expected_output$group_var %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var %>% stringr::str_split(" %/% ")
   y <-
-    expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var_value %>% stringr::str_split(" %/% ")
 
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
   expected_output <- expected_output %>%
@@ -679,7 +679,7 @@ test_that("create_analysis_prop_select_multiple handles NA in the dummy variable
       group_var_value = NA_character_,
       n_w = n,
       n_w_total = n_total,
-      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ NA ~/~ NA")
+      analysis_key = paste0("prop_select_multiple @/@ smvar %/% ", analysis_var_value, " @/@ NA %/% NA")
     ) %>%
     dplyr::select(
       analysis_type, analysis_var, analysis_var_value,
@@ -722,7 +722,7 @@ test_that("create_analysis_prop_select_multiple handles NA in the dummy variable
       group_var_value = groups,
       n_w = n,
       n_w_total = n_total,
-      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ groups ~/~ ", group_var_value)
+      analysis_key = paste0("prop_select_multiple @/@ smvar %/% ", analysis_var_value, " @/@ groups %/% ", group_var_value)
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(
@@ -776,7 +776,7 @@ test_that("create_analysis_prop_select_multiple works with 0/1's instead of TRUE
       n_total = sum(!is.na(somedata$smvar)),
       n_w = n,
       n_w_total = sum(!is.na(somedata$smvar)),
-      analysis_key = paste0("prop_select_multiple @/@ smvar ~/~ ", analysis_var_value, " @/@ NA ~/~ NA")
+      analysis_key = paste0("prop_select_multiple @/@ smvar %/% ", analysis_var_value, " @/@ NA %/% NA")
     ) %>%
     dplyr::select(
       analysis_type, analysis_var, analysis_var_value,
@@ -813,9 +813,9 @@ test_that("When one option has never been selected, stats is 0 and not NaN", {
                                 n_total = c(1,1,NaN),
                                 n_w = c(1,0,NaN),
                                 n_w_total = c(1,1,NaN),
-                                analysis_key = c("prop_select_multiple @/@ sm_question ~/~ option1 @/@ NA ~/~ NA",
-                                                 "prop_select_multiple @/@ sm_question ~/~ option2 @/@ NA ~/~ NA",
-                                                 "prop_select_multiple @/@ sm_question ~/~ NA @/@ NA ~/~ NA"))
+                                analysis_key = c("prop_select_multiple @/@ sm_question %/% option1 @/@ NA %/% NA",
+                                                 "prop_select_multiple @/@ sm_question %/% option2 @/@ NA %/% NA",
+                                                 "prop_select_multiple @/@ sm_question %/% NA @/@ NA %/% NA"))
 
   current_output <- create_analysis_prop_select_multiple(srvyr::as_survey(test_data),
                                                          analysis_var = "sm_question") %>%
@@ -849,9 +849,9 @@ test_that("prop_select_multiple create a row for missing values, it returns the 
                                 n_total = c(21,21, NaN),
                                 n_w = c(16,15,NaN),
                                 n_w_total =  c(21,21, NaN),
-                                analysis_key = c("prop_select_multiple @/@ sm_question ~/~ option1 @/@ NA ~/~ NA",
-                                                 "prop_select_multiple @/@ sm_question ~/~ option2 @/@ NA ~/~ NA",
-                                                 "prop_select_multiple @/@ sm_question ~/~ NA @/@ NA ~/~ NA"))
+                                analysis_key = c("prop_select_multiple @/@ sm_question %/% option1 @/@ NA %/% NA",
+                                                 "prop_select_multiple @/@ sm_question %/% option2 @/@ NA %/% NA",
+                                                 "prop_select_multiple @/@ sm_question %/% NA @/@ NA %/% NA"))
 
   current_output <- create_analysis_prop_select_multiple(srvyr::as_survey(test_data),
                                                          analysis_var = "sm_question") %>%
@@ -875,12 +875,12 @@ test_that("prop_select_multiple create a row for missing values, it returns the 
                                       n_total = c(12,12, NaN,9,9, NaN),
                                       n_w = c(8,9,NaN,8,6,NaN),
                                       n_w_total =  c(12,12, NaN,9,9, NaN),
-                                      analysis_key = c("prop_select_multiple @/@ sm_question ~/~ option1 @/@ group ~/~ group_a",
-                                                       "prop_select_multiple @/@ sm_question ~/~ option2 @/@ group ~/~ group_a",
-                                                       "prop_select_multiple @/@ sm_question ~/~ NA @/@ group ~/~ group_a",
-                                                       "prop_select_multiple @/@ sm_question ~/~ option1 @/@ group ~/~ group_b",
-                                                       "prop_select_multiple @/@ sm_question ~/~ option2 @/@ group ~/~ group_b",
-                                                       "prop_select_multiple @/@ sm_question ~/~ NA @/@ group ~/~ group_b"))
+                                      analysis_key = c("prop_select_multiple @/@ sm_question %/% option1 @/@ group %/% group_a",
+                                                       "prop_select_multiple @/@ sm_question %/% option2 @/@ group %/% group_a",
+                                                       "prop_select_multiple @/@ sm_question %/% NA @/@ group %/% group_a",
+                                                       "prop_select_multiple @/@ sm_question %/% option1 @/@ group %/% group_b",
+                                                       "prop_select_multiple @/@ sm_question %/% option2 @/@ group %/% group_b",
+                                                       "prop_select_multiple @/@ sm_question %/% NA @/@ group %/% group_b"))
 
   current_group_output <- create_analysis_prop_select_multiple(srvyr::as_survey(test_data),
                                                                analysis_var = "sm_question",

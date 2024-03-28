@@ -1,13 +1,13 @@
-test_that("multiplication works", {
+test_that("review analysis works", {
 
-  analysis_key_column <-  c("mean @/@ income ~/~ NA @/@ NA ~/~ NA",
-                            "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a",
-                            "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a ~/~ population ~/~ displaced",
-                            "prop_select_multiple @/@ source_information ~/~ relatives @/@ NA ~/~ NA",
-                            "ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ NA ~/~ NA",
-                            "prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ displaced",
-                            "ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ district ~/~ district_a",
-                            "prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ returnees")
+  analysis_key_column <-  c("mean @/@ income %/% NA @/@ NA %/% NA",
+                            "prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a",
+                            "prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a -/- population %/% displaced",
+                            "prop_select_multiple @/@ source_information %/% relatives @/@ NA %/% NA",
+                            "ratio @/@ food_expenses %/% NA -/- total_expenses %/% NA @/@ NA %/% NA",
+                            "prop_select_one @/@ water_source %/% tap_water @/@ population %/% displaced",
+                            "ratio @/@ food_expenses %/% NA -/- total_expenses %/% NA @/@ district %/% district_a",
+                            "prop_select_one @/@ water_source %/% tap_water @/@ population %/% returnees")
   test_analysis_results <- data.frame(
     test = c(
       "test equality",
@@ -41,10 +41,10 @@ test_that("multiplication works", {
                             "ratio", "prop_select_one", "ratio", "prop_select_one")
 
   analysis_var_column  <- c("income", "water_source", "water_source", "source_information",
-                           "food_expenses ~/~ total_expenses", "water_source",
-                           "food_expenses ~/~ total_expenses", "water_source")
+                           "food_expenses %/% total_expenses", "water_source",
+                           "food_expenses %/% total_expenses", "water_source")
 
-  group_var_column <- c("NA", "district", "district ~/~ population", "NA",
+  group_var_column <- c("NA", "district", "district %/% population", "NA",
                         "NA", "population", "district", "population")
 
   expected_results_table_1_stat <- test_analysis_results |>

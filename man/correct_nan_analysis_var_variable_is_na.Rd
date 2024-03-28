@@ -38,3 +38,4 @@ test_table <- data.frame(
 
 correct_nan_analysis_var_variable_is_na(test_table)
 }
+\keyword{internal}

@@ -18,3 +18,4 @@ This is a helper to avoid repeating the select in the 5 create_analysis_x functi
 \examples{
 char_to_vector("groupa, groupb, groupc")
 }
+\keyword{internal}

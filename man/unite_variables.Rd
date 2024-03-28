@@ -11,7 +11,7 @@ unite_variables(key_table)
 }
 \value{
 a table with analysis_var, analysis_var_value, group_var, and group_var_value united and
-with a ~/~ as separator
+with a \%/\% as separator
 }
 \description{
 Function will unite all analysis_var, analysis_var_value, group_var, and group_var_value from
