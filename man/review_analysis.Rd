@@ -37,14 +37,14 @@ A list with two objects:
 Wrapper around addindicators::review_variables specific to review analysis.
 }
 \examples{
-analysis_key_column <-  c("mean @/@ income ~/~ NA @/@ NA ~/~ NA",
-                          "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a",
-                          "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a ~/~ population ~/~ displaced",
-                          "prop_select_multiple @/@ source_information ~/~ relatives @/@ NA ~/~ NA",
-                          "ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ NA ~/~ NA",
-                          "prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ displaced",
-                          "ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ district ~/~ district_a",
-                          "prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ returnees")
+analysis_key_column <-  c("mean @/@ income \%/\% NA @/@ NA \%/\% NA",
+                          "prop_select_one @/@ water_source \%/\% tap_water @/@ district \%/\% district_a",
+                          "prop_select_one @/@ water_source \%/\% tap_water @/@ district \%/\% district_a -/- population \%/\% displaced",
+                          "prop_select_multiple @/@ source_information \%/\% relatives @/@ NA \%/\% NA",
+                          "ratio @/@ food_expenses \%/\% NA -/- total_expenses \%/\% NA @/@ NA \%/\% NA",
+                          "prop_select_one @/@ water_source \%/\% tap_water @/@ population \%/\% displaced",
+                          "ratio @/@ food_expenses \%/\% NA -/- total_expenses \%/\% NA @/@ district \%/\% district_a",
+                          "prop_select_one @/@ water_source \%/\% tap_water @/@ population \%/\% returnees")
 test_analysis_results <- data.frame(
   test = c(
     "test equality",

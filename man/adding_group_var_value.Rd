@@ -26,3 +26,4 @@ adding_group_var_value(results = results, group_var = group_var, grouping_vector
 adding_group_var_value(results = results, group_var = group_var, grouping_vector = across_by)
 }
 }
+\keyword{internal}

@@ -122,7 +122,7 @@ create_analysis <- function(design,
           level = loa[["level"]]
         ))
       }
-    }, .progress = T)
+    }, .progress = TRUE)
 
 
   results_table <- results_list %>%
@@ -183,7 +183,7 @@ create_loa <- function(design,
     dplyr::rename(., type = `.`) %>%
     dplyr::left_join(loa_dictionary, relationship = "many-to-many") %>%
     dplyr::filter(!is.na(analysis_type)) %>%
-    dplyr::filter(stringr::str_detect(analysis_var, "^(X_|_)", negate = T)) %>%
+    dplyr::filter(stringr::str_detect(analysis_var, "^(X_|_)", negate = TRUE)) %>%
     dplyr::filter(!analysis_var %in% cols_to_remove) %>%
     dplyr::filter(!analysis_var %in% select_multiple_children_columns) %>%
     dplyr::mutate(analysis_type = dplyr::case_when(
@@ -200,7 +200,7 @@ create_loa <- function(design,
     }) %>%
       do.call(rbind, .)
     loa <- loa %>%
-      dplyr::filter(is.na(group_var) | stringr::str_detect(group_var, analysis_var, negate = T))
+      dplyr::filter(is.na(group_var) | stringr::str_detect(group_var, analysis_var, negate = TRUE))
   }
   loa %>%
     dplyr::select(analysis_type, analysis_var, group_var) %>%

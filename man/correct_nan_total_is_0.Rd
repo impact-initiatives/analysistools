@@ -36,3 +36,4 @@ test_table <- data.frame(
 
 correct_nan_total_is_0(test_table)
 }
+\keyword{internal}
