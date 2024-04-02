@@ -32,38 +32,39 @@ create_analysis_key_table <- function(results_table, analysis_key_column = "anal
       remove = FALSE
     ) %>%
     dplyr::mutate(
-      nb_analysis_var = ceiling(stringr::str_count(analysis_var, "~/~") / 2),
-      nb_group_var = ceiling(stringr::str_count(group_var, "~/~") / 2)
+      nb_analysis_var = stringr::str_count(analysis_var, "-/-") + 1,
+      nb_group_var = stringr::str_count(group_var, "-/-") + 1
     )
-
-  analysis_var_split <-
-    paste0(rep(
-      c("analysis_var_", "analysis_var_value_"),
-      max(key_table$nb_analysis_var)
-    ), rep(c(1:max(
-      key_table$nb_analysis_var
-    )), each = 2))
-  group_var_split <-
-    paste0(rep(
-      c("group_var_", "group_var_value_"),
-      max(key_table$nb_group_var)
-    ), rep(c(1:max(
-      key_table$nb_group_var
-    )), each = 2))
-
-  key_table <- key_table %>%
-    tidyr::separate(analysis_var,
-      analysis_var_split,
-      sep = " ~/~ "
-    ) %>%
-    tidyr::separate(group_var,
-      group_var_split,
-      sep = " ~/~ "
-    ) %>%
-    suppressWarnings()
+  key_table <- separate_variable(key_table, "group_var", "nb_group_var") %>%
+    separate_variable("analysis_var","nb_analysis_var")
 
   return(key_table)
 }
+
+separate_variable <- function(key_table, column_to_separate, number_column) {
+  key_table2 <- key_table %>%
+    tidyr::separate_wider_delim(cols = tidyr::all_of(column_to_separate),
+                                delim = " -/- ",
+                                names_sep = "_",
+                                too_few = "align_start")
+  key_table3 <- key_table2 %>%
+    tidyr::separate_wider_delim(cols = tidyr::starts_with(column_to_separate),
+                                delim = " %/% ",
+                                names = c(column_to_separate, paste0(column_to_separate,"_value")),
+                                too_few = "align_start", names_sep = "_")
+
+  names_to_change <- grep(paste0("^", column_to_separate,"_\\d+"), names(key_table3), value = TRUE)
+
+  max_number <- max(key_table[[number_column]])
+
+  names_group_var <- paste0(c(column_to_separate, paste0(column_to_separate,"_value")),"_", rep(1:max_number, each =2))
+  rename_map <- stats::setNames(names_to_change,names_group_var)
+
+  dplyr::rename(key_table3, tidyr::all_of(rename_map))
+
+
+}
+
 
 #' Unite variable from the key_table
 #'
@@ -73,7 +74,7 @@ create_analysis_key_table <- function(results_table, analysis_key_column = "anal
 #' @param key_table a key table built with create_analysis_key_table
 #'
 #' @return a table with analysis_var, analysis_var_value, group_var, and group_var_value united and
-#' with a ~/~ as separator
+#' with a %/% as separator
 #' @export
 #'
 #' @examples
@@ -87,19 +88,19 @@ unite_variables <- function(key_table) {
         dplyr::starts_with("analysis_var") &
           !dplyr::contains("value")
       ),
-      sep = " ~/~ "
+      sep = " %/% "
     ) %>%
     tidyr::unite(analysis_var_value,
       c(dplyr::starts_with("analysis_var_value_")),
-      sep = " ~/~ "
+      sep = " %/% "
     ) %>%
     tidyr::unite(group_var, c(
       dplyr::starts_with("group_var_") &
         !dplyr::contains("value")
-    ), sep = " ~/~ ") %>%
+    ), sep = " %/% ") %>%
     tidyr::unite(group_var_value,
       c(dplyr::starts_with("group_var_value_")),
-      sep = " ~/~ "
+      sep = " %/% "
     ) %>%
     dplyr::mutate(dplyr::across(
       c(
@@ -108,7 +109,7 @@ unite_variables <- function(key_table) {
         group_var,
         group_var_value
       ),
-      ~ stringr::str_remove_all(.x, "( ~/~ NA)*$")
+      ~ stringr::str_remove_all(.x, "( %/% NA)*$")
     ))
 }
 

@@ -19,7 +19,7 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
       n_total = 100,
       n_w = n,
       n_w_total = 100,
-      analysis_key = paste0("prop_select_one @/@ value ~/~ ", value, " @/@ NA ~/~ NA")
+      analysis_key = paste0("prop_select_one @/@ value %/% ", value, " @/@ NA %/% NA")
     ) %>%
     dplyr::select(
       analysis_type, analysis_var, analysis_var_value,
@@ -51,11 +51,11 @@ test_that("create_analysis_prop_select_one returns correct output, no weights", 
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     ) %>%
@@ -106,11 +106,11 @@ test_that("create_analysis_prop_select_one handles NA", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -149,11 +149,11 @@ test_that("create_analysis_prop_select_one handles NA", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -199,11 +199,11 @@ test_that("create_analysis_prop_select_one returns correct output, with weights"
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     ) %>%
@@ -261,11 +261,11 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -304,11 +304,11 @@ test_that("create_analysis_prop_select_one handles when only 1 value", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -349,11 +349,11 @@ test_that("create_analysis_prop_select_one handles lonely PSU", {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       ),
       stat_low = (stat - qnorm(0.975) * sqrt(stat * (1 - stat) / n_total)),
@@ -399,24 +399,24 @@ test_that("create_analysis_prop_select_one returns correct output with 3 groupin
       analysis_type = "prop_select_one",
       analysis_var = "value",
       analysis_var_value = value,
-      group_var = "group_a ~/~ group_b ~/~ group_c",
+      group_var = "group_a %/% group_b %/% group_c",
       n_total = sum(n),
       n_w = n,
       n_w_total = sum(n),
-      analysis_key = paste("prop_select_one @/@ value ~/~", value, "@/@")
+      analysis_key = paste("prop_select_one @/@ value %/%", value, "@/@")
     ) %>%
-    tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " ~/~ ") %>%
+    tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " %/% ") %>%
     dplyr::ungroup()
   x <-
-    expected_output$group_var %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var %>% stringr::str_split(" %/% ")
   y <-
-    expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var_value %>% stringr::str_split(" %/% ")
 
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
 
@@ -487,23 +487,23 @@ test_that("create_analysis_prop_select_one returns correct output with 2 groupin
       analysis_type = "prop_select_one",
       analysis_var = "value",
       analysis_var_value = value,
-      group_var = "group_a ~/~ group_b",
+      group_var = "group_a %/% group_b",
       n_total = sum(n),
       n_w_total = sum(n_w),
-      analysis_key = paste("prop_select_one @/@ value ~/~", value, "@/@")
+      analysis_key = paste("prop_select_one @/@ value %/%", value, "@/@")
     ) %>%
-    tidyr::unite(group_var_value, group_a, group_b, sep = " ~/~ ")
+    tidyr::unite(group_var_value, group_a, group_b, sep = " %/% ")
 
   x <-
-    expected_output$group_var %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var %>% stringr::str_split(" %/% ")
   y <-
-    expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var_value %>% stringr::str_split(" %/% ")
 
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
   expected_output <- expected_output %>%
@@ -549,9 +549,9 @@ test_that("When one option has never been selected, stats is 0 and not NaN", {
                                 n_total = c(1,1,NaN),
                                 n_w = c(1,1,NaN),
                                 n_w_total = c(1,1,NaN),
-                                analysis_key = c("prop_select_one @/@ so_question ~/~ option1 @/@ group ~/~ group_a",
-                                                 "prop_select_one @/@ so_question ~/~ option2 @/@ group ~/~ group_b",
-                                                 "prop_select_one @/@ so_question ~/~ NA @/@ group ~/~ group_c"))
+                                analysis_key = c("prop_select_one @/@ so_question %/% option1 @/@ group %/% group_a",
+                                                 "prop_select_one @/@ so_question %/% option2 @/@ group %/% group_b",
+                                                 "prop_select_one @/@ so_question %/% NA @/@ group %/% group_c"))
 
   current_output <- create_analysis_prop_select_one(srvyr::as_survey(test_data),
                                                     group_var = "group",
@@ -583,10 +583,10 @@ test_that("prop_select_one does not create a row for missing values that is empt
                                 n_total = c(22, 22, 22, NaN),
                                 n_w = c(6,4,12, NaN),
                                 n_w_total = c(22, 22, 22, NaN),
-                                analysis_key = c("prop_select_one @/@ hoh ~/~ no @/@ NA ~/~ NA",
-                                                 "prop_select_one @/@ hoh ~/~ other @/@ NA ~/~ NA",
-                                                 "prop_select_one @/@ hoh ~/~ yes @/@ NA ~/~ NA",
-                                                 "prop_select_one @/@ hoh ~/~ NA @/@ NA ~/~ NA"))
+                                analysis_key = c("prop_select_one @/@ hoh %/% no @/@ NA %/% NA",
+                                                 "prop_select_one @/@ hoh %/% other @/@ NA %/% NA",
+                                                 "prop_select_one @/@ hoh %/% yes @/@ NA %/% NA",
+                                                 "prop_select_one @/@ hoh %/% NA @/@ NA %/% NA"))
   actual_output <- create_analysis_prop_select_one(my_surveyx,
                                                    analysis_var = "hoh")
   actual_output[, c("stat", "stat_low", "stat_upp")] <- actual_output[, c("stat", "stat_low", "stat_upp")] %>%

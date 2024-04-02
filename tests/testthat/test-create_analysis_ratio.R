@@ -14,8 +14,8 @@ test_that("create_analysis_ratio returns correct output, no weights", {
   # no group
   expected_output <- data.frame(
     analysis_type = "ratio",
-    analysis_var = "children_enrolled ~/~ children_518",
-    analysis_var_value = "NA ~/~ NA",
+    analysis_var = "children_enrolled %/% children_518",
+    analysis_var_value = "NA %/% NA",
     group_var = NA_character_,
     group_var_value = NA_character_,
     stat = sum(somedata$children_enrolled) / sum(somedata$children_518),
@@ -23,7 +23,7 @@ test_that("create_analysis_ratio returns correct output, no weights", {
     n_total = sum(somedata$children_518 != 0),
     n_w = sum(somedata$children_518 != 0),
     n_w_total = sum(somedata$children_518 != 0),
-    analysis_key = "ratio @/@ children_enrolled ~/~ NA ~/~ children_518 ~/~ NA @/@ NA ~/~ NA"
+    analysis_key = "ratio @/@ children_enrolled %/% NA -/- children_518 %/% NA @/@ NA %/% NA"
   )
   actual_output <- create_analysis_ratio(srvyr::as_survey(somedata),
     group_var = NA,
@@ -51,8 +51,8 @@ test_that("create_analysis_ratio returns correct output, no weights", {
     ) %>%
     dplyr::mutate(
       analysis_type = "ratio",
-      analysis_var = "children_enrolled ~/~ children_518",
-      analysis_var_value = "NA ~/~ NA",
+      analysis_var = "children_enrolled %/% children_518",
+      analysis_var_value = "NA %/% NA",
       group_var = "groups"
     ) %>%
     dplyr::rename(group_var_value = groups) %>%
@@ -60,12 +60,12 @@ test_that("create_analysis_ratio returns correct output, no weights", {
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
-        "children_enrolled ~/~ NA",
-        " ~/~ ",
-        "children_518 ~/~ NA",
+        "children_enrolled %/% NA",
+        " -/- ",
+        "children_518 %/% NA",
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       ),
     ) %>%
@@ -108,8 +108,8 @@ test_that("create_analysis_ratio handles NA", {
 
   na_expected_output <- data.frame(
     analysis_type = "ratio",
-    analysis_var = "children_enrolled ~/~ children_518",
-    analysis_var_value = "NA ~/~ NA",
+    analysis_var = "children_enrolled %/% children_518",
+    analysis_var_value = "NA %/% NA",
     group_var = NA_character_,
     group_var_value = NA_character_,
     stat = NaN,
@@ -124,12 +124,12 @@ test_that("create_analysis_ratio handles NA", {
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
-        "children_enrolled ~/~ NA",
-        " ~/~ ",
-        "children_518 ~/~ NA",
+        "children_enrolled %/% NA",
+        " -/- ",
+        "children_518 %/% NA",
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -151,8 +151,8 @@ test_that("create_analysis_ratio handles NA", {
   na_one_group_expected_output <-
     data.frame(
       analysis_type = rep("ratio", 2),
-      analysis_var = "children_enrolled ~/~ children_518",
-      analysis_var_value = rep("NA ~/~ NA", 2),
+      analysis_var = "children_enrolled %/% children_518",
+      analysis_var_value = rep("NA %/% NA", 2),
       group_var = rep("groups", 2),
       group_var_value = c("a", "b"),
       stat = NaN,
@@ -168,12 +168,12 @@ test_that("create_analysis_ratio handles NA", {
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
-        "children_enrolled ~/~ NA",
-        " ~/~ ",
-        "children_518 ~/~ NA",
+        "children_enrolled %/% NA",
+        " -/- ",
+        "children_518 %/% NA",
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -205,8 +205,8 @@ test_that("create_analysis_ratio handles when only 1 value", {
 
   one_value_expected_output <- data.frame(
     analysis_type = "ratio",
-    analysis_var = "children_enrolled ~/~ children_518",
-    analysis_var_value = "NA ~/~ NA",
+    analysis_var = "children_enrolled %/% children_518",
+    analysis_var_value = "NA %/% NA",
     group_var = NA_character_,
     group_var_value = NA_character_,
     stat = 1,
@@ -216,7 +216,7 @@ test_that("create_analysis_ratio handles when only 1 value", {
     n_total = 1,
     n_w = 1,
     n_w_total = 1,
-    analysis_key = "ratio @/@ children_enrolled ~/~ NA ~/~ children_518 ~/~ NA @/@ NA ~/~ NA"
+    analysis_key = "ratio @/@ children_enrolled %/% NA -/- children_518 %/% NA @/@ NA %/% NA"
   )
 
   one_value_results <- create_analysis_ratio(srvyr::as_survey(somedata),
@@ -235,8 +235,8 @@ test_that("create_analysis_ratio handles when only 1 value", {
   one_value_one_group_expected_output <-
     data.frame(
       analysis_type = rep("ratio", 2),
-      analysis_var = "children_enrolled ~/~ children_518",
-      analysis_var_value = rep("NA ~/~ NA", 2),
+      analysis_var = "children_enrolled %/% children_518",
+      analysis_var_value = rep("NA %/% NA", 2),
       group_var = rep("groups", 2),
       group_var_value = c("a", "b"),
       stat = c(NaN, 1),
@@ -251,12 +251,12 @@ test_that("create_analysis_ratio handles when only 1 value", {
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
-        "children_enrolled ~/~ NA",
-        " ~/~ ",
-        "children_518 ~/~ NA",
+        "children_enrolled %/% NA",
+        " -/- ",
+        "children_518 %/% NA",
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -296,8 +296,8 @@ test_that("create_analysis_ratio handles lonely PSU", {
     ) %>%
     dplyr::mutate(
       analysis_type = "ratio",
-      analysis_var = "children_enrolled ~/~ children_518",
-      analysis_var_value = "NA ~/~ NA",
+      analysis_var = "children_enrolled %/% children_518",
+      analysis_var_value = "NA %/% NA",
       group_var = "groups",
     ) %>%
     dplyr::rename(group_var_value = groups) %>%
@@ -317,12 +317,12 @@ test_that("create_analysis_ratio handles lonely PSU", {
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
-        "children_enrolled ~/~ NA",
-        " ~/~ ",
-        "children_518 ~/~ NA",
+        "children_enrolled %/% NA",
+        " -/- ",
+        "children_518 %/% NA",
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     )
@@ -372,8 +372,8 @@ test_that("create_analysis_ratio returns correct output, with weights", {
     ) %>%
     dplyr::mutate(
       group_var = NA_character_,
-      analysis_var = "children_enrolled ~/~ children_518",
-      analysis_var_value = "NA ~/~ NA",
+      analysis_var = "children_enrolled %/% children_518",
+      analysis_var_value = "NA %/% NA",
       analysis_type = "ratio",
       group_var_value = NA_character_
     ) %>%
@@ -393,12 +393,12 @@ test_that("create_analysis_ratio returns correct output, with weights", {
       analysis_key = paste0(
         analysis_type,
         " @/@ ",
-        "children_enrolled ~/~ NA",
-        " ~/~ ",
-        "children_518 ~/~ NA",
+        "children_enrolled %/% NA",
+        " -/- ",
+        "children_518 %/% NA",
         " @/@ ",
         group_var,
-        " ~/~ ",
+        " %/% ",
         group_var_value
       )
     ) %>%
@@ -435,27 +435,27 @@ test_that("create_analysis_ratio returns correct output with 3 grouping variable
       n = sum(children_518 != 0)
     ) %>%
     dplyr::mutate(
-      group_var = "group_a ~/~ group_b ~/~ group_c",
-      analysis_var = "children_enrolled ~/~ children_518",
-      analysis_var_value = "NA ~/~ NA",
+      group_var = "group_a %/% group_b %/% group_c",
+      analysis_var = "children_enrolled %/% children_518",
+      analysis_var_value = "NA %/% NA",
       analysis_type = "ratio",
       n_total = n,
       n_w = n,
       n_w_total = n,
-      analysis_key = "ratio @/@ children_enrolled ~/~ NA ~/~ children_518 ~/~ NA @/@"
+      analysis_key = "ratio @/@ children_enrolled %/% NA -/- children_518 %/% NA @/@"
     ) %>%
-    tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " ~/~ ")
+    tidyr::unite(group_var_value, group_a, group_b, group_c, sep = " %/% ")
 
   x <-
-    expected_output$group_var %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var %>% stringr::str_split(" %/% ")
   y <-
-    expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var_value %>% stringr::str_split(" %/% ")
 
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
 
@@ -529,26 +529,26 @@ test_that("create_analysis_ratio returns correct output with 2 grouping variable
       n_w = sum(weights[children_518 != 0])
     ) %>%
     dplyr::mutate(
-      group_var = "group_a ~/~ group_b",
-      analysis_var = "children_enrolled ~/~ children_518",
-      analysis_var_value = "NA ~/~ NA",
+      group_var = "group_a %/% group_b",
+      analysis_var = "children_enrolled %/% children_518",
+      analysis_var_value = "NA %/% NA",
       analysis_type = "ratio",
       n_total = n,
       n_w_total = n_w,
-      analysis_key = "ratio @/@ children_enrolled ~/~ NA ~/~ children_518 ~/~ NA @/@"
+      analysis_key = "ratio @/@ children_enrolled %/% NA -/- children_518 %/% NA @/@"
     ) %>%
-    tidyr::unite(group_var_value, group_a, group_b, sep = " ~/~ ")
+    tidyr::unite(group_var_value, group_a, group_b, sep = " %/% ")
 
   x <-
-    expected_output$group_var %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var %>% stringr::str_split(" %/% ")
   y <-
-    expected_output$group_var_value %>% stringr::str_split(" ~/~ ")
+    expected_output$group_var_value %>% stringr::str_split(" %/% ")
 
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
   expected_output <- expected_output %>%
@@ -618,8 +618,8 @@ test_that("numerator_NA_to_0, it will return the correct number", {
 
   expected_output_TRUE <- tibble::tibble(
     analysis_type = "ratio",
-    analysis_var = "num_attend ~/~ num_child",
-    analysis_var_value = "NA ~/~ NA",
+    analysis_var = "num_attend %/% num_child",
+    analysis_var_value = "NA %/% NA",
     group_var = NA_character_,
     group_var_value = NA_character_,
     stat = 1 / 5,
@@ -627,7 +627,7 @@ test_that("numerator_NA_to_0, it will return the correct number", {
     n_total = 2,
     n_w = 2,
     n_w_total = 2,
-    analysis_key = "ratio @/@ num_attend ~/~ NA ~/~ num_child ~/~ NA @/@ NA ~/~ NA"
+    analysis_key = "ratio @/@ num_attend %/% NA -/- num_child %/% NA @/@ NA %/% NA"
   )
 
   results_TRUE <- create_analysis_ratio(srvyr::as_survey(school_ex),
@@ -644,8 +644,8 @@ test_that("numerator_NA_to_0, it will return the correct number", {
 
   expected_output_FALSE <- tibble::tibble(
     analysis_type = "ratio",
-    analysis_var = "num_attend ~/~ num_child",
-    analysis_var_value = "NA ~/~ NA",
+    analysis_var = "num_attend %/% num_child",
+    analysis_var_value = "NA %/% NA",
     group_var = NA_character_,
     group_var_value = NA_character_,
     stat = 1 / 3,
@@ -653,7 +653,7 @@ test_that("numerator_NA_to_0, it will return the correct number", {
     n_total = 1,
     n_w = 1,
     n_w_total = 1,
-    analysis_key = "ratio @/@ num_attend ~/~ NA ~/~ num_child ~/~ NA @/@ NA ~/~ NA"
+    analysis_key = "ratio @/@ num_attend %/% NA -/- num_child %/% NA @/@ NA %/% NA"
   )
 
   results_FALSE <- create_analysis_ratio(srvyr::as_survey(school_ex),
@@ -702,14 +702,14 @@ test_that("numerator_NA_to_0, it will return the correct number", {
     ) %>%
     dplyr::mutate(
       analysis_type = "ratio",
-      analysis_var = "num_attend ~/~ num_child",
-      analysis_var_value = "NA ~/~ NA",
+      analysis_var = "num_attend %/% num_child",
+      analysis_var_value = "NA %/% NA",
       group_var = NA_character_,
       group_var_value = NA_character_,
       n_total = n,
       n_w = n,
       n_w_total = n,
-      analysis_key = "ratio @/@ num_attend ~/~ NA ~/~ num_child ~/~ NA @/@ NA ~/~ NA"
+      analysis_key = "ratio @/@ num_attend %/% NA -/- num_child %/% NA @/@ NA %/% NA"
     ) %>%
     dplyr::select(
       all_of(names(long_results_TRUE))
@@ -739,14 +739,14 @@ test_that("numerator_NA_to_0, it will return the correct number", {
     ) %>%
     dplyr::mutate(
       analysis_type = "ratio",
-      analysis_var = "num_attend ~/~ num_child",
-      analysis_var_value = "NA ~/~ NA",
+      analysis_var = "num_attend %/% num_child",
+      analysis_var_value = "NA %/% NA",
       group_var = NA_character_,
       group_var_value = NA_character_,
       n_total = n,
       n_w = n,
       n_w_total = n,
-      analysis_key = "ratio @/@ num_attend ~/~ NA ~/~ num_child ~/~ NA @/@ NA ~/~ NA"
+      analysis_key = "ratio @/@ num_attend %/% NA -/- num_child %/% NA @/@ NA %/% NA"
     ) %>%
     dplyr::select(names(long_results_FALSE))
 
@@ -787,8 +787,8 @@ test_that("stat is set to NaN when there is no value", {
     suppressWarnings()
 
   expected_output <- data.frame(analysis_type = rep("ratio", 3),
-                                analysis_var = rep("num_enrolled ~/~ num_child", 3),
-                                analysis_var_value = rep("NA ~/~ NA",3),
+                                analysis_var = rep("num_enrolled %/% num_child", 3),
+                                analysis_var_value = rep("NA %/% NA",3),
                                 group_var = rep("group", 3),
                                 group_var_value = c("group_value_a", "group_value_b", "group_value_c"),
                                 stat = c(NaN, NaN, 0),
@@ -798,9 +798,9 @@ test_that("stat is set to NaN when there is no value", {
                                 n_total = c(NaN,NaN,1),
                                 n_w = c(NaN,NaN,1),
                                 n_w_total = c(NaN,NaN,1),
-                                analysis_key = c("ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_a",
-                                                 "ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_b",
-                                                 "ratio @/@ num_enrolled ~/~ NA ~/~ num_child ~/~ NA @/@ group ~/~ group_value_c"))
+                                analysis_key = c("ratio @/@ num_enrolled %/% NA -/- num_child %/% NA @/@ group %/% group_value_a",
+                                                 "ratio @/@ num_enrolled %/% NA -/- num_child %/% NA @/@ group %/% group_value_b",
+                                                 "ratio @/@ num_enrolled %/% NA -/- num_child %/% NA @/@ group %/% group_value_c"))
 
   expect_equal(results, expected_output, ignore_attr = T)
 })

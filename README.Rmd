@@ -28,7 +28,35 @@ coverage](https://codecov.io/gh/impact-initiatives/analysistools/branch/main/gra
 
 <!-- badges: end -->
 
-The goal of analysistools is to ...
+The goal of analysistools is to provide tools to analyse dataset collected with ODK. The main function is create_analysis.
+
+All create_analysis_* fuctions will take a survey design object as input and will return a long result table with the analysis key. 
+
+The analysis key is the unique identifier of the analysis. The format is the following:
+
+- analysis type @/@ analysis variable %/% analysis variable value @/@ grouping variable %/% grouping variable value
+
+- analysis type @/@ dependent variable %/% dependent variable value @/@ independent variable %/% independent variable value
+
+If there are two or more grouping variables it would look like that
+
+- analysis type @/@ analysis variable %/% analysis variable value @/@ grouping variable 1 %/% grouping variable value 1 -/- grouping variable 2 %/% grouping variable value 2
+
+There are 3 types of separators:
+
+- @/@ will separate the top level information: analysis type, the analysis (dependent) variable information and the grouping (independent) variable
+
+- %/% will separate the analysis and grouping information: it will separate the variable name and the variable value
+
+- -/- will separate 2 variables in case there are multiple variable in either the analysis or grouping sets.
+
+The current analysis types available are :
+
+- mean
+- median
+- prop_select_one: proportion for select one
+- prop_select_multiple: proportion for select multiple
+- ratio
 
 ## Installation
 
@@ -373,10 +401,10 @@ review_results$review_table %>%
 
 
 ```{r}
-analysis_key_column <-  c("mean @/@ income ~/~ NA @/@ NA ~/~ NA",
-                          "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a",
-                          "prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a ~/~ population ~/~ displaced",
-                          "prop_select_multiple @/@ source_information ~/~ relatives @/@ NA ~/~ NA")
+analysis_key_column <-  c("mean @/@ income %/% NA @/@ NA %/% NA",
+                          "prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a",
+                          "prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a -/- population %/% displaced",
+                          "prop_select_multiple @/@ source_information %/% relatives @/@ NA %/% NA")
 test_analysis_results <- data.frame(
   test = c(
     "test equality",
@@ -409,9 +437,9 @@ This is is how to turn the analysis index into a table
 
 ```{r create_analysis_key_table}
 resultstable <- data.frame(analysis_index = c(
-  "mean @/@ v1 ~/~ NA @/@ NA ~/~ NA",
-  "mean @/@ v1 ~/~ NA @/@ gro ~/~ A",
-  "mean @/@ v1 ~/~ NA @/@ gro ~/~ B"
+  "mean @/@ v1 %/% NA @/@ NA %/% NA",
+  "mean @/@ v1 %/% NA @/@ gro %/% A",
+  "mean @/@ v1 %/% NA @/@ gro %/% B"
 ))
 
 key_table <- create_analysis_key_table(resultstable, "analysis_index")

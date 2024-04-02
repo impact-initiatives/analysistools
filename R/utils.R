@@ -6,6 +6,7 @@
 #'
 #' @return a string vector
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' char_to_vector("groupa, groupb, groupc")
@@ -40,6 +41,7 @@ char_to_vector <- function(string) {
 #'
 #' @return a dataframe with the results and the group_var_value column added
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
@@ -52,7 +54,7 @@ adding_group_var_value <- function(results, group_var = group_var, grouping_vect
       dplyr::mutate(group_var_value = NA_character_)
   } else {
     results <- results %>%
-      tidyr::unite("group_var_value", dplyr::all_of(grouping_vector), sep = " ~/~ ")
+      tidyr::unite("group_var_value", dplyr::all_of(grouping_vector), sep = " %/% ")
   }
   return(results)
 }
@@ -65,20 +67,20 @@ adding_group_var_value <- function(results, group_var = group_var, grouping_vect
 #'
 #' @return results with key
 #' @export
-#'
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
 #' adding_analysis_key(results = results)
 #' }
 adding_analysis_key <- function(results) {
-  x <- results$group_var %>% stringr::str_split(" ~/~ ")
-  y <- results$group_var_value %>% stringr::str_split(" ~/~ ")
+  x <- results$group_var %>% stringr::str_split(" %/% ")
+  y <- results$group_var_value %>% stringr::str_split(" %/% ")
   to_add <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
   results %>%
@@ -87,7 +89,7 @@ adding_analysis_key <- function(results) {
         analysis_type,
         " @/@ ",
         analysis_var,
-        " ~/~ ",
+        " %/% ",
         analysis_var_value,
         " @/@"
       ),
@@ -104,29 +106,29 @@ adding_analysis_key <- function(results) {
 #'
 #' @return results with key
 #' @export
-#'
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
 #' adding_analysis_key_ratio(results = results)
 #' }
 adding_analysis_key_ratio <- function(results) {
-  x <- results$group_var %>% stringr::str_split(" ~/~ ")
-  y <- results$group_var_value %>% stringr::str_split(" ~/~ ")
+  x <- results$group_var %>% stringr::str_split(" %/% ")
+  y <- results$group_var_value %>% stringr::str_split(" %/% ")
   to_add_group <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
-  x <- results$analysis_var %>% stringr::str_split(" ~/~ ")
-  y <- results$analysis_var_value %>% stringr::str_split(" ~/~ ")
+  x <- results$analysis_var %>% stringr::str_split(" %/% ")
+  y <- results$analysis_var_value %>% stringr::str_split(" %/% ")
   to_add_analysis <-
     purrr::map2(x, y, function(x, y) {
-      paste(x, y, sep = " ~/~ ")
+      paste(x, y, sep = " %/% ")
     }) %>%
-    purrr::map(stringr::str_c, collapse = " ~/~ ") %>%
+    purrr::map(stringr::str_c, collapse = " -/- ") %>%
     do.call(c, .)
 
   results %>%
@@ -143,6 +145,7 @@ adding_analysis_key_ratio <- function(results) {
 #'
 #' @return dataframe with the columns in a spefic order
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
@@ -173,6 +176,8 @@ arranging_results_columns <- function(results) {
 #' @param msg_error Message error to be shown if value are missing
 #'
 #' @return an error if one is missing
+#' @export
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
@@ -197,8 +202,9 @@ verify_if_AinB <- function(.A, .B, msg_error) {
 #' @param group_var one string with each variable separated by comma, e.g. "groupa, groupb"
 #' to group for groupa and groupb
 #'
-#' @return group_var separated by " ~/~ " instead of a ","
+#' @return group_var separated by " %/% " instead of a ","
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' create_group_var("groupa, groupb")
@@ -206,7 +212,7 @@ verify_if_AinB <- function(.A, .B, msg_error) {
 #' create_group_var(NA)
 create_group_var <- function(group_var) {
   group_var %>%
-    stringr::str_replace_all(",", " ~/~ ") %>%
+    stringr::str_replace_all(",", " %/% ") %>%
     stringr::str_squish()
 }
 
@@ -218,6 +224,7 @@ create_group_var <- function(group_var) {
 #'
 #' @return The results table with the stats_columns turn to NaN if total column is 0.
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' test_table <- data.frame(
@@ -256,6 +263,7 @@ correct_nan_total_is_0 <- function(results,
 #' @return The results table with the stats_columns turn to NaN if analysis_var_value_column is
 #' missing.
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' test_table <- data.frame(

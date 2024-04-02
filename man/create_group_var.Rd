@@ -11,7 +11,7 @@ create_group_var(group_var)
 to group for groupa and groupb}
 }
 \value{
-group_var separated by " ~/~ " instead of a ","
+group_var separated by " \%/\% " instead of a ","
 }
 \description{
 Helper to reformat the group_var for the results table
@@ -21,3 +21,4 @@ create_group_var("groupa, groupb")
 create_group_var("groupa,groupb")
 create_group_var(NA)
 }
+\keyword{internal}

@@ -21,3 +21,4 @@ as there are 2 analysis variables, the numerator and denominator for the ratios.
 adding_analysis_key_ratio(results = results)
 }
 }
+\keyword{internal}

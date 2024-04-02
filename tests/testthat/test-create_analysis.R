@@ -1,7 +1,7 @@
 # analysis runs without weights
 test_that("Gives corrects results", {
   # without a loa
-  no_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_no_loa_v2.RDS"))
+  no_loa_expected_output <- readRDS(testthat::test_path("fixtures", "results_create_analysis_no_loa_v3.RDS"))
 
   no_loa_test_design <- srvyr::as_survey(no_loa_expected_output$dataset)
   actual_output <- create_analysis(no_loa_test_design, group_var = "admin1", sm_separator = "/")
@@ -268,5 +268,3 @@ test_that("check_loa does not break when no grouping variables", {
 
   expect_equal(actual_results, expected_results, ignore_attr = T)
 })
-#
-# analysistools_MSNA_template_loa %>% filter(is.na(group_var)) %>% check_loa(design = srvyr::as_survey(analysistools_MSNA_template_data))

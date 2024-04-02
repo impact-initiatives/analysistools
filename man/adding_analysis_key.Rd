@@ -20,3 +20,4 @@ This is a helper to avoid repeating the select in the 5 create_analysis_x functi
 adding_analysis_key(results = results)
 }
 }
+\keyword{internal}
