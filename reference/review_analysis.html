@@ -86,14 +86,14 @@ Default is "analysis key"</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">analysis_key_column</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean @/@ income ~/~ NA @/@ NA ~/~ NA"</span>,</span></span>
-<span class="r-in"><span>                          <span class="st">"prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a"</span>,</span></span>
-<span class="r-in"><span>                          <span class="st">"prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a ~/~ population ~/~ displaced"</span>,</span></span>
-<span class="r-in"><span>                          <span class="st">"prop_select_multiple @/@ source_information ~/~ relatives @/@ NA ~/~ NA"</span>,</span></span>
-<span class="r-in"><span>                          <span class="st">"ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ NA ~/~ NA"</span>,</span></span>
-<span class="r-in"><span>                          <span class="st">"prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ displaced"</span>,</span></span>
-<span class="r-in"><span>                          <span class="st">"ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ district ~/~ district_a"</span>,</span></span>
-<span class="r-in"><span>                          <span class="st">"prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ returnees"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">analysis_key_column</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean @/@ income %/% NA @/@ NA %/% NA"</span>,</span></span>
+<span class="r-in"><span>                          <span class="st">"prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a"</span>,</span></span>
+<span class="r-in"><span>                          <span class="st">"prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a -/- population %/% displaced"</span>,</span></span>
+<span class="r-in"><span>                          <span class="st">"prop_select_multiple @/@ source_information %/% relatives @/@ NA %/% NA"</span>,</span></span>
+<span class="r-in"><span>                          <span class="st">"ratio @/@ food_expenses %/% NA -/- total_expenses %/% NA @/@ NA %/% NA"</span>,</span></span>
+<span class="r-in"><span>                          <span class="st">"prop_select_one @/@ water_source %/% tap_water @/@ population %/% displaced"</span>,</span></span>
+<span class="r-in"><span>                          <span class="st">"ratio @/@ food_expenses %/% NA -/- total_expenses %/% NA @/@ district %/% district_a"</span>,</span></span>
+<span class="r-in"><span>                          <span class="st">"prop_select_one @/@ water_source %/% tap_water @/@ population %/% returnees"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">test_analysis_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"test equality"</span>,</span></span>
@@ -126,14 +126,14 @@ Default is "analysis key"</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7 test difference rounding in x    0.00035   0.00035    0.00030   0.00030</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8 test difference rounding in y    0.00030   0.00030    0.00035   0.00035</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                              analysis_key</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                    mean @/@ income ~/~ NA @/@ NA ~/~ NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                              prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a ~/~ population ~/~ displaced</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                 prop_select_multiple @/@ source_information ~/~ relatives @/@ NA ~/~ NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                  ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ NA ~/~ NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                             prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ displaced</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                    ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ district ~/~ district_a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8                             prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ returnees</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                    mean @/@ income %/% NA @/@ NA %/% NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                              prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a -/- population %/% displaced</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                 prop_select_multiple @/@ source_information %/% relatives @/@ NA %/% NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                  ratio @/@ food_expenses %/% NA -/- total_expenses %/% NA @/@ NA %/% NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                             prop_select_one @/@ water_source %/% tap_water @/@ population %/% displaced</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                    ratio @/@ food_expenses %/% NA -/- total_expenses %/% NA @/@ district %/% district_a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                             prop_select_one @/@ water_source %/% tap_water @/@ population %/% returnees</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   review_check_stat_col.x review_comment_stat_col.x</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                    TRUE              Same results</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                   FALSE         Different results</span>
@@ -146,14 +146,14 @@ Default is "analysis key"</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $review_table</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                              analysis_key</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                    mean @/@ income ~/~ NA @/@ NA ~/~ NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                              prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 prop_select_one @/@ water_source ~/~ tap_water @/@ district ~/~ district_a ~/~ population ~/~ displaced</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                 prop_select_multiple @/@ source_information ~/~ relatives @/@ NA ~/~ NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                  ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ NA ~/~ NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                             prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ displaced</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                    ratio @/@ food_expenses ~/~ NA ~/~ total_expenses ~/~ NA @/@ district ~/~ district_a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8                             prop_select_one @/@ water_source ~/~ tap_water @/@ population ~/~ returnees</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                    mean @/@ income %/% NA @/@ NA %/% NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                              prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 prop_select_one @/@ water_source %/% tap_water @/@ district %/% district_a -/- population %/% displaced</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                 prop_select_multiple @/@ source_information %/% relatives @/@ NA %/% NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                  ratio @/@ food_expenses %/% NA -/- total_expenses %/% NA @/@ NA %/% NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                             prop_select_one @/@ water_source %/% tap_water @/@ population %/% displaced</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                    ratio @/@ food_expenses %/% NA -/- total_expenses %/% NA @/@ district %/% district_a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                             prop_select_one @/@ water_source %/% tap_water @/@ population %/% returnees</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         stat review_check        review_comment        analysis_type</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 stat_col.x         TRUE          Same results                 mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 stat_col.x        FALSE     Different results      prop_select_one</span>
@@ -166,11 +166,11 @@ Default is "analysis key"</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                       analysis_var               group_var</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                           income                      NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                     water_source                district</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                     water_source district ~/~ population</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                     water_source district %/% population</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4               source_information                      NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 food_expenses ~/~ total_expenses                      NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 food_expenses %/% total_expenses                      NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6                     water_source              population</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 food_expenses ~/~ total_expenses                district</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 food_expenses %/% total_expenses                district</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8                     water_source              population</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
