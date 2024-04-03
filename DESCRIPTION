@@ -1,6 +1,6 @@
 Package: analysistools
 Title: Tools to perform some analysis on survey data collected with ODK
-Version: 0.0.0.901
+Version: 0.0.0.902
 Authors@R: c(
     person("Yann", "Say", , "yann.say@impact-initiatives.org", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7390-4209")),
