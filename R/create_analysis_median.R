@@ -9,11 +9,12 @@
 #' @param analysis_var the independent variable, variable to summarise
 #' @param level the confidence level. 0.95 is default
 #'
-#' @note The results may differ with median(). There are lots of ways to calculate the median and
-#' the default calculation between stats::median and survey::svyquantile/srvyr::survey_median are
-#' different. Default from *survey/srvyr* is "school" methodology and does not exist in *stats*
-#' package. The default for *stats* is "hf7". *survey/srvyr* methodology is prefered as these
-#' packages are built for complex survey design.
+#' @note Default from *survey/srvyr* is "math" methodology. In case of odds number, it will return
+#' the lower value. Default for stats::median will calculate the mean between the two points.
+#' If there is a set of c(1,2), median(1,2) will return 1.5; survey_mean() will return 1 by default.
+#' create_analysis_median has the "school" methodology set as default, the results will match the
+#' default results from stats::median, pandas.median If want to calculate with the "math"
+#' methodology, you should run your own analysis with survey_median.
 #'
 #' @return a data frame with the median for each group
 #' @export
@@ -76,6 +77,7 @@ create_analysis_median <- function(design, group_var = NA, analysis_var, level =
         stat = srvyr::survey_median(
           !!rlang::sym(analysis_var),
           vartype = "ci",
+          qrule = "school",
           level = as.numeric(level),
           na.rm = T
         )

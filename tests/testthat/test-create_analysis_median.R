@@ -14,7 +14,7 @@ test_that("create_analysis_median returns correct output, no weights", {
   )
 
   svyquantile_results <- survey::svydesign(id = ~1, data = somedata) %>%
-    survey::svyquantile(~value, design = ., quantiles = c(.5)) %>%
+    survey::svyquantile(~value, design = ., quantiles = c(.5), qrule = "school") %>%
     suppressWarnings()
 
   expected_output <- svyquantile_results[["value"]] %>%
@@ -295,7 +295,9 @@ test_that("create_analysis_median handles lonely PSU", {
       ~groups,
       design = .,
       FUN = survey::svyquantile,
-      quantiles = .5, vartype = "ci"
+      quantiles = .5,
+      vartype = "ci",
+      qrule = "school"
     ) %>%
     suppressWarnings()
 
@@ -411,7 +413,9 @@ test_that("create_analysis_median returns correct output with 3 grouping variabl
       ~ group_a + group_b + group_c,
       design = .,
       FUN = survey::svyquantile,
-      quantiles = .5, vartype = "ci"
+      quantiles = .5,
+      vartype = "ci",
+      qrule = "school"
     ) %>%
     suppressWarnings()
 
@@ -506,7 +510,9 @@ test_that("create_analysis_median returns correct output with 2 grouping variabl
       ~ group_a + group_b,
       design = .,
       FUN = survey::svyquantile,
-      quantiles = .5, vartype = "ci"
+      quantiles = .5,
+      vartype = "ci",
+      qrule = "school"
     ) %>%
     suppressWarnings()
 
