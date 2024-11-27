@@ -26,11 +26,12 @@ a data frame with the median for each group
 Calculate a median from a survey
 }
 \note{
-The results may differ with median(). There are lots of ways to calculate the median and
-the default calculation between stats::median and survey::svyquantile/srvyr::survey_median are
-different. Default from \emph{survey/srvyr} is "school" methodology and does not exist in \emph{stats}
-package. The default for \emph{stats} is "hf7". \emph{survey/srvyr} methodology is prefered as these
-packages are built for complex survey design.
+Default from \emph{survey/srvyr} is "math" methodology. In case of odds number, it will return
+the lower value. Default for stats::median will calculate the mean between the two points.
+If there is a set of c(1,2), median(1,2) will return 1.5; survey_mean() will return 1 by default.
+create_analysis_median has the "school" methodology set as default, the results will match the
+default results from stats::median, pandas.median If want to calculate with the "math"
+methodology, you should run your own analysis with survey_median.
 }
 \examples{
 somedata <- data.frame(

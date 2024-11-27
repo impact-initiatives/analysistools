@@ -9,11 +9,12 @@
 #' @param analysis_var the independent variable, variable to summarise
 #' @param level the confidence level. 0.95 is default
 #'
-#' @note The results may differ with median(). There are lots of ways to calculate the median and
-#' the default calculation between stats::median and survey::svyquantile/srvyr::survey_median are
-#' different. Default from *survey/srvyr* is "school" methodology and does not exist in *stats*
-#' package. The default for *stats* is "hf7". *survey/srvyr* methodology is prefered as these
-#' packages are built for complex survey design.
+#' @note Default from *survey/srvyr* is "math" methodology. In case of odds number, it will return
+#' the lower value. Default for stats::median will calculate the mean between the two points.
+#' If there is a set of c(1,2), median(1,2) will return 1.5; survey_mean() will return 1 by default.
+#' create_analysis_median has the "school" methodology set as default, the results will match the
+#' default results from stats::median, pandas.median If want to calculate with the "math"
+#' methodology, you should run your own analysis with survey_median.
 #'
 #' @return a data frame with the median for each group
 #' @export
@@ -42,57 +43,63 @@ create_analysis_median <- function(design, group_var = NA, analysis_var, level =
   }
 
   # calculate
+  pre_design <- design %>%
+    dplyr::group_by(dplyr::across(dplyr::any_of(across_by)))
 
-  ## error handling
-  ## survey_median has an error with only NA it passes somewhere if(NA)
-  ## To handle this problem, the missing_value_catch will try to run summarise around
-  ## survey_quantile, if it does work, it will run survey_mean to get the NA/NaN.
-  ## The error also happens with svyby and svyquantile and cannot be swapped
+  # as 26.11.2024
+  # currently srvyr::survey_median return error with only NAs in a group
+  # Caused by error in `h()`:
+  # ! error in evaluating the argument 'x' in selecting a method for function 't':
+  # missing value where TRUE/FALSE needed
+  #
+  # fix:
+  # - calculates median with filter(.preserve = FALSE) (default). it removes groups with all NA
+  # - calculates the counts and weigthed counts with .preserve = TRUE to have all groups
+  # - left_join on the counts to have all groups.
+  #
+  # - when all are missing return a dataframe with stat,stat_upp,stat_low as NaN as
+  # filter(.preserve = FALSE will break)
 
-  missing_value_catch <- function(expr) {
-    tryCatch(
-      error = function(cnd) {
-        design %>%
-          dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
-          dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
-          srvyr::summarise(
-            stat = srvyr::survey_mean(
-              !!rlang::sym(analysis_var),
-              vartype = "ci",
-              level = as.numeric(level),
-              na.rm = T
-            ),
-            n = dplyr::n(),
-            n_w = srvyr::survey_total(
-              vartype = "ci",
-              level = as.numeric(level),
-              na.rm = T
-            )
-          )
-      },
-      expr
-    )
-  }
-
-  results <- missing_value_catch(
-    design %>%
-      dplyr::group_by(dplyr::across(dplyr::any_of(across_by))) %>%
-      dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = T) %>%
+  # fix for 26.11.2024 bug
+  if (all(is.na(design[["variables"]][[analysis_var]]))) {
+    # edge case when all NA
+    results_median <- pre_design %>%
+      dplyr::filter(!is.na(!!rlang::sym(analysis_var))) %>%
+      dplyr::summarise(
+        stat = NaN,
+        stat_upp = NaN,
+        stat_low = NaN
+      )
+  } else {
+    results_median <- pre_design %>%
+      dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = FALSE) %>%
       srvyr::summarise(
         stat = srvyr::survey_median(
           !!rlang::sym(analysis_var),
           vartype = "ci",
-          level = as.numeric(level),
-          na.rm = T
-        ),
-        n = dplyr::n(),
-        n_w = srvyr::survey_total(
-          vartype = "ci",
+          qrule = "school",
           level = as.numeric(level),
           na.rm = T
         )
       )
-  )
+  }
+
+  results_totals <- pre_design %>%
+    dplyr::filter(!is.na(!!rlang::sym(analysis_var)), .preserve = TRUE) %>%
+    srvyr::summarise(
+      n = dplyr::n(),
+      n_w = srvyr::survey_total(
+        na.rm = T
+      )
+    )
+
+  if (is.null(across_by)) {
+    results <- cbind(results_median, results_totals)
+  } else {
+    results <- results_totals %>%
+      dplyr::left_join(results_median) %>%
+      suppressMessages()
+  }
 
   results <- results %>%
     dplyr::mutate(

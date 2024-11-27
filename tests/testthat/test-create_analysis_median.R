@@ -14,7 +14,7 @@ test_that("create_analysis_median returns correct output, no weights", {
   )
 
   svyquantile_results <- survey::svydesign(id = ~1, data = somedata) %>%
-    survey::svyquantile(~value, design = ., quantiles = c(.5)) %>%
+    survey::svyquantile(~value, design = ., quantiles = c(.5), qrule = "school") %>%
     suppressWarnings()
 
   expected_output <- svyquantile_results[["value"]] %>%
@@ -295,7 +295,9 @@ test_that("create_analysis_median handles lonely PSU", {
       ~groups,
       design = .,
       FUN = survey::svyquantile,
-      quantiles = .5, vartype = "ci"
+      quantiles = .5,
+      vartype = "ci",
+      qrule = "school"
     ) %>%
     suppressWarnings()
 
@@ -411,7 +413,9 @@ test_that("create_analysis_median returns correct output with 3 grouping variabl
       ~ group_a + group_b + group_c,
       design = .,
       FUN = survey::svyquantile,
-      quantiles = .5, vartype = "ci"
+      quantiles = .5,
+      vartype = "ci",
+      qrule = "school"
     ) %>%
     suppressWarnings()
 
@@ -506,7 +510,9 @@ test_that("create_analysis_median returns correct output with 2 grouping variabl
       ~ group_a + group_b,
       design = .,
       FUN = survey::svyquantile,
-      quantiles = .5, vartype = "ci"
+      quantiles = .5,
+      vartype = "ci",
+      qrule = "school"
     ) %>%
     suppressWarnings()
 
@@ -590,3 +596,23 @@ test_that("stat is set to NaN when there is no value", {
 
   expect_equal(results, expected_output, ignore_attr = T)
 })
+
+test_that("When only missing values, the correct values are return", {
+  set.seed(3452)
+  repex_df <- data.frame(group = c(rep("a", 5), rep("b",3)),
+                         value = c(runif(5), rep(NA, 3)))
+  expected_results <- repex_df |>
+    dplyr::group_by(group) |>
+    dplyr::summarise(stat = median(value, na.rm = T)) |>
+    dplyr::mutate(stat = dplyr::if_else(is.na(stat), NaN, stat))
+
+  data_survey_design <- srvyr::as_survey(repex_df)
+
+  actual_results <- create_analysis_median(data_survey_design,
+                                           group_var = "group",
+                                           analysis_var = "value")
+
+  expect_equal(actual_results$stat, expected_results$stat)
+
+})
+
